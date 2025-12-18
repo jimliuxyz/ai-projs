@@ -1,34 +1,13 @@
 <template>
-  <div class="app">
-    <h1>{{ title }}</h1>
-    <p>{{ message }}</p>
-    <input v-model="message" placeholder="修改訊息" />
-  </div>
+  <v-app dark>
+    <v-main class="d-flex align-center justify-center" style="min-height:100vh;">
+      <router-view />
+    </v-main>
+  </v-app>
 </template>
 
-<script>
-import { ref } from 'vue'
-
-export default {
-  name: 'App',
-  setup() {
-    const title = 'Vue 3 + Vite Demo'
-    const message = ref('這是一個最小的 Vue 3 + Vite 專案。')
-    return { title, message }
-  }
-}
-</script>
+<script setup lang="ts"></script>
 
 <style scoped>
-.app {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
-    Ubuntu, Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', Arial,
-    'Noto Sans', sans-serif;
-  padding: 2rem;
-}
-input {
-  padding: 0.5rem;
-  font-size: 1rem;
-  margin-top: 1rem;
-}
+/* 根層樣式留空，交給各 view 控制 */
 </style>

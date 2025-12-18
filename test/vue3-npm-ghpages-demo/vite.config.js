@@ -1,8 +1,8 @@
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
+import vuetify from 'vite-plugin-vuetify'
 
 export default defineConfig({
-  plugins: [vue()],
-  // 基於 GH Pages 的部署，使用相對路徑
-  base: './',
+  plugins: [vue(), vuetify({ autoImport: true })],
+  base: './'
 })

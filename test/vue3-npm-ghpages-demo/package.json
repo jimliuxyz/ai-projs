@@ -1,20 +1,24 @@
 {
   "name": "vue3-npm-ghpages-demo",
-  "version": "1.0.2",
+  "version": "1.0.0",
   "private": true,
-  "homepage": "https://jimliuxyz.github.io/vue3-npm-ghpages-demo/",
+  "homepage": "https://jimliuxyz.github.io/ai-projs/",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview --port 5173",
-    "deploy": "npm run build && npx gh-pages -d dist -b gh-pages"
+    "deploy": "npm run build && npx gh-pages -d dist -b gh-pages --repo https://github.com/jimliuxyz/ai-projs.git"
   },
   "dependencies": {
-    "vue": "^3.4.0"
+    "vue": "^3.5.7",
+    "vue-router": "^4.0.0",
+    "vuetify": "3.7.1"
   },
   "devDependencies": {
     "vite": "^5.0.0",
     "@vitejs/plugin-vue": "^4.2.1",
-    "gh-pages": "^5.0.0"
+    "gh-pages": "^5.0.0",
+    "vite-plugin-vuetify": "2.0.4",
+    "sass": "^1.63.0"
   }
 }
