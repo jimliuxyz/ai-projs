@@ -4,7 +4,7 @@ export default function contentListPlugin(){
     const fs = require('fs')
     const path = require('path')
     const ROOT = process.cwd()
-    const bases = [path.resolve(ROOT, '..', '..', 'assets')]
+    const bases = [path.resolve(ROOT, 'assets')]
     for (const base of bases){
       if (!fs.existsSync(base)) continue
       const dirs = fs.readdirSync(base, { withFileTypes: true }).filter((d)=> d.isDirectory()).map((d)=> d.name)

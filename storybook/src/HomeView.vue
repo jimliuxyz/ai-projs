@@ -15,7 +15,7 @@ const topKeys = ref<string[]>([
 <template>
   <div>
     <div v-for="(k, idx) in topKeys" :key="k" style="display:inline-flex; align-items:center;">
-      <v-chip size="large" color="secondary">{{ k }}</v-chip>
+      <v-chip size="large" color="secondary" :to="{ name: 'Media', params: { param: k } }" clickable>{{ k }}</v-chip>
     </div>
 
     <div style="display:flex; flex-wrap:wrap; gap:12px; justify-content:center; align-items:center; padding: 2rem;">
