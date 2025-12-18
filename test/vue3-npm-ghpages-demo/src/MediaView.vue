@@ -1,3 +1,11 @@
+<script setup lang="ts">
+import env from './env';
+const props = defineProps<{ param: string }>()
+const param = props.param ?? 'test'
+const imageUrl = `${env.fileRoot}${param}/image.png`
+const audioUrl = `${env.fileRoot}${param}/audio.wav`
+</script>
+
 <template>
   <v-container class="fill-height" fluid>
     <v-row align="center" justify="center" class="text-center" style="min-height:60vh;">
@@ -13,16 +21,15 @@
   </v-container>
 </template>
 
-<script setup lang="ts">
-import { ref } from 'vue'
-const props = defineProps<{ param: string }>()
-const param = props.param ?? 'test'
-const imageUrl = `https://raw.githubusercontent.com/jimliuxyz/ai-projs/main/assets/${param}/image.png`
-const audioUrl = `https://raw.githubusercontent.com/jimliuxyz/ai-projs/main/assets/${param}/audio.wav`
-const audioRef = ref<HTMLAudioElement | null>(null)
-</script>
-
 <style scoped>
-.image-area { text-align:center; }
-.image-area img { max-width: 100%; height: auto; display: block; margin: 0 auto; }
+.image-area {
+  text-align: center;
+}
+
+.image-area img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+}
 </style>

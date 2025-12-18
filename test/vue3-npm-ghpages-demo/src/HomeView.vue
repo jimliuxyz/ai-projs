@@ -16,7 +16,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-const links = ref<string[]>(['test'])
+const links = ref<string[]>(['test', 'The Christmas Cookie That Saved Santa'])
 </script>
 
 <style scoped>
