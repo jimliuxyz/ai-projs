@@ -1,0 +1,62 @@
+[
+    {
+        "text": "does",
+        "translation": "做",
+        "category": "verb",
+        "example": "He does work"
+    },
+    {
+        "text": "pail",
+        "translation": "提桶",
+        "category": "object",
+        "example": "A blue pail"
+    },
+    {
+        "text": "main",
+        "translation": "主要的",
+        "category": "adjective",
+        "example": "The main road"
+    },
+    {
+        "text": "at",
+        "translation": "在",
+        "category": "preposition",
+        "example": "At the park"
+    },
+    {
+        "text": "has",
+        "translation": "有",
+        "category": "verb",
+        "example": "She has apple"
+    },
+    {
+        "text": "new",
+        "translation": "新的",
+        "category": "adjective",
+        "example": "A new car"
+    },
+    {
+        "text": "year",
+        "translation": "年",
+        "category": "time",
+        "example": "A happy year"
+    },
+    {
+        "text": "fun",
+        "translation": "真有趣",
+        "category": "adjective",
+        "example": "Play is fun"
+    },
+    {
+        "text": "party",
+        "translation": "派對",
+        "category": "social",
+        "example": "A birthday party"
+    },
+    {
+        "text": "green",
+        "translation": "綠色",
+        "category": "color",
+        "example": "Green grass"
+    }
+]
