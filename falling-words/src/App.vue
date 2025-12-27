@@ -3,9 +3,13 @@ import { ref } from 'vue';
 import FallingWordsGame from './components/FallingWordsGame.vue';
 import SpellingGame from './components/SpellingGame.vue';
 import DuelGame from './components/DuelGame.vue';
+import CodeKnight from './components/CodeKnight.vue';
+import ParkingGame from './components/ParkingGame.vue';
 import { settings } from './store/settings';
 import { vocabularyStore } from './store/vocabulary';
+import { useAudio } from './composables/useAudio';
 
+const { speak } = useAudio();
 const currentGame = ref<string | null>(null);
 const showVocabPicker = ref(false);
 
@@ -13,6 +17,8 @@ const games = [
     { id: 'falling-words', name: 'Star Words', desc: 'Catch the words in space!', icon: '🚀' },
     { id: 'spelling-mode', name: 'Spell Master', desc: 'Spell words letter by letter!', icon: '🛸' },
     { id: 'duel-mode', name: 'Duel', desc: '2-Player Battle!', icon: '⚔️' },
+    { id: 'code-knight', name: 'Code Knight', desc: 'Control by your voice!', icon: '🛡️' },
+    { id: 'parking-jam', name: 'Parking Jam', desc: 'Race to park cars!', icon: '🚗' },
     { id: 'coming-soon', name: 'More Games', desc: 'Coming Soon...', icon: '🔐' }
 ];
 
@@ -29,17 +35,11 @@ const availableVoices = ref<SpeechSynthesisVoice[]>([]);
 
 const updateVoices = () => {
     availableVoices.value = window.speechSynthesis.getVoices()
-        .filter(v => v.lang.startsWith('en'));
+        .filter(v => v.lang.startsWith('en') || v.lang.startsWith('zh'));
 };
 
 const testVoice = () => {
-    const u = new SpeechSynthesisUtterance('Hello, welcome back!');
-    u.rate = settings.speechRate;
-    if (settings.voiceURI) {
-        const v = availableVoices.value.find(x => x.voiceURI === settings.voiceURI);
-        if (v) u.voice = v;
-    }
-    window.speechSynthesis.speak(u);
+    speak('Hello, 你好');
 };
 
 updateVoices();
@@ -146,6 +146,16 @@ const pickVocab = (name: string) => {
 
   <DuelGame 
     v-else-if="currentGame === 'duel-mode'" 
+    @exit="exitGame"
+  />
+
+  <CodeKnight 
+    v-else-if="currentGame === 'code-knight'" 
+    @exit="exitGame"
+  />
+
+  <ParkingGame
+    v-else-if="currentGame === 'parking-jam'"
     @exit="exitGame"
   />
 </template>

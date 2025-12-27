@@ -88,13 +88,26 @@ export function useAudio() {
     const speak = (text: string, interrupt = true) => {
         if (!synth) return;
         const utterance = new SpeechSynthesisUtterance(text);
-        utterance.lang = 'en-US';
+
+        // Auto-detect language
+        const isChinese = /[\u4e00-\u9fa5\u3105-\u3129\u02CA\u02C7\u02CB\u02D9]/.test(text);
+        utterance.lang = isChinese ? 'zh-TW' : 'en-US';
+
         utterance.rate = settings.speechRate;
 
         const voices = synth.getVoices();
         if (settings.voiceURI) {
             const selected = voices.find(v => v.voiceURI === settings.voiceURI);
-            if (selected) utterance.voice = selected;
+            if (selected) {
+                utterance.voice = selected;
+                // If user picked a specific voice, trust its lang over our auto-detect
+                utterance.lang = selected.lang;
+            }
+        } else if (isChinese) {
+            const twVoice = voices.find(v => v.lang.includes('zh-TW')) ||
+                voices.find(v => v.lang.includes('zh')) ||
+                voices.find(v => v.lang.includes('TW'));
+            if (twVoice) utterance.voice = twVoice;
         } else {
             const googleUS = voices.find(v => v.name === 'Google US English');
             const anyUS = voices.find(v => v.lang === 'en-US');
@@ -103,7 +116,81 @@ export function useAudio() {
         }
 
         if (interrupt) synth.cancel();
-        synth.speak(utterance);
+
+        // Small delay for some mobile browsers to handle cancel() effectively
+        if (interrupt) {
+            setTimeout(() => synth.speak(utterance), 50);
+        } else {
+            synth.speak(utterance);
+        }
+    };
+
+    const playBrake = () => {
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        const now = audioCtx.currentTime;
+        const duration = 0.6;
+
+        // 1. Friction Noise (Rubber on asphalt)
+        const bufferSize = audioCtx.sampleRate * duration;
+        const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+        const data = buffer.getChannelData(0);
+        for (let i = 0; i < bufferSize; i++) {
+            // Add some "grain" to the noise
+            const noise = Math.random() * 2 - 1;
+            const grain = Math.sin(i * 0.05) > 0 ? 1 : 0.5;
+            data[i] = noise * grain;
+        }
+        const noiseSource = audioCtx.createBufferSource();
+        noiseSource.buffer = buffer;
+
+        const noiseFilter = audioCtx.createBiquadFilter();
+        noiseFilter.type = 'bandpass';
+        noiseFilter.frequency.setValueAtTime(2500, now);
+        noiseFilter.frequency.exponentialRampToValueAtTime(800, now + duration);
+        noiseFilter.Q.value = 3;
+
+        // 2. High Squeal (Vibration)
+        const squeal1 = audioCtx.createOscillator();
+        squeal1.type = 'sawtooth';
+        squeal1.frequency.setValueAtTime(3500, now);
+        squeal1.frequency.exponentialRampToValueAtTime(1200, now + duration);
+
+        const squeal2 = audioCtx.createOscillator();
+        squeal2.type = 'triangle';
+        squeal2.frequency.setValueAtTime(3550, now);
+        squeal2.frequency.exponentialRampToValueAtTime(1250, now + duration);
+
+        // 3. Modulator for "chirp" effect
+        const mod = audioCtx.createOscillator();
+        mod.type = 'sine';
+        mod.frequency.value = 50;
+        const modGain = audioCtx.createGain();
+        modGain.gain.value = 100;
+
+        mod.connect(modGain);
+        modGain.connect(squeal1.frequency);
+        modGain.connect(squeal2.frequency);
+
+        const mainGain = audioCtx.createGain();
+        mainGain.gain.setValueAtTime(0, now);
+        mainGain.gain.linearRampToValueAtTime(0.12, now + 0.05);
+        mainGain.gain.exponentialRampToValueAtTime(0.001, now + duration);
+
+        noiseSource.connect(noiseFilter);
+        noiseFilter.connect(mainGain);
+        squeal1.connect(mainGain);
+        squeal2.connect(mainGain);
+        mainGain.connect(audioCtx.destination);
+
+        noiseSource.start();
+        squeal1.start();
+        squeal2.start();
+        mod.start();
+
+        noiseSource.stop(now + duration);
+        squeal1.stop(now + duration);
+        squeal2.stop(now + duration);
+        mod.stop(now + duration);
     };
 
     const playCorrect = () => {
@@ -115,12 +202,15 @@ export function useAudio() {
     const playWrong = () => playSFX(SFX.WRONG);
     const playExplosion = () => playSFX(SFX.EXPLOSION);
 
+
     return {
         speak,
         playCorrect,
         playSuccess,
         playWrong,
         playExplosion,
-        playThrust
+        playThrust,
+        playTone,
+        playBrake
     };
 }
