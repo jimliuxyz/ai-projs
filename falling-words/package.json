@@ -11,6 +11,9 @@
     "deploy": "npm run build && npx gh-pages -d dist -b gh-pages --repo https://github.com/jimliuxyz/ai-projs.git"
   },
   "dependencies": {
+    "@types/three": "^0.182.0",
+    "cannon-es": "^0.20.0",
+    "three": "^0.182.0",
     "vue": "^3.5.24"
   },
   "devDependencies": {

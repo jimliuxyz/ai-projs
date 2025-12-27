@@ -10,7 +10,7 @@ import { vocabularyStore } from './store/vocabulary';
 import { useAudio } from './composables/useAudio';
 
 const { speak } = useAudio();
-const currentGame = ref<string | null>(null);
+const currentGame = ref<string | null>(window.location.hash.replace('#/', '') || null);
 const showVocabPicker = ref(false);
 
 const games = [
@@ -22,13 +22,21 @@ const games = [
     { id: 'coming-soon', name: 'More Games', desc: 'Coming Soon...', icon: '🔐' }
 ];
 
+// Virtual Routing Sync
+window.addEventListener('hashchange', () => {
+    const hash = window.location.hash.replace('#/', '');
+    currentGame.value = hash || null;
+});
+
 const selectGame = (id: string) => {
     if (id === 'coming-soon') return;
     currentGame.value = id;
+    window.location.hash = `#/${id}`;
 };
 
 const exitGame = () => {
     currentGame.value = null;
+    window.location.hash = '';
 };
 
 const availableVoices = ref<SpeechSynthesisVoice[]>([]);
