@@ -122,7 +122,7 @@ onUnmounted(() => {
             <div v-if="currentTarget" class="target-display">
                 <div class="target-hint">FIND:</div>
                 <div class="target-word" @click.stop="announceTarget()">
-                    {{ currentTarget.translation }}
+                    {{ currentTarget.t }}
                     <span class="audio-icon">🔊</span>
                 </div>
             </div>
@@ -154,7 +154,7 @@ onUnmounted(() => {
         :style="{ left: item.x + '%', top: item.y + '%' }"
       >
         <div class="meteor-body">
-            {{ item.word.text }}
+            {{ item.word.q }}
         </div>
         <div class="meteor-tail"></div>
       </div>

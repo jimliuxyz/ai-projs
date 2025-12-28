@@ -1,123 +1,123 @@
 [
     {
-        "text": "ㄅㄚ",
-        "translation": "八"
+        "a": "ㄅㄚ",
+        "q": "八"
     },
     {
-        "text": "ㄏㄨㄚˊ",
-        "translation": "華"
+        "a": "ㄏㄨㄚˊ",
+        "q": "華"
     },
     {
-        "text": "ㄇㄛˊ",
-        "translation": "磨"
+        "a": "ㄇㄛˊ",
+        "q": "磨"
     },
     {
-        "text": "ㄈㄤ",
-        "translation": "方"
+        "a": "ㄈㄤ",
+        "q": "方"
     },
     {
-        "text": "ㄉㄚˋ",
-        "translation": "大"
+        "a": "ㄉㄚˋ",
+        "q": "大"
     },
     {
-        "text": "ㄊㄧㄢ",
-        "translation": "天"
+        "a": "ㄊㄧㄢ",
+        "q": "天"
     },
     {
-        "text": "ㄋㄧㄠˇ",
-        "translation": "鳥"
+        "a": "ㄋㄧㄠˇ",
+        "q": "鳥"
     },
     {
-        "text": "ㄌㄨㄥˊ",
-        "translation": "龍"
+        "a": "ㄌㄨㄥˊ",
+        "q": "龍"
     },
     {
-        "text": "ㄍㄨㄛˊ",
+        "a": "ㄍㄨㄛˊ",
         "voiceText": "國",
-        "translation": "國"
+        "q": "國"
     },
     {
-        "text": "ㄎㄞ",
-        "translation": "開"
+        "a": "ㄎㄞ",
+        "q": "開"
     },
     {
-        "text": "ㄏㄠˇ",
-        "translation": "好"
+        "a": "ㄏㄠˇ",
+        "q": "好"
     },
     {
-        "text": "ㄐㄧㄚ",
-        "translation": "家"
+        "a": "ㄐㄧㄚ",
+        "q": "家"
     },
     {
-        "text": "ㄑㄧㄥ",
-        "translation": "青"
+        "a": "ㄑㄧㄥ",
+        "q": "青"
     },
     {
-        "text": "ㄒㄧㄠˇ",
-        "translation": "小"
+        "a": "ㄒㄧㄠˇ",
+        "q": "小"
     },
     {
-        "text": "ㄓㄨㄥ",
-        "translation": "中"
+        "a": "ㄓㄨㄥ",
+        "q": "中"
     },
     {
-        "text": "ㄔㄜ",
-        "translation": "車"
+        "a": "ㄔㄜ",
+        "q": "車"
     },
     {
-        "text": "ㄕㄨ",
-        "translation": "書"
+        "a": "ㄕㄨ",
+        "q": "書"
     },
     {
-        "text": "ㄖㄣˊ",
-        "translation": "人"
+        "a": "ㄖㄣˊ",
+        "q": "人"
     },
     {
-        "text": "ㄗㄞˋ",
-        "translation": "在"
+        "a": "ㄗㄞˋ",
+        "q": "在"
     },
     {
-        "text": "ㄘㄠˇ",
-        "translation": "草"
+        "a": "ㄘㄠˇ",
+        "q": "草"
     },
     {
-        "text": "ㄙㄢ",
-        "translation": "三"
+        "a": "ㄙㄢ",
+        "q": "三"
     },
     {
-        "text": "ㄧㄤˊ",
-        "translation": "羊"
+        "a": "ㄧㄤˊ",
+        "q": "羊"
     },
     {
-        "text": "ㄨㄛˇ",
-        "translation": "我"
+        "a": "ㄨㄛˇ",
+        "q": "我"
     },
     {
-        "text": "ㄩˊ",
-        "translation": "魚"
+        "a": "ㄩˊ",
+        "q": "魚"
     },
     {
-        "text": "ㄇㄠ",
-        "translation": "貓"
+        "a": "ㄇㄠ",
+        "q": "貓"
     },
     {
-        "text": "ㄍㄡˇ",
-        "translation": "狗"
+        "a": "ㄍㄡˇ",
+        "q": "狗"
     },
     {
-        "text": "ㄕㄢ",
-        "translation": "山"
+        "a": "ㄕㄢ",
+        "q": "山"
     },
     {
-        "text": "ㄕㄨㄟˇ",
-        "translation": "水"
+        "a": "ㄕㄨㄟˇ",
+        "q": "水"
     },
     {
-        "text": "ㄎㄨㄥ",
-        "translation": "空"
+        "a": "ㄎㄨㄥ",
+        "q": "空"
     },
     {
-        "text": "ㄅㄞˊ",
-        "translation": "白"
+        "a": "ㄅㄞˊ",
+        "q": "白"
     }
 ]

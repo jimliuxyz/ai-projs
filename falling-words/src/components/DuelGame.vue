@@ -57,20 +57,20 @@ onMounted(() => {
        <div class="strip-center">
            <div 
              class="target-mini rot-180" 
-             @click="currentTarget && speak(currentTarget.text)"
-             :style="{ '--char-count': currentTarget?.translation?.length || 1 }"
+             @click="currentTarget && speak(currentTarget.q)"
+             :style="{ '--char-count': currentTarget?.t?.length || 1 }"
            >
-               <span class="text-content">{{ currentTarget?.translation }}</span>
+               <span class="text-content">{{ currentTarget?.t }}</span>
            </div>
            
            <button class="exit-btn" @click="$emit('exit')">EXIT</button>
            
            <div 
              class="target-mini" 
-             @click="currentTarget && speak(currentTarget.text)"
-             :style="{ '--char-count': currentTarget?.translation?.length || 1 }"
+             @click="currentTarget && speak(currentTarget.q)"
+             :style="{ '--char-count': currentTarget?.t?.length || 1 }"
            >
-               <span class="text-content">{{ currentTarget?.translation }}</span>
+               <span class="text-content">{{ currentTarget?.t }}</span>
            </div>
        </div>
 

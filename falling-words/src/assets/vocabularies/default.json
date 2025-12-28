@@ -1,1274 +1,2122 @@
 [
     {
-        "text": "cat",
-        "translation": "貓",
-        "category": "animal",
-        "example": "A cute cat"
-    },
-    {
-        "text": "dog",
-        "translation": "狗",
-        "category": "animal",
-        "example": "A loyal dog"
-    },
-    {
-        "text": "elephant",
-        "translation": "大象",
-        "category": "animal",
-        "example": "A giant elephant"
-    },
-    {
-        "text": "lion",
-        "translation": "獅子",
-        "category": "animal",
-        "example": "A brave lion"
-    },
-    {
-        "text": "monkey",
-        "translation": "猴子",
-        "category": "animal",
-        "example": "A clever monkey"
-    },
-    {
-        "text": "rabbit",
-        "translation": "兔子",
-        "category": "animal",
-        "example": "A jumping rabbit"
-    },
-    {
-        "text": "tiger",
-        "translation": "老虎",
-        "category": "animal",
-        "example": "A powerful tiger"
-    },
-    {
-        "text": "bird",
-        "translation": "鳥",
-        "category": "animal",
-        "example": "A flying bird"
-    },
-    {
-        "text": "apple",
-        "translation": "蘋果",
-        "category": "fruit",
-        "example": "A sweet apple"
-    },
-    {
-        "text": "banana",
-        "translation": "香蕉",
-        "category": "fruit",
-        "example": "A yellow banana"
-    },
-    {
-        "text": "orange",
-        "translation": "橘子",
-        "category": "fruit",
-        "example": "A juicy orange"
-    },
-    {
-        "text": "grape",
-        "translation": "葡萄",
-        "category": "fruit",
-        "example": "A purple grape"
-    },
-    {
-        "text": "lemon",
-        "translation": "檸檬",
-        "category": "fruit",
-        "example": "A sour lemon"
-    },
-    {
-        "text": "strawberry",
-        "translation": "草莓",
-        "category": "fruit",
-        "example": "A red strawberry"
-    },
-    {
-        "text": "red",
-        "translation": "紅色",
-        "category": "color",
-        "example": "Red apple"
-    },
-    {
-        "text": "blue",
-        "translation": "藍色",
-        "category": "color",
-        "example": "Blue sky"
-    },
-    {
-        "text": "green",
-        "translation": "綠色",
-        "category": "color",
-        "example": "Green grass"
-    },
-    {
-        "text": "yellow",
-        "translation": "黃色",
-        "category": "color",
-        "example": "Yellow sun"
-    },
-    {
-        "text": "purple",
-        "translation": "紫色",
-        "category": "color",
-        "example": "Purple flower"
-    },
-    {
-        "text": "black",
-        "translation": "黑色",
-        "category": "color",
-        "example": "Black cat"
-    },
-    {
-        "text": "white",
-        "translation": "白色",
-        "category": "color",
-        "example": "White cloud"
-    },
-    {
-        "text": "one",
-        "translation": "一",
-        "category": "number",
-        "example": "One book"
-    },
-    {
-        "text": "two",
-        "translation": "二",
-        "category": "number",
-        "example": "Two pens"
-    },
-    {
-        "text": "three",
-        "translation": "三",
-        "category": "number",
-        "example": "Three birds"
-    },
-    {
-        "text": "four",
-        "translation": "四",
-        "category": "number",
-        "example": "Four chairs"
-    },
-    {
-        "text": "five",
-        "translation": "五",
-        "category": "number",
-        "example": "Five fingers"
-    },
-    {
-        "text": "ten",
-        "translation": "十",
-        "category": "number",
-        "example": "Ten toes"
-    },
-    {
-        "text": "water",
-        "translation": "水",
-        "category": "nature",
-        "example": "Clean water"
-    },
-    {
-        "text": "sun",
-        "translation": "太陽",
-        "category": "nature",
-        "example": "The bright sun"
-    },
-    {
-        "text": "moon",
-        "translation": "月亮",
-        "category": "nature",
-        "example": "The silver moon"
-    },
-    {
-        "text": "star",
-        "translation": "星星",
-        "category": "nature",
-        "example": "A shining star"
-    },
-    {
-        "text": "tree",
-        "translation": "樹",
-        "category": "nature",
-        "example": "A tall tree"
-    },
-    {
-        "text": "flower",
-        "translation": "花",
-        "category": "nature",
-        "example": "A pretty flower"
-    },
-    {
-        "text": "sea",
-        "translation": "大海",
-        "category": "nature",
-        "example": "Deep blue sea"
-    },
-    {
-        "text": "house",
-        "translation": "房子",
-        "category": "object",
-        "example": "A big house"
-    },
-    {
-        "text": "car",
-        "translation": "汽車",
-        "category": "object",
-        "example": "A fast car"
-    },
-    {
-        "text": "book",
-        "translation": "書",
-        "category": "object",
-        "example": "An old book"
-    },
-    {
-        "text": "pen",
-        "translation": "筆",
-        "category": "object",
-        "example": "A blue pen"
-    },
-    {
-        "text": "table",
-        "translation": "桌子",
-        "category": "object",
-        "example": "A wooden table"
-    },
-    {
-        "text": "chair",
-        "translation": "椅子",
-        "category": "object",
-        "example": "A comfortable chair"
-    },
-    {
-        "text": "phone",
-        "translation": "電話",
-        "category": "object",
-        "example": "A smart phone"
-    },
-    {
-        "text": "computer",
-        "translation": "電腦",
-        "category": "object",
-        "example": "A new computer"
-    },
-    {
-        "text": "hat",
-        "translation": "帽子",
-        "category": "clothes",
-        "example": "A warm hat"
-    },
-    {
-        "text": "shoes",
-        "translation": "鞋子",
-        "category": "clothes",
-        "example": "Black shoes"
-    },
-    {
-        "text": "shirt",
-        "translation": "襯衫",
-        "category": "clothes",
-        "example": "A white shirt"
-    },
-    {
-        "text": "pants",
-        "translation": "褲子",
-        "category": "clothes",
-        "example": "Blue pants"
-    },
-    {
-        "text": "mother",
-        "translation": "母親",
-        "category": "family",
-        "example": "I love mother"
-    },
-    {
-        "text": "father",
-        "translation": "父親",
-        "category": "family",
-        "example": "I love father"
-    },
-    {
-        "text": "brother",
-        "translation": "兄弟",
-        "category": "family",
-        "example": "My little brother"
-    },
-    {
-        "text": "sister",
-        "translation": "姐妹",
-        "category": "family",
-        "example": "My big sister"
-    },
-    {
-        "text": "baby",
-        "translation": "嬰兒",
-        "category": "family",
-        "example": "A crying baby"
-    },
-    {
-        "text": "friend",
-        "translation": "朋友",
-        "category": "people",
-        "example": "A good friend"
-    },
-    {
-        "text": "doctor",
-        "translation": "醫生",
-        "category": "people",
-        "example": "A kind doctor"
-    },
-    {
-        "text": "teacher",
-        "translation": "老師",
-        "category": "people",
-        "example": "A great teacher"
-    },
-    {
-        "text": "student",
-        "translation": "學生",
-        "category": "people",
-        "example": "A hard student"
-    },
-    {
-        "text": "run",
-        "translation": "跑",
-        "category": "verb",
-        "example": "I run fast"
-    },
-    {
-        "text": "jump",
-        "translation": "跳",
-        "category": "verb",
-        "example": "I jump high"
-    },
-    {
-        "text": "eat",
-        "translation": "吃",
-        "category": "verb",
-        "example": "I eat apple"
-    },
-    {
-        "text": "drink",
-        "translation": "喝",
-        "category": "verb",
-        "example": "I drink water"
-    },
-    {
-        "text": "sleep",
-        "translation": "睡覺",
-        "category": "verb",
-        "example": "I sleep early"
-    },
-    {
-        "text": "read",
-        "translation": "讀",
-        "category": "verb",
-        "example": "I read book"
-    },
-    {
-        "text": "write",
-        "translation": "寫",
-        "category": "verb",
-        "example": "I write letter"
-    },
-    {
-        "text": "sing",
-        "translation": "唱",
-        "category": "verb",
-        "example": "I sing song"
-    },
-    {
-        "text": "dance",
-        "translation": "跳舞",
-        "category": "verb",
-        "example": "I dance well"
-    },
-    {
-        "text": "work",
-        "translation": "工作",
-        "category": "verb",
-        "example": "I work hard"
-    },
-    {
-        "text": "play",
-        "translation": "玩",
-        "category": "verb",
-        "example": "I play game"
-    },
-    {
-        "text": "hot",
-        "translation": "熱",
-        "category": "adjective",
-        "example": "Hot water"
-    },
-    {
-        "text": "cold",
-        "translation": "冷",
-        "category": "adjective",
-        "example": "Cold wind"
-    },
-    {
-        "text": "big",
-        "translation": "大",
-        "category": "adjective",
-        "example": "Big elephant"
-    },
-    {
-        "text": "small",
-        "translation": "小",
-        "category": "adjective",
-        "example": "Small cat"
-    },
-    {
-        "text": "good",
-        "translation": "好",
-        "category": "adjective",
-        "example": "Good boy"
-    },
-    {
-        "text": "bad",
-        "translation": "差",
-        "category": "adjective",
-        "example": "Bad luck"
-    },
-    {
-        "text": "happy",
-        "translation": "開心",
-        "category": "adjective",
-        "example": "Happy baby"
-    },
-    {
-        "text": "sad",
-        "translation": "難過",
-        "category": "adjective",
-        "example": "Sad face"
-    },
-    {
-        "text": "fast",
-        "translation": "快",
-        "category": "adjective",
-        "example": "Fast car"
-    },
-    {
-        "text": "slow",
-        "translation": "慢",
-        "category": "adjective",
-        "example": "Slow turtle"
-    },
-    {
-        "text": "day",
-        "translation": "白天",
-        "category": "time",
-        "example": "A bright day"
-    },
-    {
-        "text": "night",
-        "translation": "晚上",
-        "category": "time",
-        "example": "A dark night"
-    },
-    {
-        "text": "morning",
-        "translation": "早上",
-        "category": "time",
-        "example": "Good morning"
-    },
-    {
-        "text": "evening",
-        "translation": "傍晚",
-        "category": "time",
-        "example": "Good evening"
-    },
-    {
-        "text": "today",
-        "translation": "今天",
-        "category": "time",
-        "example": "Today is good"
-    },
-    {
-        "text": "tomorrow",
-        "translation": "明天",
-        "category": "time",
-        "example": "See you tomorrow"
-    },
-    {
-        "text": "monday",
-        "translation": "星期一",
-        "category": "time",
-        "example": "Work on Monday"
-    },
-    {
-        "text": "sunday",
-        "translation": "星期日",
-        "category": "time",
-        "example": "Rest on Sunday"
-    },
-    {
-        "text": "school",
-        "translation": "學校",
-        "category": "place",
-        "example": "Go to school"
-    },
-    {
-        "text": "park",
-        "translation": "公園",
-        "category": "place",
-        "example": "Play in park"
-    },
-    {
-        "text": "hospital",
-        "translation": "醫院",
-        "category": "place",
-        "example": "A big hospital"
-    },
-    {
-        "text": "store",
-        "translation": "商店",
-        "category": "place",
-        "example": "Open a store"
-    },
-    {
-        "text": "bread",
-        "translation": "麵包",
-        "category": "food",
-        "example": "Fresh bread"
-    },
-    {
-        "text": "milk",
-        "translation": "牛奶",
-        "category": "food",
-        "example": "White milk"
-    },
-    {
-        "text": "egg",
-        "translation": "蛋",
-        "category": "food",
-        "example": "One egg"
-    },
-    {
-        "text": "rice",
-        "translation": "米飯",
-        "category": "food",
-        "example": "Eat rice"
-    },
-    {
-        "text": "meat",
-        "translation": "肉",
-        "category": "food",
-        "example": "Good meat"
-    },
-    {
-        "text": "cake",
-        "translation": "蛋糕",
-        "category": "food",
-        "example": "A sweet cake"
-    },
-    {
-        "text": "ice cream",
-        "translation": "冰淇淋",
-        "category": "food",
-        "example": "Cold ice cream"
-    },
-    {
-        "text": "box",
-        "translation": "盒子",
-        "category": "object",
-        "example": "A heavy box"
-    },
-    {
-        "text": "key",
-        "translation": "鑰匙",
-        "category": "object",
-        "example": "The silver key"
-    },
-    {
-        "text": "cup",
-        "translation": "杯子",
-        "category": "object",
-        "example": "Drink in cup"
-    },
-    {
-        "text": "spoon",
-        "translation": "湯匙",
-        "category": "object",
-        "example": "A small spoon"
-    },
-    {
-        "text": "fork",
-        "translation": "叉子",
-        "category": "object",
-        "example": "Eat with fork"
-    },
-    {
-        "text": "knife",
-        "translation": "刀子",
-        "category": "object",
-        "example": "A sharp knife"
-    },
-    {
-        "text": "rain",
-        "translation": "雨",
-        "category": "nature",
-        "example": "See the rain"
-    },
-    {
-        "text": "snow",
-        "translation": "雪",
-        "category": "nature",
-        "example": "White snow"
-    },
-    {
-        "text": "wind",
-        "translation": "風",
-        "category": "nature",
-        "example": "Strong wind"
-    },
-    {
-        "text": "mountain",
-        "translation": "山",
-        "category": "nature",
-        "example": "A high mountain"
-    },
-    {
-        "text": "river",
-        "translation": "河流",
-        "category": "nature",
-        "example": "A long river"
-    },
-    {
-        "text": "cloud",
-        "translation": "雲",
-        "category": "nature",
-        "example": "A soft cloud"
-    },
-    {
-        "text": "sky",
-        "translation": "天空",
-        "category": "nature",
-        "example": "Blue sky"
-    },
-    {
-        "text": "hand",
-        "translation": "手",
-        "category": "body",
-        "example": "My small hand"
-    },
-    {
-        "text": "foot",
-        "translation": "腳",
-        "category": "body",
-        "example": "My left foot"
-    },
-    {
-        "text": "eye",
-        "translation": "眼睛",
-        "category": "body",
-        "example": "Big eyes"
-    },
-    {
-        "text": "ear",
-        "translation": "耳朵",
-        "category": "body",
-        "example": "Long ears"
-    },
-    {
-        "text": "nose",
-        "translation": "鼻子",
-        "category": "body",
-        "example": "My red nose"
-    },
-    {
-        "text": "mouth",
-        "translation": "嘴巴",
-        "category": "body",
-        "example": "A small mouth"
-    },
-    {
-        "text": "hair",
-        "translation": "頭髮",
-        "category": "body",
-        "example": "Long hair"
-    },
-    {
-        "text": "face",
-        "translation": "臉",
-        "category": "body",
-        "example": "A happy face"
-    },
-    {
-        "text": "head",
-        "translation": "頭",
-        "category": "body",
-        "example": "My big head"
-    },
-    {
-        "text": "heart",
-        "translation": "心臟",
-        "category": "body",
-        "example": "A kind heart"
-    },
-    {
-        "text": "fish",
-        "translation": "魚",
-        "category": "animal",
-        "example": "A swimming fish"
-    },
-    {
-        "text": "horse",
-        "translation": "馬",
-        "category": "animal",
-        "example": "A running horse"
-    },
-    {
-        "text": "cow",
-        "translation": "母牛",
-        "category": "animal",
-        "example": "A milking cow"
-    },
-    {
-        "text": "sheep",
-        "translation": "綿羊",
-        "category": "animal",
-        "example": "A white sheep"
-    },
-    {
-        "text": "duck",
-        "translation": "鴨子",
-        "category": "animal",
-        "example": "A swimming duck"
-    },
-    {
-        "text": "pig",
-        "translation": "豬",
-        "category": "animal",
-        "example": "A fat pig"
-    },
-    {
-        "text": "bee",
-        "translation": "蜜蜂",
-        "category": "animal",
-        "example": "A busy bee"
-    },
-    {
-        "text": "bus",
-        "translation": "公車",
-        "category": "transport",
-        "example": "Wait for bus"
-    },
-    {
-        "text": "train",
-        "translation": "火車",
-        "category": "transport",
-        "example": "Take the train"
-    },
-    {
-        "text": "plane",
-        "translation": "飛機",
-        "category": "transport",
-        "example": "Fly a plane"
-    },
-    {
-        "text": "bike",
-        "translation": "腳踏車",
-        "category": "transport",
-        "example": "Ride a bike"
-    },
-    {
-        "text": "boat",
-        "translation": "小船",
-        "category": "transport",
-        "example": "Sail a boat"
-    },
-    {
-        "text": "truck",
-        "translation": "卡車",
-        "category": "transport",
-        "example": "A heavy truck"
-    },
-    {
-        "text": "walk",
-        "translation": "走路",
-        "category": "verb",
-        "example": "I walk slow"
-    },
-    {
-        "text": "fly",
-        "translation": "飛",
-        "category": "verb",
-        "example": "Birds fly high"
-    },
-    {
-        "text": "swim",
-        "translation": "游泳",
-        "category": "verb",
-        "example": "I swim well"
-    },
-    {
-        "text": "talk",
-        "translation": "說話",
-        "category": "verb",
-        "example": "Talk to friend"
-    },
-    {
-        "text": "listen",
-        "translation": "聽",
-        "category": "verb",
-        "example": "Listen to music"
-    },
-    {
-        "text": "smile",
-        "translation": "微笑",
-        "category": "verb",
-        "example": "A happy smile"
-    },
-    {
-        "text": "laugh",
-        "translation": "大笑",
-        "category": "verb",
-        "example": "They laugh loud"
-    },
-    {
-        "text": "cry",
-        "translation": "哭",
-        "category": "verb",
-        "example": "Don't cry now"
-    },
-    {
-        "text": "think",
-        "translation": "思考",
-        "category": "verb",
-        "example": "I think hard"
-    },
-    {
-        "text": "learn",
-        "translation": "學習",
-        "category": "verb",
-        "example": "Learn new word"
-    },
-    {
-        "text": "watch",
-        "translation": "看 (觀察)",
-        "category": "verb",
-        "example": "Watch movie"
-    },
-    {
-        "text": "long",
-        "translation": "長",
-        "category": "adjective",
-        "example": "A long road"
-    },
-    {
-        "text": "short",
-        "translation": "短",
-        "category": "adjective",
-        "example": "A short hair"
-    },
-    {
-        "text": "new",
-        "translation": "新",
-        "category": "adjective",
-        "example": "A new world"
-    },
-    {
-        "text": "old",
-        "translation": "舊",
-        "category": "adjective",
-        "example": "An old friend"
-    },
-    {
-        "text": "beautiful",
-        "translation": "漂亮",
-        "category": "adjective",
-        "example": "Beautiful flower"
-    },
-    {
-        "text": "ugly",
-        "translation": "醜陋",
-        "category": "adjective",
-        "example": "An ugly box"
-    },
-    {
-        "text": "clean",
-        "translation": "乾淨",
-        "category": "adjective",
-        "example": "A clean room"
-    },
-    {
-        "text": "dirty",
-        "translation": "髒",
-        "category": "adjective",
-        "example": "Dirty shoes"
-    },
-    {
-        "text": "rich",
-        "translation": "富有",
-        "category": "adjective",
-        "example": "A rich man"
-    },
-    {
-        "text": "poor",
-        "translation": "貧窮",
-        "category": "adjective",
-        "example": "A poor family"
-    },
-    {
-        "text": "window",
-        "translation": "窗戶",
-        "category": "object",
-        "example": "Open the window"
-    },
-    {
-        "text": "door",
-        "translation": "門",
-        "category": "object",
-        "example": "Close the door"
-    },
-    {
-        "text": "bed",
-        "translation": "床",
-        "category": "object",
-        "example": "Go to bed"
-    },
-    {
-        "text": "clock",
-        "translation": "時鐘",
-        "category": "object",
-        "example": "A round clock"
-    },
-    {
-        "text": "lamp",
-        "translation": "燈",
-        "category": "object",
-        "example": "Turn on lamp"
-    },
-    {
-        "text": "mirror",
-        "translation": "鏡子",
-        "category": "object",
-        "example": "Look in mirror"
-    },
-    {
-        "text": "soap",
-        "translation": "肥皂",
-        "category": "object",
-        "example": "Use some soap"
-    },
-    {
-        "text": "towel",
-        "translation": "毛巾",
-        "category": "object",
-        "example": "A dry towel"
-    },
-    {
-        "text": "city",
-        "translation": "城市",
-        "category": "place",
-        "example": "A busy city"
-    },
-    {
-        "text": "country",
-        "translation": "國家",
-        "category": "place",
-        "example": "My home country"
-    },
-    {
-        "text": "road",
-        "translation": "道路",
-        "category": "place",
-        "example": "A wide road"
-    },
-    {
-        "text": "bridge",
-        "translation": "橋",
-        "category": "place",
-        "example": "Cross the bridge"
-    },
-    {
-        "text": "garden",
-        "translation": "花園",
-        "category": "place",
-        "example": "A green garden"
-    },
-    {
-        "text": "farm",
-        "translation": "農場",
-        "category": "place",
-        "example": "An old farm"
-    },
-    {
-        "text": "forest",
-        "translation": "森林",
-        "category": "place",
-        "example": "A dark forest"
-    },
-    {
-        "text": "island",
-        "translation": "島嶼",
-        "category": "place",
-        "example": "A small island"
-    },
-    {
-        "text": "lake",
-        "translation": "湖泊",
-        "category": "place",
-        "example": "A mountain lake"
-    },
-    {
-        "text": "kitchen",
-        "translation": "廚房",
-        "category": "place",
-        "example": "Cook in kitchen"
-    },
-    {
-        "text": "room",
-        "translation": "房間",
-        "category": "place",
-        "example": "In my room"
-    },
-    {
-        "text": "orange",
-        "translation": "橘色",
-        "category": "color",
-        "example": "Orange orange"
-    },
-    {
-        "text": "pink",
-        "translation": "粉紅色",
-        "category": "color",
-        "example": "Pink dress"
-    },
-    {
-        "text": "brown",
-        "translation": "咖啡色",
-        "category": "color",
-        "example": "Brown dog"
-    },
-    {
-        "text": "gray",
-        "translation": "灰色",
-        "category": "color",
-        "example": "Gray sky"
-    },
-    {
-        "text": "silver",
-        "translation": "銀色",
-        "category": "color",
-        "example": "Silver moon"
-    },
-    {
-        "text": "gold",
-        "translation": "金色",
-        "category": "color",
-        "example": "Gold ring"
-    },
-    {
-        "text": "soup",
-        "translation": "湯",
-        "category": "food",
-        "example": "Chicken soup"
-    },
-    {
-        "text": "salad",
-        "translation": "沙拉",
-        "category": "food",
-        "example": "Green salad"
-    },
-    {
-        "text": "pizza",
-        "translation": "披薩",
-        "category": "food",
-        "example": "Eat pizza"
-    },
-    {
-        "text": "burger",
-        "translation": "漢堡",
-        "category": "food",
-        "example": "Beef burger"
-    },
-    {
-        "text": "juice",
-        "translation": "果汁",
-        "category": "food",
-        "example": "Orange juice"
-    },
-    {
-        "text": "tea",
-        "translation": "茶",
-        "category": "food",
-        "example": "Hot tea"
-    },
-    {
-        "text": "coffee",
-        "translation": "咖啡",
-        "category": "food",
-        "example": "Black coffee"
-    },
-    {
-        "text": "ball",
-        "translation": "球",
-        "category": "object",
-        "example": "Kick the ball"
-    },
-    {
-        "text": "toy",
-        "translation": "玩具",
-        "category": "object",
-        "example": "Play with toy"
-    },
-    {
-        "text": "gift",
-        "translation": "禮物",
-        "category": "object",
-        "example": "A small gift"
-    },
-    {
-        "text": "camera",
-        "translation": "相機",
-        "category": "object",
-        "example": "Take my camera"
-    },
-    {
-        "text": "map",
-        "translation": "地圖",
-        "category": "object",
-        "example": "Road map"
-    },
-    {
-        "text": "umbrella",
-        "translation": "傘",
-        "category": "object",
-        "example": "Blue umbrella"
-    },
-    {
-        "text": "money",
-        "translation": "錢",
-        "category": "object",
-        "example": "I have money"
-    },
-    {
-        "text": "music",
-        "translation": "音樂",
-        "category": "concept",
-        "example": "Play loud music"
-    },
-    {
-        "text": "time",
-        "translation": "時間",
-        "category": "concept",
-        "example": "No more time"
-    },
-    {
-        "text": "love",
-        "translation": "愛",
-        "category": "concept",
-        "example": "I love you"
-    },
-    {
-        "text": "help",
-        "translation": "幫助",
-        "category": "verb",
-        "example": "Please help me"
-    },
-    {
-        "text": "look",
-        "translation": "看",
-        "category": "verb",
-        "example": "Look out"
-    },
-    {
-        "text": "give",
-        "translation": "給",
-        "category": "verb",
-        "example": "Give me book"
-    },
-    {
-        "text": "buy",
-        "translation": "買",
-        "category": "verb",
-        "example": "Buy a car"
-    },
-    {
-        "text": "sell",
-        "translation": "賣",
-        "category": "verb",
-        "example": "Sell my house"
-    },
-    {
-        "text": "open",
-        "translation": "打開",
-        "category": "verb",
-        "example": "Open your eye"
-    },
-    {
-        "text": "close",
-        "translation": "關閉",
-        "category": "verb",
-        "example": "Close your heart"
-    },
-    {
-        "text": "start",
-        "translation": "開始",
-        "category": "verb",
-        "example": "Start adventure"
-    },
-    {
-        "text": "stop",
-        "translation": "停止",
-        "category": "verb",
-        "example": "Stop crying"
-    },
-    {
-        "text": "quiet",
-        "translation": "安靜",
-        "category": "adjective",
-        "example": "Quiet forest"
-    },
-    {
-        "text": "loud",
-        "translation": "大聲",
-        "category": "adjective",
-        "example": "Loud music"
-    },
-    {
-        "text": "smart",
-        "translation": "聰明",
-        "category": "adjective",
-        "example": "A smart boy"
-    },
-    {
-        "text": "cool",
-        "translation": "酷/涼快",
-        "category": "adjective",
-        "example": "A cool wind"
-    },
-    {
-        "text": "winter",
-        "translation": "冬天",
-        "category": "time",
-        "example": "A cold winter"
-    },
-    {
-        "text": "summer",
-        "translation": "夏天",
-        "category": "time",
-        "example": "A hot summer"
-    },
-    {
-        "text": "sand",
-        "translation": "沙子",
-        "category": "nature",
-        "example": "Yellow sand"
-    },
-    {
-        "text": "beach",
-        "translation": "海灘",
-        "category": "nature",
-        "example": "A beautiful beach"
-    },
-    {
-        "text": "grass",
-        "translation": "草",
-        "category": "nature",
-        "example": "Green grass"
+        "q": "cat",
+        "t": "貓",
+        "tags": [
+            "animal"
+        ],
+        "exps": [
+            "A cute cat"
+        ]
+    },
+    {
+        "q": "dog",
+        "t": "狗",
+        "tags": [
+            "animal"
+        ],
+        "exps": [
+            "A loyal dog"
+        ]
+    },
+    {
+        "q": "elephant",
+        "t": "大象",
+        "tags": [
+            "animal"
+        ],
+        "exps": [
+            "A giant elephant"
+        ]
+    },
+    {
+        "q": "lion",
+        "t": "獅子",
+        "tags": [
+            "animal"
+        ],
+        "exps": [
+            "A brave lion"
+        ]
+    },
+    {
+        "q": "monkey",
+        "t": "猴子",
+        "tags": [
+            "animal"
+        ],
+        "exps": [
+            "A clever monkey"
+        ]
+    },
+    {
+        "q": "rabbit",
+        "t": "兔子",
+        "tags": [
+            "animal"
+        ],
+        "exps": [
+            "A jumping rabbit"
+        ]
+    },
+    {
+        "q": "tiger",
+        "t": "老虎",
+        "tags": [
+            "animal"
+        ],
+        "exps": [
+            "A powerful tiger"
+        ]
+    },
+    {
+        "q": "bird",
+        "t": "鳥",
+        "tags": [
+            "animal"
+        ],
+        "exps": [
+            "A flying bird"
+        ]
+    },
+    {
+        "q": "apple",
+        "t": "蘋果",
+        "tags": [
+            "fruit"
+        ],
+        "exps": [
+            "A sweet apple"
+        ]
+    },
+    {
+        "q": "banana",
+        "t": "香蕉",
+        "tags": [
+            "fruit"
+        ],
+        "exps": [
+            "A yellow banana"
+        ]
+    },
+    {
+        "q": "orange",
+        "t": "橘子",
+        "tags": [
+            "fruit"
+        ],
+        "exps": [
+            "A juicy orange"
+        ]
+    },
+    {
+        "q": "grape",
+        "t": "葡萄",
+        "tags": [
+            "fruit"
+        ],
+        "exps": [
+            "A purple grape"
+        ]
+    },
+    {
+        "q": "lemon",
+        "t": "檸檬",
+        "tags": [
+            "fruit"
+        ],
+        "exps": [
+            "A sour lemon"
+        ]
+    },
+    {
+        "q": "strawberry",
+        "t": "草莓",
+        "tags": [
+            "fruit"
+        ],
+        "exps": [
+            "A red strawberry"
+        ]
+    },
+    {
+        "q": "red",
+        "t": "紅色",
+        "tags": [
+            "color"
+        ],
+        "exps": [
+            "Red apple"
+        ]
+    },
+    {
+        "q": "blue",
+        "t": "藍色",
+        "tags": [
+            "color"
+        ],
+        "exps": [
+            "Blue sky"
+        ]
+    },
+    {
+        "q": "green",
+        "t": "綠色",
+        "tags": [
+            "color"
+        ],
+        "exps": [
+            "Green grass"
+        ]
+    },
+    {
+        "q": "yellow",
+        "t": "黃色",
+        "tags": [
+            "color"
+        ],
+        "exps": [
+            "Yellow sun"
+        ]
+    },
+    {
+        "q": "purple",
+        "t": "紫色",
+        "tags": [
+            "color"
+        ],
+        "exps": [
+            "Purple flower"
+        ]
+    },
+    {
+        "q": "black",
+        "t": "黑色",
+        "tags": [
+            "color"
+        ],
+        "exps": [
+            "Black cat"
+        ]
+    },
+    {
+        "q": "white",
+        "t": "白色",
+        "tags": [
+            "color"
+        ],
+        "exps": [
+            "White cloud"
+        ]
+    },
+    {
+        "q": "one",
+        "t": "一",
+        "tags": [
+            "number"
+        ],
+        "exps": [
+            "One book"
+        ]
+    },
+    {
+        "q": "two",
+        "t": "二",
+        "tags": [
+            "number"
+        ],
+        "exps": [
+            "Two pens"
+        ]
+    },
+    {
+        "q": "three",
+        "t": "三",
+        "tags": [
+            "number"
+        ],
+        "exps": [
+            "Three birds"
+        ]
+    },
+    {
+        "q": "four",
+        "t": "四",
+        "tags": [
+            "number"
+        ],
+        "exps": [
+            "Four chairs"
+        ]
+    },
+    {
+        "q": "five",
+        "t": "五",
+        "tags": [
+            "number"
+        ],
+        "exps": [
+            "Five fingers"
+        ]
+    },
+    {
+        "q": "ten",
+        "t": "十",
+        "tags": [
+            "number"
+        ],
+        "exps": [
+            "Ten toes"
+        ]
+    },
+    {
+        "q": "water",
+        "t": "水",
+        "tags": [
+            "nature"
+        ],
+        "exps": [
+            "Clean water"
+        ]
+    },
+    {
+        "q": "sun",
+        "t": "太陽",
+        "tags": [
+            "nature"
+        ],
+        "exps": [
+            "The bright sun"
+        ]
+    },
+    {
+        "q": "moon",
+        "t": "月亮",
+        "tags": [
+            "nature"
+        ],
+        "exps": [
+            "The silver moon"
+        ]
+    },
+    {
+        "q": "star",
+        "t": "星星",
+        "tags": [
+            "nature"
+        ],
+        "exps": [
+            "A shining star"
+        ]
+    },
+    {
+        "q": "tree",
+        "t": "樹",
+        "tags": [
+            "nature"
+        ],
+        "exps": [
+            "A tall tree"
+        ]
+    },
+    {
+        "q": "flower",
+        "t": "花",
+        "tags": [
+            "nature"
+        ],
+        "exps": [
+            "A pretty flower"
+        ]
+    },
+    {
+        "q": "sea",
+        "t": "大海",
+        "tags": [
+            "nature"
+        ],
+        "exps": [
+            "Deep blue sea"
+        ]
+    },
+    {
+        "q": "house",
+        "t": "房子",
+        "tags": [
+            "object"
+        ],
+        "exps": [
+            "A big house"
+        ]
+    },
+    {
+        "q": "car",
+        "t": "汽車",
+        "tags": [
+            "object"
+        ],
+        "exps": [
+            "A fast car"
+        ]
+    },
+    {
+        "q": "book",
+        "t": "書",
+        "tags": [
+            "object"
+        ],
+        "exps": [
+            "An old book"
+        ]
+    },
+    {
+        "q": "pen",
+        "t": "筆",
+        "tags": [
+            "object"
+        ],
+        "exps": [
+            "A blue pen"
+        ]
+    },
+    {
+        "q": "table",
+        "t": "桌子",
+        "tags": [
+            "object"
+        ],
+        "exps": [
+            "A wooden table"
+        ]
+    },
+    {
+        "q": "chair",
+        "t": "椅子",
+        "tags": [
+            "object"
+        ],
+        "exps": [
+            "A comfortable chair"
+        ]
+    },
+    {
+        "q": "phone",
+        "t": "電話",
+        "tags": [
+            "object"
+        ],
+        "exps": [
+            "A smart phone"
+        ]
+    },
+    {
+        "q": "computer",
+        "t": "電腦",
+        "tags": [
+            "object"
+        ],
+        "exps": [
+            "A new computer"
+        ]
+    },
+    {
+        "q": "hat",
+        "t": "帽子",
+        "tags": [
+            "clothes"
+        ],
+        "exps": [
+            "A warm hat"
+        ]
+    },
+    {
+        "q": "shoes",
+        "t": "鞋子",
+        "tags": [
+            "clothes"
+        ],
+        "exps": [
+            "Black shoes"
+        ]
+    },
+    {
+        "q": "shirt",
+        "t": "襯衫",
+        "tags": [
+            "clothes"
+        ],
+        "exps": [
+            "A white shirt"
+        ]
+    },
+    {
+        "q": "pants",
+        "t": "褲子",
+        "tags": [
+            "clothes"
+        ],
+        "exps": [
+            "Blue pants"
+        ]
+    },
+    {
+        "q": "mother",
+        "t": "母親",
+        "tags": [
+            "family"
+        ],
+        "exps": [
+            "I love mother"
+        ]
+    },
+    {
+        "q": "father",
+        "t": "父親",
+        "tags": [
+            "family"
+        ],
+        "exps": [
+            "I love father"
+        ]
+    },
+    {
+        "q": "brother",
+        "t": "兄弟",
+        "tags": [
+            "family"
+        ],
+        "exps": [
+            "My little brother"
+        ]
+    },
+    {
+        "q": "sister",
+        "t": "姐妹",
+        "tags": [
+            "family"
+        ],
+        "exps": [
+            "My big sister"
+        ]
+    },
+    {
+        "q": "baby",
+        "t": "嬰兒",
+        "tags": [
+            "family"
+        ],
+        "exps": [
+            "A crying baby"
+        ]
+    },
+    {
+        "q": "friend",
+        "t": "朋友",
+        "tags": [
+            "people"
+        ],
+        "exps": [
+            "A good friend"
+        ]
+    },
+    {
+        "q": "doctor",
+        "t": "醫生",
+        "tags": [
+            "people"
+        ],
+        "exps": [
+            "A kind doctor"
+        ]
+    },
+    {
+        "q": "teacher",
+        "t": "老師",
+        "tags": [
+            "people"
+        ],
+        "exps": [
+            "A great teacher"
+        ]
+    },
+    {
+        "q": "student",
+        "t": "學生",
+        "tags": [
+            "people"
+        ],
+        "exps": [
+            "A hard student"
+        ]
+    },
+    {
+        "q": "run",
+        "t": "跑",
+        "tags": [
+            "verb"
+        ],
+        "exps": [
+            "I run fast"
+        ]
+    },
+    {
+        "q": "jump",
+        "t": "跳",
+        "tags": [
+            "verb"
+        ],
+        "exps": [
+            "I jump high"
+        ]
+    },
+    {
+        "q": "eat",
+        "t": "吃",
+        "tags": [
+            "verb"
+        ],
+        "exps": [
+            "I eat apple"
+        ]
+    },
+    {
+        "q": "drink",
+        "t": "喝",
+        "tags": [
+            "verb"
+        ],
+        "exps": [
+            "I drink water"
+        ]
+    },
+    {
+        "q": "sleep",
+        "t": "睡覺",
+        "tags": [
+            "verb"
+        ],
+        "exps": [
+            "I sleep early"
+        ]
+    },
+    {
+        "q": "read",
+        "t": "讀",
+        "tags": [
+            "verb"
+        ],
+        "exps": [
+            "I read book"
+        ]
+    },
+    {
+        "q": "write",
+        "t": "寫",
+        "tags": [
+            "verb"
+        ],
+        "exps": [
+            "I write letter"
+        ]
+    },
+    {
+        "q": "sing",
+        "t": "唱",
+        "tags": [
+            "verb"
+        ],
+        "exps": [
+            "I sing song"
+        ]
+    },
+    {
+        "q": "dance",
+        "t": "跳舞",
+        "tags": [
+            "verb"
+        ],
+        "exps": [
+            "I dance well"
+        ]
+    },
+    {
+        "q": "work",
+        "t": "工作",
+        "tags": [
+            "verb"
+        ],
+        "exps": [
+            "I work hard"
+        ]
+    },
+    {
+        "q": "play",
+        "t": "玩",
+        "tags": [
+            "verb"
+        ],
+        "exps": [
+            "I play game"
+        ]
+    },
+    {
+        "q": "hot",
+        "t": "熱",
+        "tags": [
+            "adjective"
+        ],
+        "exps": [
+            "Hot water"
+        ]
+    },
+    {
+        "q": "cold",
+        "t": "冷",
+        "tags": [
+            "adjective"
+        ],
+        "exps": [
+            "Cold wind"
+        ]
+    },
+    {
+        "q": "big",
+        "t": "大",
+        "tags": [
+            "adjective"
+        ],
+        "exps": [
+            "Big elephant"
+        ]
+    },
+    {
+        "q": "small",
+        "t": "小",
+        "tags": [
+            "adjective"
+        ],
+        "exps": [
+            "Small cat"
+        ]
+    },
+    {
+        "q": "good",
+        "t": "好",
+        "tags": [
+            "adjective"
+        ],
+        "exps": [
+            "Good boy"
+        ]
+    },
+    {
+        "q": "bad",
+        "t": "差",
+        "tags": [
+            "adjective"
+        ],
+        "exps": [
+            "Bad luck"
+        ]
+    },
+    {
+        "q": "happy",
+        "t": "開心",
+        "tags": [
+            "adjective"
+        ],
+        "exps": [
+            "Happy baby"
+        ]
+    },
+    {
+        "q": "sad",
+        "t": "難過",
+        "tags": [
+            "adjective"
+        ],
+        "exps": [
+            "Sad face"
+        ]
+    },
+    {
+        "q": "fast",
+        "t": "快",
+        "tags": [
+            "adjective"
+        ],
+        "exps": [
+            "Fast car"
+        ]
+    },
+    {
+        "q": "slow",
+        "t": "慢",
+        "tags": [
+            "adjective"
+        ],
+        "exps": [
+            "Slow turtle"
+        ]
+    },
+    {
+        "q": "day",
+        "t": "白天",
+        "tags": [
+            "time"
+        ],
+        "exps": [
+            "A bright day"
+        ]
+    },
+    {
+        "q": "night",
+        "t": "晚上",
+        "tags": [
+            "time"
+        ],
+        "exps": [
+            "A dark night"
+        ]
+    },
+    {
+        "q": "morning",
+        "t": "早上",
+        "tags": [
+            "time"
+        ],
+        "exps": [
+            "Good morning"
+        ]
+    },
+    {
+        "q": "evening",
+        "t": "傍晚",
+        "tags": [
+            "time"
+        ],
+        "exps": [
+            "Good evening"
+        ]
+    },
+    {
+        "q": "today",
+        "t": "今天",
+        "tags": [
+            "time"
+        ],
+        "exps": [
+            "Today is good"
+        ]
+    },
+    {
+        "q": "tomorrow",
+        "t": "明天",
+        "tags": [
+            "time"
+        ],
+        "exps": [
+            "See you tomorrow"
+        ]
+    },
+    {
+        "q": "monday",
+        "t": "星期一",
+        "tags": [
+            "time"
+        ],
+        "exps": [
+            "Work on Monday"
+        ]
+    },
+    {
+        "q": "sunday",
+        "t": "星期日",
+        "tags": [
+            "time"
+        ],
+        "exps": [
+            "Rest on Sunday"
+        ]
+    },
+    {
+        "q": "school",
+        "t": "學校",
+        "tags": [
+            "place"
+        ],
+        "exps": [
+            "Go to school"
+        ]
+    },
+    {
+        "q": "park",
+        "t": "公園",
+        "tags": [
+            "place"
+        ],
+        "exps": [
+            "Play in park"
+        ]
+    },
+    {
+        "q": "hospital",
+        "t": "醫院",
+        "tags": [
+            "place"
+        ],
+        "exps": [
+            "A big hospital"
+        ]
+    },
+    {
+        "q": "store",
+        "t": "商店",
+        "tags": [
+            "place"
+        ],
+        "exps": [
+            "Open a store"
+        ]
+    },
+    {
+        "q": "bread",
+        "t": "麵包",
+        "tags": [
+            "food"
+        ],
+        "exps": [
+            "Fresh bread"
+        ]
+    },
+    {
+        "q": "milk",
+        "t": "牛奶",
+        "tags": [
+            "food"
+        ],
+        "exps": [
+            "White milk"
+        ]
+    },
+    {
+        "q": "egg",
+        "t": "蛋",
+        "tags": [
+            "food"
+        ],
+        "exps": [
+            "One egg"
+        ]
+    },
+    {
+        "q": "rice",
+        "t": "米飯",
+        "tags": [
+            "food"
+        ],
+        "exps": [
+            "Eat rice"
+        ]
+    },
+    {
+        "q": "meat",
+        "t": "肉",
+        "tags": [
+            "food"
+        ],
+        "exps": [
+            "Good meat"
+        ]
+    },
+    {
+        "q": "cake",
+        "t": "蛋糕",
+        "tags": [
+            "food"
+        ],
+        "exps": [
+            "A sweet cake"
+        ]
+    },
+    {
+        "q": "ice cream",
+        "t": "冰淇淋",
+        "tags": [
+            "food"
+        ],
+        "exps": [
+            "Cold ice cream"
+        ]
+    },
+    {
+        "q": "box",
+        "t": "盒子",
+        "tags": [
+            "object"
+        ],
+        "exps": [
+            "A heavy box"
+        ]
+    },
+    {
+        "q": "key",
+        "t": "鑰匙",
+        "tags": [
+            "object"
+        ],
+        "exps": [
+            "The silver key"
+        ]
+    },
+    {
+        "q": "cup",
+        "t": "杯子",
+        "tags": [
+            "object"
+        ],
+        "exps": [
+            "Drink in cup"
+        ]
+    },
+    {
+        "q": "spoon",
+        "t": "湯匙",
+        "tags": [
+            "object"
+        ],
+        "exps": [
+            "A small spoon"
+        ]
+    },
+    {
+        "q": "fork",
+        "t": "叉子",
+        "tags": [
+            "object"
+        ],
+        "exps": [
+            "Eat with fork"
+        ]
+    },
+    {
+        "q": "knife",
+        "t": "刀子",
+        "tags": [
+            "object"
+        ],
+        "exps": [
+            "A sharp knife"
+        ]
+    },
+    {
+        "q": "rain",
+        "t": "雨",
+        "tags": [
+            "nature"
+        ],
+        "exps": [
+            "See the rain"
+        ]
+    },
+    {
+        "q": "snow",
+        "t": "雪",
+        "tags": [
+            "nature"
+        ],
+        "exps": [
+            "White snow"
+        ]
+    },
+    {
+        "q": "wind",
+        "t": "風",
+        "tags": [
+            "nature"
+        ],
+        "exps": [
+            "Strong wind"
+        ]
+    },
+    {
+        "q": "mountain",
+        "t": "山",
+        "tags": [
+            "nature"
+        ],
+        "exps": [
+            "A high mountain"
+        ]
+    },
+    {
+        "q": "river",
+        "t": "河流",
+        "tags": [
+            "nature"
+        ],
+        "exps": [
+            "A long river"
+        ]
+    },
+    {
+        "q": "cloud",
+        "t": "雲",
+        "tags": [
+            "nature"
+        ],
+        "exps": [
+            "A soft cloud"
+        ]
+    },
+    {
+        "q": "sky",
+        "t": "天空",
+        "tags": [
+            "nature"
+        ],
+        "exps": [
+            "Blue sky"
+        ]
+    },
+    {
+        "q": "hand",
+        "t": "手",
+        "tags": [
+            "body"
+        ],
+        "exps": [
+            "My small hand"
+        ]
+    },
+    {
+        "q": "foot",
+        "t": "腳",
+        "tags": [
+            "body"
+        ],
+        "exps": [
+            "My left foot"
+        ]
+    },
+    {
+        "q": "eye",
+        "t": "眼睛",
+        "tags": [
+            "body"
+        ],
+        "exps": [
+            "Big eyes"
+        ]
+    },
+    {
+        "q": "ear",
+        "t": "耳朵",
+        "tags": [
+            "body"
+        ],
+        "exps": [
+            "Long ears"
+        ]
+    },
+    {
+        "q": "nose",
+        "t": "鼻子",
+        "tags": [
+            "body"
+        ],
+        "exps": [
+            "My red nose"
+        ]
+    },
+    {
+        "q": "mouth",
+        "t": "嘴巴",
+        "tags": [
+            "body"
+        ],
+        "exps": [
+            "A small mouth"
+        ]
+    },
+    {
+        "q": "hair",
+        "t": "頭髮",
+        "tags": [
+            "body"
+        ],
+        "exps": [
+            "Long hair"
+        ]
+    },
+    {
+        "q": "face",
+        "t": "臉",
+        "tags": [
+            "body"
+        ],
+        "exps": [
+            "A happy face"
+        ]
+    },
+    {
+        "q": "head",
+        "t": "頭",
+        "tags": [
+            "body"
+        ],
+        "exps": [
+            "My big head"
+        ]
+    },
+    {
+        "q": "heart",
+        "t": "心臟",
+        "tags": [
+            "body"
+        ],
+        "exps": [
+            "A kind heart"
+        ]
+    },
+    {
+        "q": "fish",
+        "t": "魚",
+        "tags": [
+            "animal"
+        ],
+        "exps": [
+            "A swimming fish"
+        ]
+    },
+    {
+        "q": "horse",
+        "t": "馬",
+        "tags": [
+            "animal"
+        ],
+        "exps": [
+            "A running horse"
+        ]
+    },
+    {
+        "q": "cow",
+        "t": "母牛",
+        "tags": [
+            "animal"
+        ],
+        "exps": [
+            "A milking cow"
+        ]
+    },
+    {
+        "q": "sheep",
+        "t": "綿羊",
+        "tags": [
+            "animal"
+        ],
+        "exps": [
+            "A white sheep"
+        ]
+    },
+    {
+        "q": "duck",
+        "t": "鴨子",
+        "tags": [
+            "animal"
+        ],
+        "exps": [
+            "A swimming duck"
+        ]
+    },
+    {
+        "q": "pig",
+        "t": "豬",
+        "tags": [
+            "animal"
+        ],
+        "exps": [
+            "A fat pig"
+        ]
+    },
+    {
+        "q": "bee",
+        "t": "蜜蜂",
+        "tags": [
+            "animal"
+        ],
+        "exps": [
+            "A busy bee"
+        ]
+    },
+    {
+        "q": "bus",
+        "t": "公車",
+        "tags": [
+            "transport"
+        ],
+        "exps": [
+            "Wait for bus"
+        ]
+    },
+    {
+        "q": "train",
+        "t": "火車",
+        "tags": [
+            "transport"
+        ],
+        "exps": [
+            "Take the train"
+        ]
+    },
+    {
+        "q": "plane",
+        "t": "飛機",
+        "tags": [
+            "transport"
+        ],
+        "exps": [
+            "Fly a plane"
+        ]
+    },
+    {
+        "q": "bike",
+        "t": "腳踏車",
+        "tags": [
+            "transport"
+        ],
+        "exps": [
+            "Ride a bike"
+        ]
+    },
+    {
+        "q": "boat",
+        "t": "小船",
+        "tags": [
+            "transport"
+        ],
+        "exps": [
+            "Sail a boat"
+        ]
+    },
+    {
+        "q": "truck",
+        "t": "卡車",
+        "tags": [
+            "transport"
+        ],
+        "exps": [
+            "A heavy truck"
+        ]
+    },
+    {
+        "q": "walk",
+        "t": "走路",
+        "tags": [
+            "verb"
+        ],
+        "exps": [
+            "I walk slow"
+        ]
+    },
+    {
+        "q": "fly",
+        "t": "飛",
+        "tags": [
+            "verb"
+        ],
+        "exps": [
+            "Birds fly high"
+        ]
+    },
+    {
+        "q": "swim",
+        "t": "游泳",
+        "tags": [
+            "verb"
+        ],
+        "exps": [
+            "I swim well"
+        ]
+    },
+    {
+        "q": "talk",
+        "t": "說話",
+        "tags": [
+            "verb"
+        ],
+        "exps": [
+            "Talk to friend"
+        ]
+    },
+    {
+        "q": "listen",
+        "t": "聽",
+        "tags": [
+            "verb"
+        ],
+        "exps": [
+            "Listen to music"
+        ]
+    },
+    {
+        "q": "smile",
+        "t": "微笑",
+        "tags": [
+            "verb"
+        ],
+        "exps": [
+            "A happy smile"
+        ]
+    },
+    {
+        "q": "laugh",
+        "t": "大笑",
+        "tags": [
+            "verb"
+        ],
+        "exps": [
+            "They laugh loud"
+        ]
+    },
+    {
+        "q": "cry",
+        "t": "哭",
+        "tags": [
+            "verb"
+        ],
+        "exps": [
+            "Don't cry now"
+        ]
+    },
+    {
+        "q": "think",
+        "t": "思考",
+        "tags": [
+            "verb"
+        ],
+        "exps": [
+            "I think hard"
+        ]
+    },
+    {
+        "q": "learn",
+        "t": "學習",
+        "tags": [
+            "verb"
+        ],
+        "exps": [
+            "Learn new word"
+        ]
+    },
+    {
+        "q": "watch",
+        "t": "看 (觀察)",
+        "tags": [
+            "verb"
+        ],
+        "exps": [
+            "Watch movie"
+        ]
+    },
+    {
+        "q": "long",
+        "t": "長",
+        "tags": [
+            "adjective"
+        ],
+        "exps": [
+            "A long road"
+        ]
+    },
+    {
+        "q": "short",
+        "t": "短",
+        "tags": [
+            "adjective"
+        ],
+        "exps": [
+            "A short hair"
+        ]
+    },
+    {
+        "q": "new",
+        "t": "新",
+        "tags": [
+            "adjective"
+        ],
+        "exps": [
+            "A new world"
+        ]
+    },
+    {
+        "q": "old",
+        "t": "舊",
+        "tags": [
+            "adjective"
+        ],
+        "exps": [
+            "An old friend"
+        ]
+    },
+    {
+        "q": "beautiful",
+        "t": "漂亮",
+        "tags": [
+            "adjective"
+        ],
+        "exps": [
+            "Beautiful flower"
+        ]
+    },
+    {
+        "q": "ugly",
+        "t": "醜陋",
+        "tags": [
+            "adjective"
+        ],
+        "exps": [
+            "An ugly box"
+        ]
+    },
+    {
+        "q": "clean",
+        "t": "乾淨",
+        "tags": [
+            "adjective"
+        ],
+        "exps": [
+            "A clean room"
+        ]
+    },
+    {
+        "q": "dirty",
+        "t": "髒",
+        "tags": [
+            "adjective"
+        ],
+        "exps": [
+            "Dirty shoes"
+        ]
+    },
+    {
+        "q": "rich",
+        "t": "富有",
+        "tags": [
+            "adjective"
+        ],
+        "exps": [
+            "A rich man"
+        ]
+    },
+    {
+        "q": "poor",
+        "t": "貧窮",
+        "tags": [
+            "adjective"
+        ],
+        "exps": [
+            "A poor family"
+        ]
+    },
+    {
+        "q": "window",
+        "t": "窗戶",
+        "tags": [
+            "object"
+        ],
+        "exps": [
+            "Open the window"
+        ]
+    },
+    {
+        "q": "door",
+        "t": "門",
+        "tags": [
+            "object"
+        ],
+        "exps": [
+            "Close the door"
+        ]
+    },
+    {
+        "q": "bed",
+        "t": "床",
+        "tags": [
+            "object"
+        ],
+        "exps": [
+            "Go to bed"
+        ]
+    },
+    {
+        "q": "clock",
+        "t": "時鐘",
+        "tags": [
+            "object"
+        ],
+        "exps": [
+            "A round clock"
+        ]
+    },
+    {
+        "q": "lamp",
+        "t": "燈",
+        "tags": [
+            "object"
+        ],
+        "exps": [
+            "Turn on lamp"
+        ]
+    },
+    {
+        "q": "mirror",
+        "t": "鏡子",
+        "tags": [
+            "object"
+        ],
+        "exps": [
+            "Look in mirror"
+        ]
+    },
+    {
+        "q": "soap",
+        "t": "肥皂",
+        "tags": [
+            "object"
+        ],
+        "exps": [
+            "Use some soap"
+        ]
+    },
+    {
+        "q": "towel",
+        "t": "毛巾",
+        "tags": [
+            "object"
+        ],
+        "exps": [
+            "A dry towel"
+        ]
+    },
+    {
+        "q": "city",
+        "t": "城市",
+        "tags": [
+            "place"
+        ],
+        "exps": [
+            "A busy city"
+        ]
+    },
+    {
+        "q": "country",
+        "t": "國家",
+        "tags": [
+            "place"
+        ],
+        "exps": [
+            "My home country"
+        ]
+    },
+    {
+        "q": "road",
+        "t": "道路",
+        "tags": [
+            "place"
+        ],
+        "exps": [
+            "A wide road"
+        ]
+    },
+    {
+        "q": "bridge",
+        "t": "橋",
+        "tags": [
+            "place"
+        ],
+        "exps": [
+            "Cross the bridge"
+        ]
+    },
+    {
+        "q": "garden",
+        "t": "花園",
+        "tags": [
+            "place"
+        ],
+        "exps": [
+            "A green garden"
+        ]
+    },
+    {
+        "q": "farm",
+        "t": "農場",
+        "tags": [
+            "place"
+        ],
+        "exps": [
+            "An old farm"
+        ]
+    },
+    {
+        "q": "forest",
+        "t": "森林",
+        "tags": [
+            "place"
+        ],
+        "exps": [
+            "A dark forest"
+        ]
+    },
+    {
+        "q": "island",
+        "t": "島嶼",
+        "tags": [
+            "place"
+        ],
+        "exps": [
+            "A small island"
+        ]
+    },
+    {
+        "q": "lake",
+        "t": "湖泊",
+        "tags": [
+            "place"
+        ],
+        "exps": [
+            "A mountain lake"
+        ]
+    },
+    {
+        "q": "kitchen",
+        "t": "廚房",
+        "tags": [
+            "place"
+        ],
+        "exps": [
+            "Cook in kitchen"
+        ]
+    },
+    {
+        "q": "room",
+        "t": "房間",
+        "tags": [
+            "place"
+        ],
+        "exps": [
+            "In my room"
+        ]
+    },
+    {
+        "q": "orange",
+        "t": "橘色",
+        "tags": [
+            "color"
+        ],
+        "exps": [
+            "Orange orange"
+        ]
+    },
+    {
+        "q": "pink",
+        "t": "粉紅色",
+        "tags": [
+            "color"
+        ],
+        "exps": [
+            "Pink dress"
+        ]
+    },
+    {
+        "q": "brown",
+        "t": "咖啡色",
+        "tags": [
+            "color"
+        ],
+        "exps": [
+            "Brown dog"
+        ]
+    },
+    {
+        "q": "gray",
+        "t": "灰色",
+        "tags": [
+            "color"
+        ],
+        "exps": [
+            "Gray sky"
+        ]
+    },
+    {
+        "q": "silver",
+        "t": "銀色",
+        "tags": [
+            "color"
+        ],
+        "exps": [
+            "Silver moon"
+        ]
+    },
+    {
+        "q": "gold",
+        "t": "金色",
+        "tags": [
+            "color"
+        ],
+        "exps": [
+            "Gold ring"
+        ]
+    },
+    {
+        "q": "soup",
+        "t": "湯",
+        "tags": [
+            "food"
+        ],
+        "exps": [
+            "Chicken soup"
+        ]
+    },
+    {
+        "q": "salad",
+        "t": "沙拉",
+        "tags": [
+            "food"
+        ],
+        "exps": [
+            "Green salad"
+        ]
+    },
+    {
+        "q": "pizza",
+        "t": "披薩",
+        "tags": [
+            "food"
+        ],
+        "exps": [
+            "Eat pizza"
+        ]
+    },
+    {
+        "q": "burger",
+        "t": "漢堡",
+        "tags": [
+            "food"
+        ],
+        "exps": [
+            "Beef burger"
+        ]
+    },
+    {
+        "q": "juice",
+        "t": "果汁",
+        "tags": [
+            "food"
+        ],
+        "exps": [
+            "Orange juice"
+        ]
+    },
+    {
+        "q": "tea",
+        "t": "茶",
+        "tags": [
+            "food"
+        ],
+        "exps": [
+            "Hot tea"
+        ]
+    },
+    {
+        "q": "coffee",
+        "t": "咖啡",
+        "tags": [
+            "food"
+        ],
+        "exps": [
+            "Black coffee"
+        ]
+    },
+    {
+        "q": "ball",
+        "t": "球",
+        "tags": [
+            "object"
+        ],
+        "exps": [
+            "Kick the ball"
+        ]
+    },
+    {
+        "q": "toy",
+        "t": "玩具",
+        "tags": [
+            "object"
+        ],
+        "exps": [
+            "Play with toy"
+        ]
+    },
+    {
+        "q": "gift",
+        "t": "禮物",
+        "tags": [
+            "object"
+        ],
+        "exps": [
+            "A small gift"
+        ]
+    },
+    {
+        "q": "camera",
+        "t": "相機",
+        "tags": [
+            "object"
+        ],
+        "exps": [
+            "Take my camera"
+        ]
+    },
+    {
+        "q": "map",
+        "t": "地圖",
+        "tags": [
+            "object"
+        ],
+        "exps": [
+            "Road map"
+        ]
+    },
+    {
+        "q": "umbrella",
+        "t": "傘",
+        "tags": [
+            "object"
+        ],
+        "exps": [
+            "Blue umbrella"
+        ]
+    },
+    {
+        "q": "money",
+        "t": "錢",
+        "tags": [
+            "object"
+        ],
+        "exps": [
+            "I have money"
+        ]
+    },
+    {
+        "q": "music",
+        "t": "音樂",
+        "tags": [
+            "concept"
+        ],
+        "exps": [
+            "Play loud music"
+        ]
+    },
+    {
+        "q": "time",
+        "t": "時間",
+        "tags": [
+            "concept"
+        ],
+        "exps": [
+            "No more time"
+        ]
+    },
+    {
+        "q": "love",
+        "t": "愛",
+        "tags": [
+            "concept"
+        ],
+        "exps": [
+            "I love you"
+        ]
+    },
+    {
+        "q": "help",
+        "t": "幫助",
+        "tags": [
+            "verb"
+        ],
+        "exps": [
+            "Please help me"
+        ]
+    },
+    {
+        "q": "look",
+        "t": "看",
+        "tags": [
+            "verb"
+        ],
+        "exps": [
+            "Look out"
+        ]
+    },
+    {
+        "q": "give",
+        "t": "給",
+        "tags": [
+            "verb"
+        ],
+        "exps": [
+            "Give me book"
+        ]
+    },
+    {
+        "q": "buy",
+        "t": "買",
+        "tags": [
+            "verb"
+        ],
+        "exps": [
+            "Buy a car"
+        ]
+    },
+    {
+        "q": "sell",
+        "t": "賣",
+        "tags": [
+            "verb"
+        ],
+        "exps": [
+            "Sell my house"
+        ]
+    },
+    {
+        "q": "open",
+        "t": "打開",
+        "tags": [
+            "verb"
+        ],
+        "exps": [
+            "Open your eye"
+        ]
+    },
+    {
+        "q": "close",
+        "t": "關閉",
+        "tags": [
+            "verb"
+        ],
+        "exps": [
+            "Close your heart"
+        ]
+    },
+    {
+        "q": "start",
+        "t": "開始",
+        "tags": [
+            "verb"
+        ],
+        "exps": [
+            "Start adventure"
+        ]
+    },
+    {
+        "q": "stop",
+        "t": "停止",
+        "tags": [
+            "verb"
+        ],
+        "exps": [
+            "Stop crying"
+        ]
+    },
+    {
+        "q": "quiet",
+        "t": "安靜",
+        "tags": [
+            "adjective"
+        ],
+        "exps": [
+            "Quiet forest"
+        ]
+    },
+    {
+        "q": "loud",
+        "t": "大聲",
+        "tags": [
+            "adjective"
+        ],
+        "exps": [
+            "Loud music"
+        ]
+    },
+    {
+        "q": "smart",
+        "t": "聰明",
+        "tags": [
+            "adjective"
+        ],
+        "exps": [
+            "A smart boy"
+        ]
+    },
+    {
+        "q": "cool",
+        "t": "酷/涼快",
+        "tags": [
+            "adjective"
+        ],
+        "exps": [
+            "A cool wind"
+        ]
+    },
+    {
+        "q": "winter",
+        "t": "冬天",
+        "tags": [
+            "time"
+        ],
+        "exps": [
+            "A cold winter"
+        ]
+    },
+    {
+        "q": "summer",
+        "t": "夏天",
+        "tags": [
+            "time"
+        ],
+        "exps": [
+            "A hot summer"
+        ]
+    },
+    {
+        "q": "sand",
+        "t": "沙子",
+        "tags": [
+            "nature"
+        ],
+        "exps": [
+            "Yellow sand"
+        ]
+    },
+    {
+        "q": "beach",
+        "t": "海灘",
+        "tags": [
+            "nature"
+        ],
+        "exps": [
+            "A beautiful beach"
+        ]
+    },
+    {
+        "q": "grass",
+        "t": "草",
+        "tags": [
+            "nature"
+        ],
+        "exps": [
+            "Green grass"
+        ]
     }
 ]

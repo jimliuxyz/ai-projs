@@ -101,7 +101,7 @@ onUnmounted(() => {
 // Calculate characters for display
 const targetChars = computed(() => {
     if (!currentTarget.value) return [];
-    return currentTarget.value.text.split('').map((char, index) => ({
+    return currentTarget.value.q.split('').map((char, index) => ({
         char,
         isCaught: index < spellingIndex.value,
         isCurrent: index === spellingIndex.value
@@ -121,7 +121,7 @@ const targetChars = computed(() => {
 
       <div class="header-center">
             <div v-if="currentTarget" class="spelling-display">
-                <div class="chinese-hint">{{ currentTarget.translation }}</div>
+                <div class="chinese-hint">{{ currentTarget.t }}</div>
                 <div class="word-progress" @click.stop="announceTarget()">
                     <span 
                         v-for="(item, idx) in targetChars" 

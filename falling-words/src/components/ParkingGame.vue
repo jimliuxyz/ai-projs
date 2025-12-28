@@ -8,6 +8,8 @@ const { speak, playTone, playWrong } = useAudio();
 const canvasRef = ref<HTMLCanvasElement | null>(null);
 const p1Speed = ref(1.0);
 const p2Speed = ref(1.0);
+const p1Score = ref(0);
+const p2Score = ref(0);
 
 // Virtual Routing Logic
 window.addEventListener('hashchange', () => {
@@ -21,7 +23,9 @@ onMounted(() => {
         useParkingPhysics(canvasRef.value, {
             p1Speed,
             p2Speed,
-            onScore: () => {
+            onScore: (team, total) => {
+                if (team === 'P1') p1Score.value = total;
+                else p2Score.value = total;
                 playTone(600, 'sine', 0.1);
             },
             onWin: () => {
@@ -39,20 +43,20 @@ onMounted(() => {
     <div class="game-container">
         <canvas ref="canvasRef" class="webgl"></canvas>
         
-        <!-- P2 Layout (Top) -->
-        <div class="player-overlay p2">
-            <div class="speed-control">
-                <span>P2 SPEED</span>
-                <input type="range" v-model.number="p2Speed" min="0.5" max="3.0" step="0.1">
+        <!-- P2 Function Area (Top) -->
+        <div class="function-area p2">
+            <div class="ctrl-group">
+                <input type="range" v-model.number="p2Speed" min="0.5" max="3.0" step="0.1" class="speed-slider">
             </div>
+            <div class="score-display">{{ p2Score }}</div>
         </div>
 
-        <!-- P1 Layout (Bottom) -->
-        <div class="player-overlay p1">
-            <div class="speed-control">
-                <span>P1 SPEED</span>
-                <input type="range" v-model.number="p1Speed" min="0.5" max="3.0" step="0.1">
+        <!-- P1 Function Area (Bottom) -->
+        <div class="function-area p1">
+            <div class="ctrl-group">
+                <input type="range" v-model.number="p1Speed" min="0.5" max="3.0" step="0.1" class="speed-slider">
             </div>
+            <div class="score-display">{{ p1Score }}</div>
         </div>
     </div>
 </template>
@@ -62,7 +66,7 @@ onMounted(() => {
     width: 100vw;
     height: 100vh;
     position: relative;
-    background: #000;
+    background: #050505;
     overflow: hidden;
 }
 
@@ -72,98 +76,79 @@ onMounted(() => {
     display: block;
 }
 
-.hud-center {
+.function-area {
     position: absolute;
-    top: 50%;
-    right: 20px;
-    transform: translateY(-50%);
-    z-index: 100;
-}
-
-.player-overlay {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 100;
+    left: 0;
     width: 100%;
-    display: flex;
-    justify-content: center;
-    padding: 20px;
-    pointer-events: none;
-}
-
-.player-overlay.p2 { top: 0; transform: translateX(-50%) rotate(180deg); }
-.player-overlay.p1 { bottom: 0; }
-
-.speed-control {
-    pointer-events: auto;
-    background: rgba(0, 0, 0, 0.4);
-    backdrop-filter: blur(10px);
-    border: 2px solid rgba(255, 255, 255, 0.1);
-    padding: 10px 20px;
-    border-radius: 40px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    color: white;
-    font-weight: 900;
-    font-size: 0.9rem;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-}
-
-.player-overlay.p1 .speed-control { border-color: rgba(37, 99, 235, 0.6); }
-.player-overlay.p2 .speed-control { border-color: rgba(220, 38, 38, 0.6); }
-
-.speed-control span {
-    min-width: 80px;
-}
-
-.speed-control input {
-    width: 120px;
-    accent-color: #4fd1c5;
-}
-
-.exit-btn {
-    background: rgba(0, 0, 0, 0.6);
-    backdrop-filter: blur(10px);
-    border: 2px solid rgba(255, 25, 25, 0.3);
-    color: #ff4d4d;
-    width: 60px;
     height: 60px;
-    border-radius: 50%;
-    font-size: 0.8rem;
-    font-weight: bold;
-    cursor: pointer;
-    transition: all 0.2s;
     display: flex;
     align-items: center;
-    justify-content: center;
-    text-align: center;
-    line-height: 1;
+    justify-content: space-between;
+    padding: 0 30px;
+    background: rgba(15, 15, 15, 0.85);
+    backdrop-filter: blur(15px);
+    z-index: 1000;
+    box-sizing: border-box;
+    /* Glassmorphism subtle border */
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-.exit-btn:hover {
-    background: #ff4d4d;
+.function-area.p2 {
+    top: 0;
+    transform: rotate(180deg); /* Oriented for player on the other side */
+}
+
+.function-area.p1 {
+    bottom: 0;
+}
+
+.ctrl-group {
+    display: flex;
+    align-items: center;
+}
+
+.speed-slider {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 160px;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+    outline: none;
+    margin: 0;
+}
+
+.speed-slider::-webkit-slider-thumb {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #4fd1c5;
+    cursor: pointer;
+    box-shadow: 0 0 10px rgba(79, 209, 197, 0.5);
+    transition: all 0.2s;
+}
+
+.speed-slider::-webkit-slider-thumb:hover {
+    transform: scale(1.2);
+    background: #63eadf;
+}
+
+.score-display {
     color: white;
-    transform: scale(1.1);
+    font-size: 1.2rem;
+    font-weight: 900;
+    letter-spacing: 2px;
+    font-family: 'Outfit', sans-serif;
+    text-shadow: 0 2px 10px rgba(255, 255, 255, 0.2);
 }
 
-.interaction-hint {
-    position: absolute;
-    bottom: 30px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: rgba(0, 0, 0, 0.6);
-    padding: 12px 24px;
-    border-radius: 30px;
-    color: #4fd1c5;
-    font-weight: bold;
-    pointer-events: none;
-    animation: fadeInOut 3s infinite;
-}
+.p1 .score-display { color: #3b82f6; text-shadow: 0 0 15px rgba(59, 130, 246, 0.4); }
+.p2 .score-display { color: #ef4444; text-shadow: 0 0 15px rgba(239, 68, 68, 0.4); }
 
-@keyframes fadeInOut {
-    0%, 100% { opacity: 0.4; }
-    50% { opacity: 1; }
-}
+.p1 .speed-slider::-webkit-slider-thumb { background: #3b82f6; box-shadow: 0 0 15px rgba(59, 130, 246, 0.5); }
+.p2 .speed-slider::-webkit-slider-thumb { background: #ef4444; box-shadow: 0 0 15px rgba(239, 68, 68, 0.5); }
+
 </style>

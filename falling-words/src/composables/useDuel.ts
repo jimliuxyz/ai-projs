@@ -104,7 +104,7 @@ export function useDuel() {
         const target = vocab[Math.floor(Math.random() * vocab.length)];
         currentTarget.value = target;
 
-        const targetText = target.text;
+        const targetText = target.q;
 
         // Generate options
         const rawOptions = new Set<string>();
@@ -138,10 +138,9 @@ export function useDuel() {
             }));
 
         // Announce
-        const text = target.text;
-        const spelled = text.split('').join(',');
-        const example = target.example ? `. ${target.example}` : '';
-        speak(`${text}, (${spelled}), ${text}${example}`);
+        const textToSpeak = target.q;
+        const example = (target.exps && target.exps.length > 0) ? `. ${target.exps[0]}` : '';
+        speak(`${textToSpeak}${example}`);
     };
 
     const handleChoice = (player: 1 | 2, choice: DuelOption): boolean => {

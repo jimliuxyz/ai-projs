@@ -1,62 +1,102 @@
 [
     {
-        "text": "does",
-        "translation": "做",
-        "category": "verb",
-        "example": "He does work"
+        "q": "does",
+        "t": "做",
+        "tags": [
+            "verb"
+        ],
+        "exps": [
+            "He does work"
+        ]
     },
     {
-        "text": "pail",
-        "translation": "提桶",
-        "category": "object",
-        "example": "A blue pail"
+        "q": "pail",
+        "t": "提桶",
+        "tags": [
+            "object"
+        ],
+        "exps": [
+            "A blue pail"
+        ]
     },
     {
-        "text": "main",
-        "translation": "主要的",
-        "category": "adjective",
-        "example": "The main road"
+        "q": "main",
+        "t": "主要的",
+        "tags": [
+            "adjective"
+        ],
+        "exps": [
+            "The main road"
+        ]
     },
     {
-        "text": "at",
-        "translation": "在",
-        "category": "preposition",
-        "example": "At the park"
+        "q": "at",
+        "t": "在",
+        "tags": [
+            "preposition"
+        ],
+        "exps": [
+            "At the park"
+        ]
     },
     {
-        "text": "has",
-        "translation": "有",
-        "category": "verb",
-        "example": "She has apple"
+        "q": "has",
+        "t": "有",
+        "tags": [
+            "verb"
+        ],
+        "exps": [
+            "She has apple"
+        ]
     },
     {
-        "text": "new",
-        "translation": "新的",
-        "category": "adjective",
-        "example": "A new car"
+        "q": "new",
+        "t": "新的",
+        "tags": [
+            "adjective"
+        ],
+        "exps": [
+            "A new car"
+        ]
     },
     {
-        "text": "year",
-        "translation": "年",
-        "category": "time",
-        "example": "A happy year"
+        "q": "year",
+        "t": "年",
+        "tags": [
+            "time"
+        ],
+        "exps": [
+            "A happy year"
+        ]
     },
     {
-        "text": "fun",
-        "translation": "真有趣",
-        "category": "adjective",
-        "example": "Play is fun"
+        "q": "fun",
+        "t": "真有趣",
+        "tags": [
+            "adjective"
+        ],
+        "exps": [
+            "Play is fun"
+        ]
     },
     {
-        "text": "party",
-        "translation": "派對",
-        "category": "social",
-        "example": "A birthday party"
+        "q": "party",
+        "t": "派對",
+        "tags": [
+            "social"
+        ],
+        "exps": [
+            "A birthday party"
+        ]
     },
     {
-        "text": "green",
-        "translation": "綠色",
-        "category": "color",
-        "example": "Green grass"
+        "q": "green",
+        "t": "綠色",
+        "tags": [
+            "color"
+        ],
+        "exps": [
+            "Green grass"
+        ]
     }
 ]

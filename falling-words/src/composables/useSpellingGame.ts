@@ -67,10 +67,10 @@ export function useSpellingGame(callbacks?: {
 
     const announceTarget = () => {
         if (!currentTarget.value) return;
-        const text = currentTarget.value.text;
-        const spelled = text.split('').join(',');
-        const example = currentTarget.value.example ? `. ${currentTarget.value.example}` : '';
-        speak(`${text}, (${spelled}), ${text}${example}`);
+        const target = currentTarget.value;
+        const textToSpeak = target.q;
+        const example = (target.exps && target.exps.length > 0) ? `. ${target.exps[0]}` : '';
+        speak(`${textToSpeak}${example}`);
     };
 
     const pickNewTarget = () => {
@@ -82,12 +82,13 @@ export function useSpellingGame(callbacks?: {
 
         // Generate a small, focused distractor pool (max 8 characters total)
         // Preserve case for distractions based on the word
-        const wordChars = [...new Set(currentTarget.value.text.split(''))];
+        const targetWord = currentTarget.value.a || currentTarget.value.q;
+        const wordChars = [...new Set(targetWord.split(''))];
         const extras = 'abcdefghijklmnopqrstuvwxyz'.split('').filter(c => !wordChars.some(wc => wc.toLowerCase() === c));
         const shuffledExtras = extras.sort(() => Math.random() - 0.5);
 
         // Match the casing of the first char of the word for extras if it's capitalized, otherwise lower
-        const isWordCapitalized = /^[A-Z]/.test(currentTarget.value.text);
+        const isWordCapitalized = /^[A-Z]/.test(targetWord);
         const mappedExtras = shuffledExtras.map(c => isWordCapitalized && Math.random() < 0.3 ? c.toUpperCase() : c);
 
         const pool = [...wordChars, ...mappedExtras.slice(0, Math.max(0, 8 - wordChars.length))];
@@ -99,7 +100,8 @@ export function useSpellingGame(callbacks?: {
     const spawnItem = () => {
         if (gameState.value !== 'playing' || !currentTarget.value) return;
 
-        const targetWord = currentTarget.value.text;
+        const target = currentTarget.value;
+        const targetWord = target.a || target.q;
         const nextChar = targetWord[spellingIndex.value];
 
         // Increased target chance so user doesn't wait too long
@@ -183,7 +185,8 @@ export function useSpellingGame(callbacks?: {
             const hit = hdx < (playerWidth / 2 + 3) && hdy < (playerHeight / 2 + 3);
 
             if (hit) {
-                const targetWord = currentTarget.value?.text || '';
+                const target = currentTarget.value;
+                const targetWord = (target?.a || target?.q) || '';
                 const nextChar = targetWord[spellingIndex.value];
 
                 if (item.char === nextChar) {

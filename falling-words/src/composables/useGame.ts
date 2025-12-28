@@ -69,10 +69,11 @@ export function useGame(callbacks?: {
 
     const announceTarget = () => {
         if (!currentTarget.value) return;
-        const text = currentTarget.value.text;
-        const spelled = text.split('').join(',');
-        const example = currentTarget.value.example ? `. ${currentTarget.value.example}` : '';
-        speak(`${text}, (${spelled}), ${text}${example}`);
+        const target = currentTarget.value;
+        // Announce
+        const textToSpeak = target.q;
+        const example = (target.exps && target.exps.length > 0) ? `. ${target.exps[0]}` : '';
+        speak(`${textToSpeak}${example}`);
     };
 
     const pickNewTarget = () => {

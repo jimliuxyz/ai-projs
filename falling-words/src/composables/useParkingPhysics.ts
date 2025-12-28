@@ -5,15 +5,13 @@ import { vocabularyStore } from '../store/vocabulary';
 
 // --- Configuration ---
 const CAR_MASS = 2000;
-const OBSTACLE_MASS = 80; // Slightly lighter
-const DRIVE_FORCE = 350000; // Stronger push
+const OBSTACLE_MASS = 80;
+const DRIVE_FORCE = 350000;
 const MAX_VELOCITY = 100;
 const BOOST_IMPULSE = 15000;
-const VIEW_SIZE = 36; // Increased magnification (Original: 55 / 1.5)
+const VIEW_SIZE = 36;
 const COLLISION_KNOCKBACK = 50000;
-
-const ZHUYIN_CHARSET = 'ㄅㄆㄇㄈㄉㄊㄋㄌㄍㄎㄏㄐㄑㄒㄓㄔㄕㄖㄗㄘㄙㄧㄨㄩㄚㄛㄜㄝㄞㄟㄠㄡㄢㄣㄤㄥㄦ'.split('');
-const ALPHA_CHARSET = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+const DEBUG_WALLS = false; // Set to true to see invisible walls
 
 // Collision Groups
 const GROUP_GROUND = 1;
@@ -37,6 +35,7 @@ export function useParkingPhysics(container: HTMLElement, options: {
     const cars: GameCar[] = [];
     const spots: { char: string, occupied: boolean, x: number, z: number, winnerTeam: string | null }[] = [];
     const obstacles: { mesh: THREE.Mesh, body: CANNON.Body }[] = [];
+    const dogs: StrayDog[] = [];
     const walls: { body: CANNON.Body, mesh: THREE.Mesh }[] = [];
     let entryBarriers: { mesh: THREE.Mesh, body: CANNON.Body }[] = [];
     let exitFinishedTime = 0;
@@ -44,6 +43,8 @@ export function useParkingPhysics(container: HTMLElement, options: {
     let scores = { P1: 0, P2: 0 };
     let gameState = {
         word: [] as string[],
+        currentQ: '',
+        currentExp: '',
         nextSlotIndex: 0,
         isGameOver: false,
         gameOverTime: 0,
@@ -51,7 +52,6 @@ export function useParkingPhysics(container: HTMLElement, options: {
         currentWordIndex: 0
     };
 
-    let p1Label: THREE.Mesh, p2Label: THREE.Mesh;
     const matCar = new CANNON.Material('car');
     const matGround = new CANNON.Material('ground');
     const matObstacle = new CANNON.Material('obstacle');
@@ -67,27 +67,26 @@ export function useParkingPhysics(container: HTMLElement, options: {
         ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
         ctx.fillText(text, size / 2, size * 0.45);
 
-        const isAlphabet = /^[a-zA-Z0-9]$/.test(text);
-        if (!isAlphabet) {
-            ctx.fillRect(size * 0.2, size * 0.85, size * 0.6, size * 0.08);
-        }
+        // Directional Underline (always show to help distinguish front/back)
+        ctx.fillRect(size * 0.2, size * 0.82, size * 0.6, size * 0.08);
         return new THREE.CanvasTexture(canvas);
     }
 
-    function createRoadLabel(text: string, color: string = 'rgba(255,255,255,0.2)', width: number = 10) {
-        const canvas = document.createElement('canvas');
-        canvas.width = 512; canvas.height = 128;
-        const ctx = canvas.getContext('2d')!;
-        ctx.fillStyle = 'rgba(0,0,0,0)'; ctx.fillRect(0, 0, 512, 128);
-        ctx.fillStyle = color;
-        ctx.font = 'bold 60px Arial'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-        ctx.fillText(text, 256, 64);
-        const tex = new THREE.CanvasTexture(canvas);
-        const mesh = new THREE.Mesh(new THREE.PlaneGeometry(width, width / 4), new THREE.MeshBasicMaterial({ map: tex, transparent: true }));
-        mesh.rotation.x = -Math.PI / 2;
-        mesh.raycast = () => { };
-        return mesh;
-    }
+    // Rounded Box Helper using Shape + Extrude
+    const createRoundedExtrude = (w: number, l: number, h: number, r: number) => {
+        const shape = new THREE.Shape();
+        const x = -w / 2, y = -l / 2;
+        shape.moveTo(x + r, y);
+        shape.lineTo(x + w - r, y);
+        shape.quadraticCurveTo(x + w, y, x + w, y + r);
+        shape.lineTo(x + w, y + l - r);
+        shape.quadraticCurveTo(x + w, y + l, x + w - r, y + l);
+        shape.lineTo(x + r, y + l);
+        shape.quadraticCurveTo(x, y + l, x, y + l - r);
+        shape.lineTo(x, y + r);
+        shape.quadraticCurveTo(x, y, x + r, y);
+        return new THREE.ExtrudeGeometry(shape, { depth: h, bevelEnabled: true, bevelThickness: 0.2, bevelSize: 0.2, bevelSegments: 3 });
+    };
 
     function getRandomDarkWarmColor() {
         // Random dark warm colors (Browns, Deep Reds, Dark Oranges)
@@ -111,36 +110,41 @@ export function useParkingPhysics(container: HTMLElement, options: {
 
         constructor(id: number, x: number, z: number, color: number, char: string, team: 'P1' | 'P2') {
             this.id = id; this.char = char; this.team = team;
-            const cw = 4.5, ch = 2.0, cl = 8.5; this.mesh = new THREE.Group();
-            const bMat = new THREE.MeshStandardMaterial({ color, metalness: 0.9, roughness: 0.15 });
+            const cw = 4.5, ch = 2.0, cl = 8.5, radius = 0.8;
+            this.mesh = new THREE.Group();
+            const bMat = new THREE.MeshStandardMaterial({ color, metalness: 0.8, roughness: 0.2 });
 
-            const base = new THREE.Mesh(new THREE.BoxGeometry(cw, ch * 0.6, cl), bMat);
-            base.position.y = ch * 0.3;
-            base.castShadow = true; base.receiveShadow = true; // Cars should receive shadows too
+
+            const baseGeo = createRoundedExtrude(cw, cl, ch * 0.6, radius);
+            const base = new THREE.Mesh(baseGeo, bMat);
+            base.rotation.x = Math.PI / 2; base.position.y = ch * 0.3; base.name = 'car_base';
+            base.castShadow = true; base.receiveShadow = true;
             this.mesh.add(base);
 
-            const cabin = new THREE.Mesh(new THREE.BoxGeometry(cw * 0.85, ch * 0.5, cl * 0.45), bMat);
-            cabin.position.set(0, ch * 0.75, -0.6);
+            const cabinGeo = createRoundedExtrude(cw * 0.85, cl * 0.45, ch * 0.5, radius * 0.6);
+            const cabin = new THREE.Mesh(cabinGeo, bMat);
+            cabin.rotation.x = Math.PI / 2; cabin.position.set(0, ch * 1.0, -0.6); cabin.name = 'car_cabin';
             cabin.castShadow = true; cabin.receiveShadow = true;
             this.mesh.add(cabin);
 
+            // Fix "two lines" by using Plane instead of thin Box for windshield
             const ws = new THREE.Mesh(
-                new THREE.BoxGeometry(cw * 0.82, ch * 0.7, 0.1),
-                new THREE.MeshStandardMaterial({ color: 0x88ccff, transparent: true, opacity: 0.4, metalness: 1, roughness: 0 })
+                new THREE.PlaneGeometry(cw * 0.8, ch * 0.8),
+                new THREE.MeshStandardMaterial({ color: 0x88ccff, transparent: true, opacity: 0.6, metalness: 1, roughness: 0, side: THREE.DoubleSide })
             );
-            ws.position.set(0, ch * 0.85, 1.4); ws.rotation.x = -Math.PI / 3.5;
-            ws.castShadow = true;
+            ws.position.set(0, ch * 0.9, 1.4); ws.rotation.x = -Math.PI / 3.2;
+            ws.name = 'car_ws';
             this.mesh.add(ws);
 
             const hlGeo = new THREE.BoxGeometry(0.8, 0.4, 0.2);
             const hlMat = new THREE.MeshStandardMaterial({ color: 0xffffff, emissive: 0xffffff, emissiveIntensity: 1 });
-            const hlL = new THREE.Mesh(hlGeo, hlMat); hlL.position.set(-1.4, ch * 0.3, cl / 2); this.mesh.add(hlL);
-            const hlR = new THREE.Mesh(hlGeo, hlMat); hlR.position.set(1.4, ch * 0.3, cl / 2); this.mesh.add(hlR);
+            const hlL = new THREE.Mesh(hlGeo, hlMat); hlL.position.set(-1.4, ch * 0.3, cl / 2); hlL.name = 'car_hl_l'; this.mesh.add(hlL);
+            const hlR = new THREE.Mesh(hlGeo, hlMat); hlR.position.set(1.4, ch * 0.3, cl / 2); hlR.name = 'car_hl_r'; this.mesh.add(hlR);
 
             const lbMat = new THREE.MeshBasicMaterial({ map: createTextTexture(char, '#00000000', 'white'), transparent: true, side: THREE.DoubleSide });
             const lb = new THREE.Mesh(new THREE.PlaneGeometry(4, 4), lbMat);
             lb.rotation.x = -Math.PI / 2; lb.rotation.z = Math.PI;
-            lb.position.set(0, ch + 0.1, -1.2);
+            lb.position.set(0, ch * 1.55, -1.2); lb.name = 'car_label'; // Raised to be above the new rounded cabin
             this.mesh.add(lb);
 
             this.lightBeams = new THREE.Group();
@@ -167,7 +171,7 @@ export function useParkingPhysics(container: HTMLElement, options: {
 
             scene.add(this.mesh);
             this.body = new CANNON.Body({ mass: CAR_MASS, material: matCar, linearDamping: 0.75, angularDamping: 0.95 });
-            this.body.addShape(new CANNON.Box(new CANNON.Vec3(cw / 2, ch / 2, cl / 2)));
+            this.body.addShape(new CANNON.Box(new CANNON.Vec3(cw / 2, ch / 2, (cl * 0.95) / 2))); // Slightly shorter hit box to prevent bumper sticking
             this.body.position.set(x, 2, z);
             if (team === 'P1') this.body.quaternion.setFromEuler(0, Math.PI, 0);
             this.body.angularFactor.set(0, 1, 0);
@@ -250,11 +254,25 @@ export function useParkingPhysics(container: HTMLElement, options: {
 
         driveToEntry() {
             const dz = this.targetEntryZ - this.body.position.z;
-            if (Math.abs(dz) < 1.0) { this.isEntering = false; this.body.velocity.set(0, 0, 0); return; }
-            const fwd = new CANNON.Vec3(0, 0, 1); this.body.quaternion.vmult(fwd, fwd);
-            const sMult = this.team === 'P1' ? options.p1Speed.value : options.p2Speed.value;
-            // Slightly lower force for entry to prevent tunneling through barriers
-            this.body.applyForce(fwd.scale(DRIVE_FORCE * 1.2 * this.entrySpeedMult * sMult), new CANNON.Vec3(0, 0, 0));
+            const isP1 = this.team === 'P1';
+            const direction = isP1 ? -1 : 1;
+
+            // Lock orientation/physics during entry to prevent spinning or reversing from collisions
+            this.body.quaternion.setFromEuler(0, isP1 ? Math.PI : 0, 0);
+            this.body.angularVelocity.set(0, 0, 0);
+
+            // If we've reached or passed the target Z in the correct direction
+            if ((direction === -1 && dz > -0.5) || (direction === 1 && dz < 0.5)) {
+                this.isEntering = false;
+                this.body.velocity.set(0, 0, 0);
+                this.body.force.set(0, 0, 0); // Explicitly kill engine force
+                return;
+            }
+
+            const speed = 1.5;
+            // Use world-space direction instead of local forward to ensure it always moves towards parking
+            const forceVec = new CANNON.Vec3(0, 0, direction * DRIVE_FORCE * 1.2 * this.entrySpeedMult * speed);
+            this.body.applyForce(forceVec, new CANNON.Vec3(0, 0, 0));
             this.body.velocity.x *= 0.95;
         }
 
@@ -265,8 +283,8 @@ export function useParkingPhysics(container: HTMLElement, options: {
             const cAng = Math.atan2(fwd.x, fwd.z); let diff = tAng - cAng;
             while (diff > Math.PI) diff -= Math.PI * 2; while (diff < -Math.PI) diff += Math.PI * 2;
             this.body.angularVelocity.y = diff * 5;
-            const sMult = this.team === 'P1' ? options.p1Speed.value : options.p2Speed.value;
-            if (Math.cos(diff) > 0.1) this.body.applyForce(fwd.scale(DRIVE_FORCE * sMult), new CANNON.Vec3(0, 0, 0));
+            const speed = 1.8; // Fixed fast speed for exit
+            if (Math.cos(diff) > 0.1) this.body.applyForce(fwd.scale(DRIVE_FORCE * speed), new CANNON.Vec3(0, 0, 0));
         }
 
         driveToTarget() {
@@ -283,6 +301,13 @@ export function useParkingPhysics(container: HTMLElement, options: {
             let diff = tAng - cAng;
             while (diff > Math.PI) diff -= Math.PI * 2; while (diff < -Math.PI) diff += Math.PI * 2;
             const absDiff = Math.abs(diff);
+
+            // --- Wall Avoidance (Nudge away from Z boundaries) ---
+            const zBound = (container.clientHeight > container.clientWidth ? VIEW_SIZE / ((container.clientWidth / container.clientHeight) * 1.5) : VIEW_SIZE) * 0.9;
+            if (Math.abs(this.body.position.z) > zBound) {
+                const nudge = this.body.position.z > 0 ? -100000 : 100000;
+                this.body.applyForce(new CANNON.Vec3(0, 0, nudge), new CANNON.Vec3(0, 0, 0));
+            }
 
             // Only finish if close AND reasonably aligned (not parking backwards)
             if (d < 1.8 && absDiff < 1.2) { this.finishParking(tar); return; }
@@ -321,8 +346,8 @@ export function useParkingPhysics(container: HTMLElement, options: {
             }
 
             const side = new CANNON.Vec3(0, 1, 0).cross(fwd, new CANNON.Vec3());
-            this.body.velocity.x -= side.x * this.body.velocity.dot(side) * 0.97;
-            this.body.velocity.z -= side.z * this.body.velocity.dot(side) * 0.97;
+            this.body.velocity.x -= side.x * this.body.velocity.dot(side) * 0.8; // Reduced damping to allow more sliding
+            this.body.velocity.z -= side.z * this.body.velocity.dot(side) * 0.8;
         }
 
         boost() { if (this.isParkedFinal) return; const f = new CANNON.Vec3(0, 0, 1); this.body.quaternion.vmult(f, f); this.body.applyImpulse(f.scale(BOOST_IMPULSE), new CANNON.Vec3(0, 0, 0)); }
@@ -340,10 +365,14 @@ export function useParkingPhysics(container: HTMLElement, options: {
             if (this.targetSpot!.occupied) { this.isParking = false; this.targetSpot = null; return; }
             this.targetSpot!.occupied = true; this.isParkedFinal = true; this.isParking = false;
             this.body.position.copy(tar); this.body.velocity.set(0, 0, 0); this.body.angularVelocity.set(0, 0, 0);
-            this.body.quaternion.setFromEuler(0, this.team === 'P1' ? Math.PI : 0, 0);
             this.body.type = CANNON.Body.STATIC; this.body.mass = 0; this.body.updateMassProperties();
-            if (this.team === 'P1') { scores.P1++; } else { scores.P2++; }
-            updateRoadScores(this.team);
+            if (this.team === 'P1') {
+                scores.P1++;
+                options.onScore('P1', scores.P1);
+            } else {
+                scores.P2++;
+                options.onScore('P2', scores.P2);
+            }
             options.onParkSuccess();
         }
 
@@ -355,27 +384,138 @@ export function useParkingPhysics(container: HTMLElement, options: {
         }
     }
 
-    function updateRoadScores(scoringTeam?: 'P1' | 'P2') {
-        const tex1 = (p1Label.material as THREE.MeshBasicMaterial).map;
-        if (tex1) {
-            const ctx = (tex1.image as HTMLCanvasElement).getContext('2d')!;
-            ctx.clearRect(0, 0, 512, 128); ctx.fillStyle = '#2563eb'; ctx.font = 'bold 70px Arial'; ctx.textAlign = 'center';
-            ctx.fillText(`P1 SCORE: ${scores.P1}`, 256, 64); tex1.needsUpdate = true;
+    // --- Stray Dog Class ---
+    class StrayDog {
+        mesh: THREE.Group; body: CANNON.Body;
+        legs: THREE.Mesh[] = [];
+        tail: THREE.Mesh | null = null;
+        target = new THREE.Vector3();
+        state: 'idle' | 'walking' = 'idle';
+        timer = 0;
+
+        constructor(x: number, z: number, color: number) {
+            this.mesh = new THREE.Group();
+            const dMat = new THREE.MeshStandardMaterial({ color, roughness: 0.8 });
+            const dr = 0.5; // Dog roundness radius
+
+            // Body (Rounded)
+            const bodyGeo = createRoundedExtrude(1.8, 3.0, 1.2, dr);
+            const body = new THREE.Mesh(bodyGeo, dMat);
+            body.rotation.x = Math.PI / 2; body.position.y = 1.3; body.castShadow = true;
+            this.mesh.add(body);
+
+            // Head (Rounded)
+            const headGeo = createRoundedExtrude(1.2, 1.2, 1.2, dr * 0.8);
+            const head = new THREE.Mesh(headGeo, dMat);
+            head.rotation.x = Math.PI / 2; head.position.set(0, 2.0, 1.5); head.castShadow = true;
+            this.mesh.add(head);
+
+            // Ears (Small Rounded)
+            const eMat = new THREE.MeshStandardMaterial({ color: 0x5d2e0d });
+            const earGeo = createRoundedExtrude(0.4, 0.4, 0.8, 0.15);
+            const earL = new THREE.Mesh(earGeo, eMat);
+            earL.rotation.x = Math.PI / 2; earL.position.set(0.5, 2.6, 1.5); this.mesh.add(earL);
+            const earR = new THREE.Mesh(earGeo, eMat);
+            earR.rotation.x = Math.PI / 2; earR.position.set(-0.5, 2.6, 1.5); this.mesh.add(earR);
+
+            // Legs (Rounded)
+            const lGeo = createRoundedExtrude(0.5, 0.5, 1.0, 0.25);
+            const lPos = [[0.6, 0.5, 1.0], [-0.6, 0.5, 1.0], [0.6, 0.5, -1.0], [-0.6, 0.5, -1.0]];
+            lPos.forEach(p => {
+                const l = new THREE.Mesh(lGeo, dMat);
+                l.rotation.x = Math.PI / 2; l.position.set(p[0], p[1], p[2]);
+                this.mesh.add(l);
+                this.legs.push(l);
+            });
+
+            // Tail (Rounded & Wagging)
+            const tailGeo = createRoundedExtrude(0.3, 1.0, 0.3, 0.1);
+            this.tail = new THREE.Mesh(tailGeo, dMat);
+            this.tail.rotation.x = Math.PI / 2;
+            this.tail.position.set(0, 1.5, -1.5); // At the back
+            this.mesh.add(this.tail);
+
+            scene.add(this.mesh);
+            this.body = new CANNON.Body({ mass: 10, material: matObstacle });
+            this.body.addShape(new CANNON.Box(new CANNON.Vec3(0.9, 0.6, 1.5)));
+            this.body.position.set(x, 0.5, z);
+            this.body.collisionFilterGroup = GROUP_OBSTACLE;
+            this.body.collisionFilterMask = GROUP_GROUND | GROUP_CAR | GROUP_OBSTACLE;
+            world.addBody(this.body);
+            this.body.angularFactor.set(0, 1, 0); // Lock rotation to Y axis (no flipping)
+            this.body.quaternion.set(0, 0, 0, 1); // Ensure starting upright
+            this.pickNewTarget();
         }
-        const tex2 = (p2Label.material as THREE.MeshBasicMaterial).map;
-        if (tex2) {
-            const ctx = (tex2.image as HTMLCanvasElement).getContext('2d')!;
-            ctx.clearRect(0, 0, 512, 128); ctx.fillStyle = '#dc2626'; ctx.font = 'bold 70px Arial'; ctx.textAlign = 'center';
-            ctx.fillText(`P2 SCORE: ${scores.P2}`, 256, 64); tex2.needsUpdate = true;
+
+        pickNewTarget() {
+            const w = container.clientWidth, h = container.clientHeight;
+            const aspect = w / h;
+            const adaptiveSize = h > w ? VIEW_SIZE / (aspect * 1.5) : VIEW_SIZE;
+            const limitX = adaptiveSize * aspect;
+            const limitZ = adaptiveSize * (1 - 120 / h);
+
+            this.target.set(
+                (Math.random() - 0.5) * limitX * 1.6,
+                0,
+                (Math.random() - 0.5) * limitZ * 1.6
+            );
+            this.state = 'walking';
+            this.timer = 150 + Math.random() * 300;
         }
-        if (scoringTeam) options.onScore(scoringTeam, scores.P1 + scores.P2);
+
+        update() {
+            this.mesh.position.copy(this.body.position as any);
+            this.mesh.quaternion.copy(this.body.quaternion as any);
+
+            if (this.state === 'walking') {
+                const diff = this.target.clone().sub(this.mesh.position);
+                diff.y = 0;
+                if (diff.length() < 2 || this.timer <= 0) {
+                    this.state = 'idle';
+                    this.timer = 60 + Math.random() * 120;
+                    this.body.velocity.set(0, 0, 0);
+                } else {
+                    this.timer--;
+                    const desiredYaw = Math.atan2(diff.x, diff.z);
+                    const euler = new CANNON.Vec3();
+                    this.body.quaternion.toEuler(euler);
+                    const curYaw = euler.y;
+                    let yawDiff = desiredYaw - curYaw;
+                    while (yawDiff > Math.PI) yawDiff -= Math.PI * 2;
+                    while (yawDiff < -Math.PI) yawDiff += Math.PI * 2;
+
+                    this.body.angularVelocity.y = yawDiff * 5;
+                    const fwd = new CANNON.Vec3(0, 0, 1);
+                    this.body.quaternion.vmult(fwd, fwd);
+                    this.body.velocity.x = fwd.x * 8;
+                    this.body.velocity.z = fwd.z * 8;
+
+                    this.legs.forEach((l, i) => {
+                        l.position.y = 0.5 + Math.sin(Date.now() * 0.01 + i) * 0.2;
+                    });
+                }
+            } else {
+                this.timer--;
+                if (this.timer <= 0) this.pickNewTarget();
+            }
+
+            // Always wag the tail if it's happy (walking) or just alive
+            if (this.tail) {
+                const speed = this.state === 'walking' ? 0.02 : 0.01;
+                this.tail.rotation.z = Math.sin(Date.now() * speed) * 0.5;
+            }
+        }
+
+        destroy() {
+            scene.remove(this.mesh);
+            world.removeBody(this.body);
+        }
     }
-
-
 
     function initScene() {
         scene = new THREE.Scene(); scene.background = new THREE.Color(0x050505); scene.fog = new THREE.Fog(0x050505, 150, 400);
         renderer = new THREE.WebGLRenderer({ antialias: true, canvas: container as HTMLCanvasElement });
+        container.style.touchAction = 'none';
         renderer.setSize(container.clientWidth, container.clientHeight);
         renderer.shadowMap.enabled = true;
 
@@ -398,20 +538,22 @@ export function useParkingPhysics(container: HTMLElement, options: {
         if (world.solver instanceof CANNON.GSSolver) world.solver.iterations = 50; // Increased iterations
         world.allowSleep = false;
         world.addContactMaterial(new CANNON.ContactMaterial(matCar, matGround, { friction: 0.05, restitution: 0.1 }));
-        world.addContactMaterial(new CANNON.ContactMaterial(matCar, matObstacle, { friction: 0.1, restitution: 0.1 })); // Lower friction for sliding
-        world.addContactMaterial(new CANNON.ContactMaterial(matCar, matCar, { friction: 0.5, restitution: 0.0 }));
+        world.addContactMaterial(new CANNON.ContactMaterial(matCar, matObstacle, { friction: 0.02, restitution: 0.1 })); // Very slippery
+        world.addContactMaterial(new CANNON.ContactMaterial(matCar, matCar, { friction: 0.05, restitution: 0.0 })); // Prevent rear-sticking
 
         const gMat = new THREE.MeshStandardMaterial({ color: 0x1a1a1a, roughness: 0.8, metalness: 0 });
         groundMesh = new THREE.Mesh(new THREE.PlaneGeometry(1000, 1000), gMat); groundMesh.rotation.x = -Math.PI / 2; groundMesh.receiveShadow = true; scene.add(groundMesh);
         groundBody = new CANNON.Body({ mass: 0, material: matGround }); groundBody.addShape(new CANNON.Plane()); groundBody.quaternion.setFromEuler(-Math.PI / 2, 0, 0); world.addBody(groundBody);
 
-        addYellowLines(-200, 200);
+        addYellowLines(-200, 200, -15, 15);
 
-        p1Label = createRoadLabel('P1 SCORE: 0', '#2563eb', 15); p1Label.position.set(-30, 0.1, 15); scene.add(p1Label);
-        p2Label = createRoadLabel('P2 SCORE: 0', '#dc2626', 15); p2Label.position.set(30, 0.1, -15); scene.add(p2Label);
-
-        // Walls (Boundary) - Neon Pink for visibility
-        const wallMat = new THREE.MeshBasicMaterial({ color: 0xff00ff, transparent: true, opacity: 0.6, depthTest: false, depthWrite: false });
+        // Walls (Boundary) - Sharing style with barriers
+        const wallMat = new THREE.MeshStandardMaterial({
+            color: 0xff00ff,
+            transparent: true,
+            opacity: 0.3,
+            visible: DEBUG_WALLS
+        });
         for (let i = 0; i < 4; i++) {
             const body = new CANNON.Body({ mass: 0, material: matGround });
             body.collisionFilterGroup = GROUP_WALL;
@@ -420,6 +562,7 @@ export function useParkingPhysics(container: HTMLElement, options: {
 
             const mesh = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), wallMat);
             mesh.renderOrder = 999;
+            mesh.raycast = () => { }; // Fix: Walls should not block clicks
             scene.add(mesh);
             walls.push({ body, mesh });
         }
@@ -463,6 +606,7 @@ export function useParkingPhysics(container: HTMLElement, options: {
 
     // Dynamic wall shrinking variables step
     let wallScale = 5.0;
+    let lastReshapeScale = 0;
 
     function updateWalls() {
         if (walls.length !== 4) return;
@@ -478,53 +622,74 @@ export function useParkingPhysics(container: HTMLElement, options: {
         }
 
         const limitX = (adaptiveSize * aspect + 0.5) * wallScale;
-        const limitZ = (adaptiveSize + 0.5) * wallScale;
+        // LimitZ should precisely stop at the 60px function area. 
+        // Offset = (60px / h) * (adaptiveSize * 2) = 120 * adaptiveSize / h
+        const limitZ = (adaptiveSize * (1 - 120 / h) + 0.5) * wallScale;
         const thick = 50; const wallH = 100; const visibleThick = 1.0;
+
+        const needsReshape = Math.abs(wallScale - lastReshapeScale) > 0.1;
+        if (needsReshape) lastReshapeScale = wallScale;
 
         // North
         walls[0].body.position.set(0, 0, -limitZ - thick / 2);
-        walls[0].body.shapes = []; walls[0].body.addShape(new CANNON.Box(new CANNON.Vec3(limitX + thick, wallH / 2, thick / 2)));
+        if (needsReshape) {
+            walls[0].body.shapes = [];
+            walls[0].body.addShape(new CANNON.Box(new CANNON.Vec3(limitX + thick, wallH / 2, thick / 2)));
+        }
         walls[0].mesh.position.set(0, wallH / 2, -limitZ + visibleThick / 2);
         walls[0].mesh.scale.set(limitX * 2 + 2, wallH, visibleThick);
 
         // South
         walls[1].body.position.set(0, 0, limitZ + thick / 2);
-        walls[1].body.shapes = []; walls[1].body.addShape(new CANNON.Box(new CANNON.Vec3(limitX + thick, wallH / 2, thick / 2)));
+        if (needsReshape) {
+            walls[1].body.shapes = [];
+            walls[1].body.addShape(new CANNON.Box(new CANNON.Vec3(limitX + thick, wallH / 2, thick / 2)));
+        }
         walls[1].mesh.position.set(0, wallH / 2, limitZ - visibleThick / 2);
         walls[1].mesh.scale.set(limitX * 2 + 2, wallH, visibleThick);
 
         // West
         walls[2].body.position.set(-limitX - thick / 2, 0, 0);
-        walls[2].body.shapes = []; walls[2].body.addShape(new CANNON.Box(new CANNON.Vec3(thick / 2, wallH / 2, limitZ + thick)));
+        if (needsReshape) {
+            walls[2].body.shapes = [];
+            walls[2].body.addShape(new CANNON.Box(new CANNON.Vec3(thick / 2, wallH / 2, limitZ + thick)));
+        }
         walls[2].mesh.position.set(-limitX + visibleThick / 2, wallH / 2, 0);
         walls[2].mesh.scale.set(visibleThick, wallH, limitZ * 2 + 2);
 
         // East
         walls[3].body.position.set(limitX + thick / 2, 0, 0);
-        walls[3].body.shapes = []; walls[3].body.addShape(new CANNON.Box(new CANNON.Vec3(thick / 2, wallH / 2, limitZ + thick)));
+        if (needsReshape) {
+            walls[3].body.shapes = [];
+            walls[3].body.addShape(new CANNON.Box(new CANNON.Vec3(thick / 2, wallH / 2, limitZ + thick)));
+        }
         walls[3].mesh.position.set(limitX - visibleThick / 2, wallH / 2, 0);
         walls[3].mesh.scale.set(visibleThick, wallH, limitZ * 2 + 2);
     }
 
-    function addYellowLines(zStart: number, zEnd: number) {
+    function addYellowLines(zStart: number, zEnd: number, gapZMin: number, gapZMax: number) {
         const thickness = 1.0;
         const separation = 2.5; // Wider gap
         const mat = new THREE.MeshBasicMaterial({ color: 0xff9900 }); // Warmer orange-yellow
 
-        // First Segment (from zStart to parking zone start)
-        const len1 = -15 - zStart;
+        // First Segment (from zStart to gapZMin)
+        const len1 = gapZMin - zStart;
         if (len1 > 0) {
             const g1 = new THREE.PlaneGeometry(thickness, len1);
-            const l1_1 = new THREE.Mesh(g1, mat); l1_1.rotation.x = -Math.PI / 2; l1_1.position.set(-separation / 2, 0.06, zStart + len1 / 2); scene.add(l1_1);
-            const l1_2 = new THREE.Mesh(g1, mat); l1_2.rotation.x = -Math.PI / 2; l1_2.position.set(separation / 2, 0.06, zStart + len1 / 2); scene.add(l1_2);
+            const l1_1 = new THREE.Mesh(g1, mat); l1_1.rotation.x = -Math.PI / 2; l1_1.position.set(-separation / 2, 0.06, zStart + len1 / 2);
+            l1_1.name = 'road_marking'; scene.add(l1_1);
+            const l1_2 = new THREE.Mesh(g1, mat); l1_2.rotation.x = -Math.PI / 2; l1_2.position.set(separation / 2, 0.06, zStart + len1 / 2);
+            l1_2.name = 'road_marking'; scene.add(l1_2);
         }
 
-        // Second Segment (from parking zone end to zEnd)
-        const len2 = zEnd - 15;
+        // Second Segment (from gapZMax to zEnd)
+        const len2 = zEnd - gapZMax;
         if (len2 > 0) {
             const g2 = new THREE.PlaneGeometry(thickness, len2);
-            const l2_1 = new THREE.Mesh(g2, mat); l2_1.rotation.x = -Math.PI / 2; l2_1.position.set(-separation / 2, 0.06, 15 + len2 / 2); scene.add(l2_1);
-            const l2_2 = new THREE.Mesh(g2, mat); l2_2.rotation.x = -Math.PI / 2; l2_2.position.set(separation / 2, 0.06, 15 + len2 / 2); scene.add(l2_2);
+            const l2_1 = new THREE.Mesh(g2, mat); l2_1.rotation.x = -Math.PI / 2; l2_1.position.set(-separation / 2, 0.06, gapZMax + len2 / 2);
+            l2_1.name = 'road_marking'; scene.add(l2_1);
+            const l2_2 = new THREE.Mesh(g2, mat); l2_2.rotation.x = -Math.PI / 2; l2_2.position.set(separation / 2, 0.06, gapZMax + len2 / 2);
+            l2_2.name = 'road_marking'; scene.add(l2_2);
         }
     }
 
@@ -533,98 +698,133 @@ export function useParkingPhysics(container: HTMLElement, options: {
         const list = vocabularyStore.currentList.value;
         if (list.length === 0) return;
         const word = list[Math.floor(Math.random() * list.length)];
-        gameState.word = word.text.split('');
+        gameState.word = (word.a || word.q).split('');
+        gameState.currentQ = word.q;
+        gameState.currentExp = (word.exps && word.exps.length > 0) ? `. ${word.exps[0]}` : '';
         gameState.nextSlotIndex = 0;
         gameState.isGameOver = false;
         gameState.isClearing = false;
 
         spots.length = 0;
+        const w = container.clientWidth;
+        const h = container.clientHeight;
+        const aspect = w / h;
+        const adaptiveSize = h > w ? VIEW_SIZE / (aspect * 1.5) : VIEW_SIZE;
+
+        const toRemove: THREE.Object3D[] = [];
+        scene.traverse(child => {
+            if (child.name && (child.name.startsWith('spot_') || child.name === 'road_marking')) {
+                toRemove.push(child);
+            }
+        });
+        toRemove.forEach(obj => scene.remove(obj));
+
         const numSpots = gameState.word.length;
-        const sptSpacing = 12;
+        const fieldWidth = (adaptiveSize * aspect * 2) * 0.9;
+
+        const sptSpacingX = 12;
+        const sptSpacingZ = 16;
+        const maxPerRow = Math.max(1, Math.floor(fieldWidth / sptSpacingX));
+        const numRows = Math.ceil(numSpots / maxPerRow);
         const spotW = 7; const spotL = 11;
+
+        let minZ = 0, maxZ = 0;
+
         for (let i = 0; i < numSpots; i++) {
-            const x = (i - (numSpots - 1) / 2) * sptSpacing;
-            spots.push({ char: gameState.word[i], occupied: false, x, z: 0, winnerTeam: null });
+            const row = Math.floor(i / maxPerRow);
+            const col = i % maxPerRow;
+            const spotsInThisRow = (row === numRows - 1) ? (numSpots % maxPerRow || maxPerRow) : maxPerRow;
+            const x = (col - (spotsInThisRow - 1) / 2) * sptSpacingX;
+            const z = (row - (numRows - 1) / 2) * sptSpacingZ;
+
+            if (i === 0) { minZ = z; maxZ = z; }
+            else { minZ = Math.min(minZ, z); maxZ = Math.max(maxZ, z); }
+
+            spots.push({ char: gameState.word[i], occupied: false, x, z, winnerTeam: null });
 
             const lineMat = new THREE.MeshStandardMaterial({ color: 0xffffff, transparent: true, opacity: 0.6, emissive: 0xffffff, emissiveIntensity: 0.2 });
             const top = new THREE.Mesh(new THREE.PlaneGeometry(spotW, 0.3), lineMat);
-            top.rotation.x = -Math.PI / 2; top.position.set(x, 0.07, -spotL / 2); top.name = `spot_frame_${i}_t`; top.receiveShadow = true; scene.add(top);
+            top.rotation.x = -Math.PI / 2; top.position.set(x, 0.07, z - spotL / 2); top.name = `spot_frame_${i}_t`; scene.add(top);
             const bottom = new THREE.Mesh(new THREE.PlaneGeometry(spotW, 0.3), lineMat);
-            bottom.rotation.x = -Math.PI / 2; bottom.position.set(x, 0.07, spotL / 2); bottom.name = `spot_frame_${i}_b`; bottom.receiveShadow = true; scene.add(bottom);
+            bottom.rotation.x = -Math.PI / 2; bottom.position.set(x, 0.07, z + spotL / 2); bottom.name = `spot_frame_${i}_b`; scene.add(bottom);
             const left = new THREE.Mesh(new THREE.PlaneGeometry(0.3, spotL), lineMat);
-            left.rotation.x = -Math.PI / 2; left.position.set(x - spotW / 2, 0.07, 0); left.name = `spot_frame_${i}_l`; left.receiveShadow = true; scene.add(left);
+            left.rotation.x = -Math.PI / 2; left.position.set(x - spotW / 2, 0.07, z); left.name = `spot_frame_${i}_l`; scene.add(left);
             const right = new THREE.Mesh(new THREE.PlaneGeometry(0.3, spotL), lineMat);
-            right.rotation.x = -Math.PI / 2; right.position.set(x + spotW / 2, 0.07, 0); right.name = `spot_frame_${i}_r`; right.receiveShadow = true; scene.add(right);
+            right.rotation.x = -Math.PI / 2; right.position.set(x + spotW / 2, 0.07, z); right.name = `spot_frame_${i}_r`; scene.add(right);
 
             const lbl = new THREE.Mesh(new THREE.PlaneGeometry(5.5, 5.5), new THREE.MeshStandardMaterial({
                 map: createTextTexture(gameState.word[i], '#00000000', 'rgba(255,255,255,0.4)'),
-                transparent: true,
-                emissive: 0xffffff,
-                emissiveIntensity: 0.1
+                transparent: true, emissive: 0xffffff, emissiveIntensity: 0.1
             }));
-            lbl.name = `spot_label_${i}`; lbl.rotation.x = -Math.PI / 2; lbl.position.set(x, 0.08, 0); lbl.raycast = () => { };
-            lbl.receiveShadow = true;
-            scene.add(lbl);
+            lbl.name = `spot_label_${i}`; lbl.rotation.x = -Math.PI / 2; lbl.position.set(x, 0.08, z); lbl.raycast = () => { }; scene.add(lbl);
+        }
+
+        // Add dynamic road markings
+        const gapPadding = 10;
+        addYellowLines(-200, 200, minZ - gapPadding, maxZ + gapPadding);
+
+        const dogColors = [0xffffff, 0xffcc00]; // White and Yellow
+        for (let i = 0; i < dogColors.length; i++) {
+            dogs.push(new StrayDog((Math.random() - 0.5) * 50, (Math.random() - 0.5) * 30, dogColors[i]));
         }
 
         for (let i = 0; i < 15; i++) {
             const s = 2 + Math.random() * 3;
-            const pos = new CANNON.Vec3((Math.random() - 0.5) * 110, s / 2, (Math.random() - 0.5) * 30);
+            const pos = new CANNON.Vec3((Math.random() - 0.5) * 110, s / 2, (Math.random() - 0.5) * (maxZ - minZ + 20));
             const mesh = new THREE.Mesh(new THREE.BoxGeometry(s, s, s), new THREE.MeshStandardMaterial({
-                color: getRandomDarkWarmColor(),
-                metalness: 0.6,
-                roughness: 0.4
+                color: getRandomDarkWarmColor(), metalness: 0.6, roughness: 0.4
             }));
-            mesh.castShadow = true; mesh.receiveShadow = true;
-            scene.add(mesh);
+            mesh.castShadow = true; mesh.receiveShadow = true; scene.add(mesh);
             const bb = new CANNON.Body({ mass: OBSTACLE_MASS, material: matObstacle, position: pos });
             bb.addShape(new CANNON.Box(new CANNON.Vec3(s / 2, s / 2, s / 2))); world.addBody(bb);
             obstacles.push({ mesh, body: bb });
         }
 
-        // Add Entry Barriers (Semi-transparent red walls)
-        const barrierHeight = 15;
-        const bThickness = 5;
-        const bMatMesh = new THREE.MeshStandardMaterial({ color: 0xff3333, transparent: true, opacity: 0.4 });
-        const bZPos = [10, -10]; // Closer to the spots to definitely block entry
+        // Add Entry Barriers
+        const barrierHeight = 15; const bThickness = 2; // Thinner barrier
+        const bMatMesh = new THREE.MeshStandardMaterial({
+            color: 0xff00ff,
+            transparent: true,
+            opacity: 0.3,
+            visible: DEBUG_WALLS
+        });
+        const bZPos = [maxZ + gapPadding, minZ - gapPadding]; // Align precisely with yellow line gaps
         bZPos.forEach(bz => {
             const body = new CANNON.Body({ mass: 0 });
             body.addShape(new CANNON.Box(new CANNON.Vec3(150, barrierHeight / 2, bThickness / 2)));
             body.position.set(0, barrierHeight / 2, bz);
-            body.collisionFilterGroup = GROUP_BARRIER;
-            body.collisionFilterMask = GROUP_CAR;
+            body.collisionFilterGroup = GROUP_BARRIER; body.collisionFilterMask = GROUP_CAR;
             world.addBody(body);
-
             const mesh = new THREE.Mesh(new THREE.BoxGeometry(300, barrierHeight, bThickness), bMatMesh);
             mesh.position.set(0, barrierHeight / 2, bz);
+            mesh.raycast = () => { }; // Fix: Barriers should not block clicks
             scene.add(mesh);
             entryBarriers.push({ mesh, body });
         });
 
-        spawnTeam('P1', 22, 0x0164e8); spawnTeam('P2', -22, 0xe81123);
+        spawnTeam('P1', maxZ + 22, 0x0164e8);
+        spawnTeam('P2', minZ - 22, 0xe81123);
 
-        // Speak word at start
-        options.onSpeak(gameState.word.join(''));
+        options.onSpeak(gameState.currentQ + gameState.currentExp);
     }
 
     function spawnTeam(t: 'P1' | 'P2', zBase: number, col: number) {
-        const isEnglish = gameState.word.some(c => /^[a-zA-Z]$/.test(c));
-        const charset = isEnglish ? ALPHA_CHARSET : ZHUYIN_CHARSET;
+        // Each team gets at least 4 cars, or 1.5x the word length (ceil)
+        const count = Math.max(4, Math.ceil(gameState.word.length * 1.5));
 
-        // Ensure characters are plentiful: 
-        // 2 copies of each character in the word per team + 4 random characters
-        const wordChars = [...gameState.word, ...gameState.word];
-        const randomChars = Array(4).fill(0).map(() => charset[Math.floor(Math.random() * charset.length)]);
-        const chars = [...wordChars, ...randomChars].sort(() => Math.random() - 0.5);
+        // Pick chars from word, then cycle/random to fill the count
+        const chars: string[] = [];
+        for (let i = 0; i < count; i++) {
+            chars.push(gameState.word[i % gameState.word.length]);
+        }
+        chars.sort(() => Math.random() - 0.5);
 
-        // Calculate safe spawn width based on current aspect
         const aspect = container.clientWidth / container.clientHeight;
         const adaptiveSize = container.clientHeight > container.clientWidth ? VIEW_SIZE / (aspect * 1.5) : VIEW_SIZE;
         const spawnLimitX = (adaptiveSize * aspect) * 0.8;
 
         chars.forEach((char, i) => {
             const spawnZ = t === 'P1' ? 140 : -140;
-            // Space out cars along X significantly to prevent spawn overlap
             const spacing = (spawnLimitX * 2) / (chars.length + 1);
             const spawnX = -spawnLimitX + (i + 1) * spacing + (Math.random() - 0.5) * 5;
 
@@ -653,7 +853,7 @@ export function useParkingPhysics(container: HTMLElement, options: {
             // Check absolute completion: All spots must be occupied
             if (spots.every(s => s.occupied)) {
                 gameState.isGameOver = true; gameState.gameOverTime = Date.now();
-                options.onSpeak(gameState.word.join(''));
+                options.onSpeak(gameState.currentQ);
             }
         } else if (!gameState.isClearing) {
             if (Date.now() - gameState.gameOverTime > 800) {
@@ -676,15 +876,25 @@ export function useParkingPhysics(container: HTMLElement, options: {
             c.update();
         });
 
+        dogs.forEach(d => d.update());
+
         // Apply drag force
         if (dragState.isDragging && dragState.car) {
-            const body = dragState.car.body;
-            // P-Controller for velocity to reach target
-            const speed = 10;
+            const car = dragState.car;
+            const body = car.body;
+            // P-Controller for linear velocity
+            const speed = 20;
             body.velocity.x = (dragState.targetPos.x - body.position.x) * speed;
             body.velocity.z = (dragState.targetPos.z - body.position.z) * speed;
-            body.angularVelocity.set(0, 0, 0); // Prevent spin
-            body.quaternion.setFromEuler(0, 0, 0); // Keep upright (optional, or just let it be)
+
+            if (!car.isParking) {
+                // If NOT parking, lock its orientation to the starting angle
+                body.angularVelocity.set(0, 0, 0);
+                body.quaternion.copy(dragState.startRot);
+            } else {
+                // If parking, let driveToTarget() handle the rotation logic.
+                // We don't zero angularVelocity here so the car keeps steering towards target.
+            }
         }
 
         // Also clamp obstacle velocities
@@ -702,12 +912,15 @@ export function useParkingPhysics(container: HTMLElement, options: {
         car: null as GameCar | null,
         isDragging: false,
         startPos: new THREE.Vector2(),
+        startRot: new CANNON.Quaternion(),
         targetPos: new THREE.Vector3(),
-        plane: new THREE.Plane(new THREE.Vector3(0, 1, 0), 0)
+        plane: new THREE.Plane(new THREE.Vector3(0, 1, 0), 0),
+        rect: null as DOMRect | null
     };
 
     function nextMission() {
         cars.forEach(c => { scene.remove(c.mesh); world.removeBody(c.body); }); cars.length = 0;
+        dogs.forEach(d => d.destroy()); dogs.length = 0;
         obstacles.forEach(o => { scene.remove(o.mesh); world.removeBody(o.body); }); obstacles.length = 0;
 
         const toRemove: THREE.Object3D[] = [];
@@ -733,27 +946,47 @@ export function useParkingPhysics(container: HTMLElement, options: {
     function onPointerDown(e: PointerEvent) {
         removeEntryBarriers();
         const rect = container.getBoundingClientRect();
+        dragState.rect = rect;
         const m = new THREE.Vector2(((e.clientX - rect.left) / rect.width) * 2 - 1, -((e.clientY - rect.top) / rect.height) * 2 + 1);
         dragState.startPos.set(e.clientX, e.clientY);
 
         const ray = new THREE.Raycaster(); ray.setFromCamera(m, camera);
         const hits = ray.intersectObjects(scene.children, true);
 
+        // More detailed Logging
+        console.log(`Click detected. Hits: ${hits.length}`);
+        hits.forEach((h, i) => console.log(` Hit ${i}: ${h.object.name || 'unnamed'} (Parent: ${h.object.parent?.name || 'none'})`));
+
+        let carFound = false;
         for (const h of hits) {
             let o: THREE.Object3D | null = h.object;
+            // Climb hierarchy to find carId on any hit object
             while (o && o.userData.carId === undefined && o.parent) o = o.parent;
-            if (o && o.userData.carId !== undefined) {
-                const c = cars.find(car => car.id === o!.userData.carId);
-                // Allow dragging if not entering, and NOT fully parked
-                if (c && !c.isEntering && !c.isParkedFinal) {
-                    dragState.car = c;
-                    dragState.isDragging = false; // Wait for move to confirm drag
 
-                    // Logic to find intersection with ground for initial target
-                    ray.ray.intersectPlane(dragState.plane, dragState.targetPos);
-                    break;
+            if (o && o.userData.carId !== undefined) {
+                const id = o.userData.carId;
+                const c = cars.find(car => car.id === id);
+                if (c) {
+                    console.log(`Found Car ID: ${id}, Team: ${c.team}, isEntering: ${c.isEntering}, isParkedFinal: ${c.isParkedFinal}, Z: ${c.body.position.z.toFixed(1)}`);
+
+                    // Allow interaction if not fully parked AND it has at least started to enter the main area
+                    // (abs Z < 135 means it's no longer way out in the spawn zone)
+                    if (!c.isParkedFinal && Math.abs(c.body.position.z) < 135) {
+                        dragState.car = c;
+                        dragState.isDragging = false;
+                        dragState.startRot.copy(c.body.quaternion); // Lock initial rotation
+                        ray.ray.intersectPlane(dragState.plane, dragState.targetPos);
+                        carFound = true;
+                        console.log("-> SUCCESS: Car selected for drag/click.");
+                        break;
+                    } else {
+                        console.log(`-> REJECTED: Car state or position not valid for interaction.`);
+                    }
                 }
             }
+        }
+        if (!carFound) {
+            console.warn("No car found at click position.");
         }
     }
 
@@ -766,7 +999,7 @@ export function useParkingPhysics(container: HTMLElement, options: {
         }
 
         if (dragState.isDragging) {
-            const rect = container.getBoundingClientRect();
+            const rect = dragState.rect || container.getBoundingClientRect();
             const m = new THREE.Vector2(((e.clientX - rect.left) / rect.width) * 2 - 1, -((e.clientY - rect.top) / rect.height) * 2 + 1);
             const ray = new THREE.Raycaster(); ray.setFromCamera(m, camera);
             ray.ray.intersectPlane(dragState.plane, dragState.targetPos);
@@ -780,7 +1013,7 @@ export function useParkingPhysics(container: HTMLElement, options: {
         }
     }
 
-    function onPointerUp(e: PointerEvent) {
+    function onPointerUp() {
         if (dragState.car) {
             if (!dragState.isDragging) {
                 // It was a click! Execute original click logic

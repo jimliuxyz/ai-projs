@@ -1,50 +1,82 @@
 [
     {
-        "text": "cat",
-        "translation": "貓",
-        "category": "animal",
-        "example": "A small cat"
+        "q": "cat",
+        "t": "貓",
+        "tags": [
+            "animal"
+        ],
+        "exps": [
+            "A small cat"
+        ]
     },
     {
-        "text": "dog",
-        "translation": "狗",
-        "category": "animal",
-        "example": "A bark dog"
+        "q": "dog",
+        "t": "狗",
+        "tags": [
+            "animal"
+        ],
+        "exps": [
+            "A bark dog"
+        ]
     },
     {
-        "text": "bird",
-        "translation": "鳥",
-        "category": "animal",
-        "example": "A blue bird"
+        "q": "bird",
+        "t": "鳥",
+        "tags": [
+            "animal"
+        ],
+        "exps": [
+            "A blue bird"
+        ]
     },
     {
-        "text": "lion",
-        "translation": "獅子",
-        "category": "animal",
-        "example": "A king lion"
+        "q": "lion",
+        "t": "獅子",
+        "tags": [
+            "animal"
+        ],
+        "exps": [
+            "A king lion"
+        ]
     },
     {
-        "text": "tiger",
-        "translation": "老虎",
-        "category": "animal",
-        "example": "A fast tiger"
+        "q": "tiger",
+        "t": "老虎",
+        "tags": [
+            "animal"
+        ],
+        "exps": [
+            "A fast tiger"
+        ]
     },
     {
-        "text": "monkey",
-        "translation": "猴子",
-        "category": "animal",
-        "example": "A funny monkey"
+        "q": "monkey",
+        "t": "猴子",
+        "tags": [
+            "animal"
+        ],
+        "exps": [
+            "A funny monkey"
+        ]
     },
     {
-        "text": "rabbit",
-        "translation": "兔子",
-        "category": "animal",
-        "example": "A long-eared rabbit"
+        "q": "rabbit",
+        "t": "兔子",
+        "tags": [
+            "animal"
+        ],
+        "exps": [
+            "A long-eared rabbit"
+        ]
     },
     {
-        "text": "elephant",
-        "translation": "大象",
-        "category": "animal",
-        "example": "A huge elephant"
+        "q": "elephant",
+        "t": "大象",
+        "tags": [
+            "animal"
+        ],
+        "exps": [
+            "A huge elephant"
+        ]
     }
 ]

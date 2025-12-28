@@ -1,5 +1,6 @@
 import { ref } from 'vue';
 import { vocabularyStore } from '../store/vocabulary';
+import type { Word } from '../data/words';
 
 export interface ParkingSlot {
     char: string;
@@ -15,7 +16,7 @@ export interface Car {
 }
 
 export function useParkingGame(callbacks?: { onPerfect?: () => void, onWrong?: () => void }) {
-    const currentWord = ref({ text: '', translation: '' });
+    const currentWord = ref<Partial<Word>>({ q: '', t: '' });
     const slots = ref<ParkingSlot[]>([]);
     const nextSlotIndex = ref(0);
     const p1Hand = ref<Car[]>([]);
@@ -33,7 +34,7 @@ export function useParkingGame(callbacks?: { onPerfect?: () => void, onWrong?: (
         currentWord.value = word;
 
         // Preserve case from word
-        slots.value = word.text.split('').map(char => ({
+        slots.value = word.q.split('').map(char => ({
             char: char, // Use original case
             owner: null
         }));
@@ -46,7 +47,7 @@ export function useParkingGame(callbacks?: { onPerfect?: () => void, onWrong?: (
     };
 
     const generateHands = () => {
-        const wordText = currentWord.value.text; // Original case
+        const wordText = currentWord.value.q!; // Original case
         const requiredChars = wordText.split('');
 
         // Determine script for noise
