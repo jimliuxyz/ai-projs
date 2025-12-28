@@ -14,11 +14,11 @@ const currentGame = ref<string | null>(window.location.hash.replace('#/', '') ||
 const showVocabPicker = ref(false);
 
 const games = [
+    { id: 'parking-jam', name: 'Parking Jam', desc: 'Race to park cars!', icon: '🚗' },
     { id: 'falling-words', name: 'Star Words', desc: 'Catch the words in space!', icon: '🚀' },
     { id: 'spelling-mode', name: 'Spell Master', desc: 'Spell words letter by letter!', icon: '🛸' },
     { id: 'duel-mode', name: 'Duel', desc: '2-Player Battle!', icon: '⚔️' },
     { id: 'code-knight', name: 'Code Knight', desc: 'Control by your voice!', icon: '🛡️' },
-    { id: 'parking-jam', name: 'Parking Jam', desc: 'Race to park cars!', icon: '🚗' },
     { id: 'coming-soon', name: 'More Games', desc: 'Coming Soon...', icon: '🔐' }
 ];
 

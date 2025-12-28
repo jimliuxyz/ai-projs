@@ -2,6 +2,10 @@
 import { onMounted, ref } from 'vue';
 import { useParkingPhysics } from '../composables/useParkingPhysics';
 import { useAudio } from '../composables/useAudio';
+import CarCustomizeDialog from './CarCustomizeDialog.vue';
+
+const showP1Settings = ref(false);
+const showP2Settings = ref(false);
 
 const emit = defineEmits(['exit']);
 const { speak, playTone, playWrong } = useAudio();
@@ -44,20 +48,34 @@ onMounted(() => {
         <canvas ref="canvasRef" class="webgl"></canvas>
         
         <!-- P2 Function Area (Top) -->
+        <!-- NOTE: Both P1 & P2 use the IDENTICAL order: [Controls] then [Score]. -->
+        <!-- Because P2 is rotated 180deg, the elements naturally flip so that P2 -->
+        <!-- also sees [Controls] on their LEFT and [Score] on their RIGHT. -->
         <div class="function-area p2">
             <div class="ctrl-group">
+                <button class="icon-btn" @click="showP2Settings = true">⚙️</button>
                 <input type="range" v-model.number="p2Speed" min="0.5" max="3.0" step="0.1" class="speed-slider">
             </div>
-            <div class="score-display">{{ p2Score }}</div>
+            <div class="score-display">
+                {{ p2Score }}
+                <span v-if="p2Score > p1Score" class="trophy">🏆</span>
+            </div>
         </div>
 
         <!-- P1 Function Area (Bottom) -->
         <div class="function-area p1">
             <div class="ctrl-group">
+                <button class="icon-btn" @click="showP1Settings = true">⚙️</button>
                 <input type="range" v-model.number="p1Speed" min="0.5" max="3.0" step="0.1" class="speed-slider">
             </div>
-            <div class="score-display">{{ p1Score }}</div>
+            <div class="score-display">
+                {{ p1Score }}
+                <span v-if="p1Score > p2Score" class="trophy">🏆</span>
+            </div>
         </div>
+
+        <CarCustomizeDialog v-model="showP1Settings" team="P1" />
+        <CarCustomizeDialog v-model="showP2Settings" team="P2" />
     </div>
 </template>
 
@@ -84,7 +102,7 @@ onMounted(() => {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 30px;
+    padding: 0 10px;
     background: rgba(15, 15, 15, 0.85);
     backdrop-filter: blur(15px);
     z-index: 1000;
@@ -106,6 +124,7 @@ onMounted(() => {
 .ctrl-group {
     display: flex;
     align-items: center;
+    gap: 15px;
 }
 
 .speed-slider {
@@ -148,7 +167,21 @@ onMounted(() => {
 .p1 .score-display { color: #3b82f6; text-shadow: 0 0 15px rgba(59, 130, 246, 0.4); }
 .p2 .score-display { color: #ef4444; text-shadow: 0 0 15px rgba(239, 68, 68, 0.4); }
 
+.trophy {
+    margin: 0 5px;
+    font-size: 1.1rem;
+    filter: drop-shadow(0 0 5px rgba(255, 215, 0, 0.5));
+}
+
 .p1 .speed-slider::-webkit-slider-thumb { background: #3b82f6; box-shadow: 0 0 15px rgba(59, 130, 246, 0.5); }
 .p2 .speed-slider::-webkit-slider-thumb { background: #ef4444; box-shadow: 0 0 15px rgba(239, 68, 68, 0.5); }
 
+</style>
+
+<style scoped>
+.icon-btn { 
+    background: none; border: none; font-size: 20px; color: rgba(255,255,255,0.7); 
+    cursor: pointer; padding: 0; margin: 0; display: flex; align-items: center;
+}
+.icon-btn:hover { color: white; transform: scale(1.1); }
 </style>

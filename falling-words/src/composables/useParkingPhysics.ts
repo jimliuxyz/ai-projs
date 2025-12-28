@@ -1,7 +1,9 @@
 import * as THREE from 'three';
 import * as CANNON from 'cannon-es';
-import { onUnmounted } from 'vue';
+import { onUnmounted, watch } from 'vue';
 import { vocabularyStore } from '../store/vocabulary';
+import { settings } from '../store/settings';
+import { createCarMesh, createTextTexture, createRoundedExtrude } from '../utils/carMesh';
 
 // --- Configuration ---
 const CAR_MASS = 2000;
@@ -57,37 +59,6 @@ export function useParkingPhysics(container: HTMLElement, options: {
     const matObstacle = new CANNON.Material('obstacle');
 
     // --- Helpers ---
-    function createTextTexture(text: string, bgColor: string, color: string = 'white', size: number = 256) {
-        const canvas = document.createElement('canvas');
-        canvas.width = size; canvas.height = size;
-        const ctx = canvas.getContext('2d')!;
-        ctx.fillStyle = bgColor; ctx.fillRect(0, 0, size, size);
-        ctx.fillStyle = color;
-        ctx.font = `bold ${size * 0.7}px Arial`;
-        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-        ctx.fillText(text, size / 2, size * 0.45);
-
-        // Directional Underline (always show to help distinguish front/back)
-        ctx.fillRect(size * 0.2, size * 0.82, size * 0.6, size * 0.08);
-        return new THREE.CanvasTexture(canvas);
-    }
-
-    // Rounded Box Helper using Shape + Extrude
-    const createRoundedExtrude = (w: number, l: number, h: number, r: number) => {
-        const shape = new THREE.Shape();
-        const x = -w / 2, y = -l / 2;
-        shape.moveTo(x + r, y);
-        shape.lineTo(x + w - r, y);
-        shape.quadraticCurveTo(x + w, y, x + w, y + r);
-        shape.lineTo(x + w, y + l - r);
-        shape.quadraticCurveTo(x + w, y + l, x + w - r, y + l);
-        shape.lineTo(x + r, y + l);
-        shape.quadraticCurveTo(x, y + l, x, y + l - r);
-        shape.lineTo(x, y + r);
-        shape.quadraticCurveTo(x, y, x + r, y);
-        return new THREE.ExtrudeGeometry(shape, { depth: h, bevelEnabled: true, bevelThickness: 0.2, bevelSize: 0.2, bevelSegments: 3 });
-    };
-
     function getRandomDarkWarmColor() {
         // Random dark warm colors (Browns, Deep Reds, Dark Oranges)
         const color = new THREE.Color();
@@ -110,68 +81,27 @@ export function useParkingPhysics(container: HTMLElement, options: {
 
         constructor(id: number, x: number, z: number, color: number, char: string, team: 'P1' | 'P2') {
             this.id = id; this.char = char; this.team = team;
-            const cw = 4.5, ch = 2.0, cl = 8.5, radius = 0.8;
-            this.mesh = new THREE.Group();
-            const bMat = new THREE.MeshStandardMaterial({ color, metalness: 0.8, roughness: 0.2 });
+            this.mesh = createCarMesh(color, char);
+            this.updateColor(color); // Apply initial color
 
-
-            const baseGeo = createRoundedExtrude(cw, cl, ch * 0.6, radius);
-            const base = new THREE.Mesh(baseGeo, bMat);
-            base.rotation.x = Math.PI / 2; base.position.y = ch * 0.3; base.name = 'car_base';
-            base.castShadow = true; base.receiveShadow = true;
-            this.mesh.add(base);
-
-            const cabinGeo = createRoundedExtrude(cw * 0.85, cl * 0.45, ch * 0.5, radius * 0.6);
-            const cabin = new THREE.Mesh(cabinGeo, bMat);
-            cabin.rotation.x = Math.PI / 2; cabin.position.set(0, ch * 1.0, -0.6); cabin.name = 'car_cabin';
-            cabin.castShadow = true; cabin.receiveShadow = true;
-            this.mesh.add(cabin);
-
-            // Fix "two lines" by using Plane instead of thin Box for windshield
-            const ws = new THREE.Mesh(
-                new THREE.PlaneGeometry(cw * 0.8, ch * 0.8),
-                new THREE.MeshStandardMaterial({ color: 0x88ccff, transparent: true, opacity: 0.6, metalness: 1, roughness: 0, side: THREE.DoubleSide })
-            );
-            ws.position.set(0, ch * 0.9, 1.4); ws.rotation.x = -Math.PI / 3.2;
-            ws.name = 'car_ws';
-            this.mesh.add(ws);
-
-            const hlGeo = new THREE.BoxGeometry(0.8, 0.4, 0.2);
-            const hlMat = new THREE.MeshStandardMaterial({ color: 0xffffff, emissive: 0xffffff, emissiveIntensity: 1 });
-            const hlL = new THREE.Mesh(hlGeo, hlMat); hlL.position.set(-1.4, ch * 0.3, cl / 2); hlL.name = 'car_hl_l'; this.mesh.add(hlL);
-            const hlR = new THREE.Mesh(hlGeo, hlMat); hlR.position.set(1.4, ch * 0.3, cl / 2); hlR.name = 'car_hl_r'; this.mesh.add(hlR);
-
-            const lbMat = new THREE.MeshBasicMaterial({ map: createTextTexture(char, '#00000000', 'white'), transparent: true, side: THREE.DoubleSide });
-            const lb = new THREE.Mesh(new THREE.PlaneGeometry(4, 4), lbMat);
-            lb.rotation.x = -Math.PI / 2; lb.rotation.z = Math.PI;
-            lb.position.set(0, ch * 1.55, -1.2); lb.name = 'car_label'; // Raised to be above the new rounded cabin
-            this.mesh.add(lb);
-
-            this.lightBeams = new THREE.Group();
-            const bGeo = new THREE.PlaneGeometry(1.2, 12);
-            const posAttr = bGeo.attributes.position;
-            (posAttr as any).setX(2, -4.5); (posAttr as any).setX(3, 4.5);
-
-            const bCan = document.createElement('canvas'); bCan.width = 128; bCan.height = 256;
-            const bCtx = bCan.getContext('2d')!;
-            const bG = bCtx.createRadialGradient(64, 10, 0, 64, 10, 240);
-            bG.addColorStop(0, 'rgba(255,255,255,0.5)'); bG.addColorStop(0.2, 'rgba(255,255,255,0.2)');
-            bG.addColorStop(0.6, 'rgba(255,255,255,0.05)'); bG.addColorStop(1, 'rgba(255,255,255,0)');
-            bCtx.fillStyle = bG; bCtx.fillRect(0, 0, 128, 256);
-            const bTex = new THREE.CanvasTexture(bCan);
-            const bMatL = new THREE.MeshBasicMaterial({ map: bTex, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false });
-
-            const bPos = [[-1.4, 0.12, cl / 2 + 6], [1.4, 0.12, cl / 2 + 6]];
-            bPos.forEach(p => {
-                const b = new THREE.Mesh(bGeo, bMatL);
-                b.rotation.x = -Math.PI / 2; b.position.set(p[0], p[1], p[2]);
-                this.lightBeams.add(b);
-            });
-            this.mesh.add(this.lightBeams); this.lightBeams.visible = false;
+            // Re-bind lightBeams reference from the standardized mesh
+            const beams = this.mesh.getObjectByName('light_beams');
+            if (beams instanceof THREE.Group) {
+                this.lightBeams = beams;
+            } else {
+                // Fallback (should not happen if utility is correct)
+                this.lightBeams = new THREE.Group();
+                this.mesh.add(this.lightBeams);
+            }
 
             scene.add(this.mesh);
             this.body = new CANNON.Body({ mass: CAR_MASS, material: matCar, linearDamping: 0.75, angularDamping: 0.95 });
-            this.body.addShape(new CANNON.Box(new CANNON.Vec3(cw / 2, ch / 2, (cl * 0.95) / 2))); // Slightly shorter hit box to prevent bumper sticking
+
+            // Physics shape must match the new mesh visuals
+            const cw = 4.2;
+            const ch = 1.5;
+            const cl = 8.5;
+            this.body.addShape(new CANNON.Box(new CANNON.Vec3(cw / 2, ch / 2, (cl * 0.95) / 2)));
             this.body.position.set(x, 2, z);
             if (team === 'P1') this.body.quaternion.setFromEuler(0, Math.PI, 0);
             this.body.angularFactor.set(0, 1, 0);
@@ -376,6 +306,15 @@ export function useParkingPhysics(container: HTMLElement, options: {
             options.onParkSuccess();
         }
 
+        updateColor(color: number) {
+            this.mesh.traverse(child => {
+                if (child instanceof THREE.Mesh && child.name === 'car_body') {
+                    if (child.material instanceof THREE.MeshStandardMaterial) {
+                        child.material.color.set(color);
+                    }
+                }
+            });
+        }
         park(spot: typeof spots[0]) { this.targetSpot = spot; this.isParking = true; this.body.wakeUp(); }
         exit() {
             this.isExiting = true; this.isParkedFinal = false; this.isParking = false;
@@ -392,8 +331,10 @@ export function useParkingPhysics(container: HTMLElement, options: {
         target = new THREE.Vector3();
         state: 'idle' | 'walking' = 'idle';
         timer = 0;
+        team: 'P1' | 'P2' | null = null;
 
-        constructor(x: number, z: number, color: number) {
+        constructor(x: number, z: number, color: number, team: 'P1' | 'P2' | null = null) {
+            this.team = team;
             this.mesh = new THREE.Group();
             const dMat = new THREE.MeshStandardMaterial({ color, roughness: 0.8 });
             const dr = 0.5; // Dog roundness radius
@@ -417,6 +358,18 @@ export function useParkingPhysics(container: HTMLElement, options: {
             earL.rotation.x = Math.PI / 2; earL.position.set(0.5, 2.6, 1.5); this.mesh.add(earL);
             const earR = new THREE.Mesh(earGeo, eMat);
             earR.rotation.x = Math.PI / 2; earR.position.set(-0.5, 2.6, 1.5); this.mesh.add(earR);
+            // Collar (Team Color Indicator)
+            if (this.team) {
+                const collarMat = new THREE.MeshStandardMaterial({
+                    color: this.team === 'P1' ? settings.p1Color : settings.p2Color,
+                    emissive: this.team === 'P1' ? settings.p1Color : settings.p2Color,
+                    emissiveIntensity: 0.5
+                });
+                const collarGeo = createRoundedExtrude(1.3, 1.3, 0.3, 0.1);
+                const collar = new THREE.Mesh(collarGeo, collarMat);
+                collar.rotation.x = Math.PI / 2; collar.position.set(0, 1.8, 1.0);
+                this.mesh.add(collar);
+            }
 
             // Legs (Rounded)
             const lGeo = createRoundedExtrude(0.5, 0.5, 1.0, 0.25);
@@ -448,31 +401,59 @@ export function useParkingPhysics(container: HTMLElement, options: {
         }
 
         pickNewTarget() {
+            if (this.team && !gameState.isGameOver && spots.length > 0) {
+                const nextSpot = spots.find((s, idx) => !s.occupied && idx >= gameState.nextSlotIndex);
+                if (nextSpot) {
+                    // Find a car of the same team with this char that isn't parked
+                    const targetCar = cars.find(c => c.team === this.team && c.char === nextSpot.char && !c.isParkedFinal && !c.isParking);
+                    if (targetCar) {
+                        // Target is now the CAR's position
+                        this.target.copy(targetCar.mesh.position as any);
+                        this.state = 'walking';
+                        this.timer = 60; // Refresh quickly to follow movement
+                        return;
+                    }
+                }
+            }
+            // Fallback: random wandering if no specific car needs attention
             const w = container.clientWidth, h = container.clientHeight;
             const aspect = w / h;
             const adaptiveSize = h > w ? VIEW_SIZE / (aspect * 1.5) : VIEW_SIZE;
             const limitX = adaptiveSize * aspect;
             const limitZ = adaptiveSize * (1 - 120 / h);
-
-            this.target.set(
-                (Math.random() - 0.5) * limitX * 1.6,
-                0,
-                (Math.random() - 0.5) * limitZ * 1.6
-            );
+            this.target.set((Math.random() - 0.5) * limitX * 1.6, 0, (Math.random() - 0.5) * limitZ * 1.6);
             this.state = 'walking';
-            this.timer = 150 + Math.random() * 300;
+            this.timer = 100;
         }
 
         update() {
             this.mesh.position.copy(this.body.position as any);
             this.mesh.quaternion.copy(this.body.quaternion as any);
 
+            // Team dogs: Follow the correct car dynamically
+            if (this.team && !gameState.isGameOver) {
+                const nextSpot = spots.find((s, idx) => !s.occupied && idx >= gameState.nextSlotIndex);
+                if (nextSpot) {
+                    const targetCar = cars.find(c => c.team === this.team && c.char === nextSpot.char && !c.isParkedFinal && !c.isParking);
+                    if (targetCar) {
+                        // Point towards the car's current position
+                        this.target.copy(targetCar.mesh.position as any);
+                        // Offset slightly so it follows "behind" or "beside" instead of colliding
+                        const dirToDog = new THREE.Vector3().subVectors(this.mesh.position, targetCar.mesh.position).normalize();
+                        this.target.add(dirToDog.multiplyScalar(4.5));
+                        this.state = 'walking';
+                    } else {
+                        if (this.timer <= 0) this.pickNewTarget();
+                    }
+                }
+            }
+
             if (this.state === 'walking') {
                 const diff = this.target.clone().sub(this.mesh.position);
                 diff.y = 0;
-                if (diff.length() < 2 || this.timer <= 0) {
+                if (diff.length() < 1.5 || this.timer <= 0) {
                     this.state = 'idle';
-                    this.timer = 60 + Math.random() * 120;
+                    this.timer = this.team ? 10 : 60 + Math.random() * 120; // Team dogs stay alert
                     this.body.velocity.set(0, 0, 0);
                 } else {
                     this.timer--;
@@ -487,11 +468,12 @@ export function useParkingPhysics(container: HTMLElement, options: {
                     this.body.angularVelocity.y = yawDiff * 5;
                     const fwd = new CANNON.Vec3(0, 0, 1);
                     this.body.quaternion.vmult(fwd, fwd);
-                    this.body.velocity.x = fwd.x * 8;
-                    this.body.velocity.z = fwd.z * 8;
+                    const speed = this.team ? 12 : 8; // Team dogs run faster
+                    this.body.velocity.x = fwd.x * speed;
+                    this.body.velocity.z = fwd.z * speed;
 
                     this.legs.forEach((l, i) => {
-                        l.position.y = 0.5 + Math.sin(Date.now() * 0.01 + i) * 0.2;
+                        l.position.y = 0.5 + Math.sin(Date.now() * 0.015 + i) * 0.25;
                     });
                 }
             } else {
@@ -522,9 +504,9 @@ export function useParkingPhysics(container: HTMLElement, options: {
         updateCamera();
         window.addEventListener('resize', updateCamera);
 
-        scene.add(new THREE.AmbientLight(0xffffff, 0.4));
-        const sun = new THREE.DirectionalLight(0xffffff, 0.8);
-        sun.position.set(40, 180, 40); // More vertical angle
+        scene.add(new THREE.AmbientLight(0xffffff, 0.5));
+        const sun = new THREE.DirectionalLight(0xffffff, 0.6);
+        sun.position.set(0, 200, 0); // Perfectly centered top-down
         sun.castShadow = true;
         sun.shadow.camera.left = -200; sun.shadow.camera.right = 200;
         sun.shadow.camera.top = 200; sun.shadow.camera.bottom = -200;
@@ -573,6 +555,17 @@ export function useParkingPhysics(container: HTMLElement, options: {
         });
 
         initRound();
+
+        // Reactive color updates
+        watch(() => settings.p1Color, (newCol) => {
+            if (newCol === undefined) return;
+            cars.filter(c => c.team === 'P1').forEach(c => c.updateColor(newCol));
+        });
+        watch(() => settings.p2Color, (newCol) => {
+            if (newCol === undefined) return;
+            cars.filter(c => c.team === 'P2').forEach(c => c.updateColor(newCol));
+        });
+
         animate();
     }
 
@@ -670,7 +663,7 @@ export function useParkingPhysics(container: HTMLElement, options: {
     function addYellowLines(zStart: number, zEnd: number, gapZMin: number, gapZMax: number) {
         const thickness = 1.0;
         const separation = 2.5; // Wider gap
-        const mat = new THREE.MeshBasicMaterial({ color: 0xff9900 }); // Warmer orange-yellow
+        const mat = new THREE.MeshBasicMaterial({ color: 0x996600 }); // Muted, less bright yellow
 
         // First Segment (from zStart to gapZMin)
         const len1 = gapZMin - zStart;
@@ -700,7 +693,7 @@ export function useParkingPhysics(container: HTMLElement, options: {
         const word = list[Math.floor(Math.random() * list.length)];
         gameState.word = (word.a || word.q).split('');
         gameState.currentQ = word.q;
-        gameState.currentExp = (word.exps && word.exps.length > 0) ? `. ${word.exps[0]}` : '';
+        gameState.currentExp = (word.exps && word.exps.length > 0) ? `，${word.exps[0]}` : '';
         gameState.nextSlotIndex = 0;
         gameState.isGameOver = false;
         gameState.isClearing = false;
@@ -752,7 +745,8 @@ export function useParkingPhysics(container: HTMLElement, options: {
             const right = new THREE.Mesh(new THREE.PlaneGeometry(0.3, spotL), lineMat);
             right.rotation.x = -Math.PI / 2; right.position.set(x + spotW / 2, 0.07, z); right.name = `spot_frame_${i}_r`; scene.add(right);
 
-            const lbl = new THREE.Mesh(new THREE.PlaneGeometry(5.5, 5.5), new THREE.MeshStandardMaterial({
+            const lblSize = 5.0; // Larger labels
+            const lbl = new THREE.Mesh(new THREE.PlaneGeometry(lblSize, lblSize), new THREE.MeshStandardMaterial({
                 map: createTextTexture(gameState.word[i], '#00000000', 'rgba(255,255,255,0.4)'),
                 transparent: true, emissive: 0xffffff, emissiveIntensity: 0.1
             }));
@@ -763,10 +757,9 @@ export function useParkingPhysics(container: HTMLElement, options: {
         const gapPadding = 10;
         addYellowLines(-200, 200, minZ - gapPadding, maxZ + gapPadding);
 
-        const dogColors = [0xffffff, 0xffcc00]; // White and Yellow
-        for (let i = 0; i < dogColors.length; i++) {
-            dogs.push(new StrayDog((Math.random() - 0.5) * 50, (Math.random() - 0.5) * 30, dogColors[i]));
-        }
+        // Guide Dogs for each player
+        dogs.push(new StrayDog(-20, 0, 0xd2b48c, 'P1')); // Tan dog for P1
+        dogs.push(new StrayDog(20, 0, 0xffffff, 'P2'));  // White dog for P2
 
         for (let i = 0; i < 15; i++) {
             const s = 2 + Math.random() * 3;
@@ -802,8 +795,8 @@ export function useParkingPhysics(container: HTMLElement, options: {
             entryBarriers.push({ mesh, body });
         });
 
-        spawnTeam('P1', maxZ + 22, 0x0164e8);
-        spawnTeam('P2', minZ - 22, 0xe81123);
+        spawnTeam('P1', maxZ + 22, settings.p1Color || 0x0164e8);
+        spawnTeam('P2', minZ - 22, settings.p2Color || 0xe81123);
 
         options.onSpeak(gameState.currentQ + gameState.currentExp);
     }
@@ -812,10 +805,23 @@ export function useParkingPhysics(container: HTMLElement, options: {
         // Each team gets at least 4 cars, or 1.5x the word length (ceil)
         const count = Math.max(4, Math.ceil(gameState.word.length * 1.5));
 
-        // Pick chars from word, then cycle/random to fill the count
+        const isZhuyin = gameState.word.some(c => /[\u3105-\u3129\u312A-\u312F\u02CA\u02C7\u02CB\u02D9]/.test(c));
+        const alphabet = isZhuyin
+            ? 'ㄅㄆㄇㄈㄉㄊㄋㄌㄍㄎㄏㄐㄑㄒㄓㄔㄕㄖㄗㄘㄙㄧㄨㄩㄚㄛㄜㄝㄞㄟㄠㄡㄢㄣㄤㄥㄦˊˇˋ'.split('')
+            : 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+
         const chars: string[] = [];
-        for (let i = 0; i < count; i++) {
-            chars.push(gameState.word[i % gameState.word.length]);
+        // 1. Ensure each char of the target word is present at least once
+        for (let i = 0; i < gameState.word.length; i++) {
+            chars.push(gameState.word[i]);
+        }
+        // 2. Fill the rest with random distraction characters from the alphabet
+        while (chars.length < count) {
+            const randChar = alphabet[Math.floor(Math.random() * alphabet.length)];
+            // Avoid adding the exact same character if it's already in the word (optional, but makes it cleaner)
+            if (!gameState.word.includes(randChar)) {
+                chars.push(randChar);
+            }
         }
         chars.sort(() => Math.random() - 0.5);
 

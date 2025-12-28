@@ -53,7 +53,7 @@ export function useParkingGame(callbacks?: { onPerfect?: () => void, onWrong?: (
         // Determine script for noise
         const isZhuyinWord = /[\u3105-\u3129\u02CA\u02C7\u02CB\u02D9]/.test(wordText);
         const alphabet = isZhuyinWord
-            ? 'ㄅㄆㄇㄈㄉㄊㄋㄌㄍㄎㄏㄐㄑㄒㄓㄔㄕㄖㄗㄘㄙㄧㄨㄩㄚㄛㄜㄝㄞㄟㄠㄡㄢㄣㄤㄥㄦ'.split('')
+            ? 'ㄅㄆㄇㄈㄉㄊㄋㄌㄍㄎㄏㄐㄑㄒㄓㄔㄕㄖㄗㄘㄙㄧㄨㄩㄚㄛㄜㄝㄞㄟㄠㄡㄢㄣㄤㄥㄦˊˇˋ'.split('')
             : 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
 
         const createHand = () => {
