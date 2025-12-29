@@ -1,0 +1,702 @@
+[
+    {
+        "q": "hungry",
+        "t": "餓",
+        "exps": [
+            "I am so hungry. 我好餓。"
+        ]
+    },
+    {
+        "q": "starving",
+        "t": "快餓死了",
+        "exps": [
+            "I'm starving. 我快餓死了。"
+        ]
+    },
+    {
+        "q": "thirsty",
+        "t": "口渴",
+        "exps": [
+            "Are you thirsty? 你渴嗎？"
+        ]
+    },
+    {
+        "q": "full",
+        "t": "飽了",
+        "exps": [
+            "I am full now. 我吃飽了。"
+        ]
+    },
+    {
+        "q": "stuffed",
+        "t": "吃撐了",
+        "exps": [
+            "I'm stuffed! 我吃太撐了！"
+        ]
+    },
+    {
+        "q": "breakfast",
+        "t": "早餐",
+        "exps": [
+            "Eat your breakfast. 吃你的早餐。"
+        ]
+    },
+    {
+        "q": "lunch",
+        "t": "午餐",
+        "exps": [
+            "What's for lunch? 午餐吃什麼？"
+        ]
+    },
+    {
+        "q": "dinner",
+        "t": "晚餐",
+        "exps": [
+            "Let's have dinner. 我們吃晚餐吧。"
+        ]
+    },
+    {
+        "q": "snack",
+        "t": "點心",
+        "exps": [
+            "I want a snack. 我想吃點心。"
+        ]
+    },
+    {
+        "q": "brunch",
+        "t": "早午餐",
+        "exps": [
+            "Sunday brunch. 星期天的早午餐。"
+        ]
+    },
+    {
+        "q": "eat",
+        "t": "吃",
+        "exps": [
+            "Time to eat. 該吃飯了。"
+        ]
+    },
+    {
+        "q": "drink",
+        "t": "喝",
+        "exps": [
+            "Drink some water. 喝點水。"
+        ]
+    },
+    {
+        "q": "order",
+        "t": "點餐",
+        "exps": [
+            "I'm ready to order. 我準備好點餐了。"
+        ]
+    },
+    {
+        "q": "menu",
+        "t": "菜單",
+        "exps": [
+            "Look at the menu. 看一下菜單。"
+        ]
+    },
+    {
+        "q": "bill",
+        "t": "帳單",
+        "exps": [
+            "The bill, please. 請給我帳單。"
+        ]
+    },
+    {
+        "q": "check",
+        "t": "結帳",
+        "exps": [
+            "Check, please. 買單。"
+        ]
+    },
+    {
+        "q": "tip",
+        "t": "小費",
+        "exps": [
+            "Leave a tip. 給點小費。"
+        ]
+    },
+    {
+        "q": "table",
+        "t": "桌子",
+        "exps": [
+            "A table for two. 兩位的位子。"
+        ]
+    },
+    {
+        "q": "fork",
+        "t": "叉子",
+        "exps": [
+            "Use a fork. 用叉子。"
+        ]
+    },
+    {
+        "q": "knife",
+        "t": "刀子",
+        "exps": [
+            "Sharp knife. 鋒利的刀。"
+        ]
+    },
+    {
+        "q": "spoon",
+        "t": "湯匙",
+        "exps": [
+            "Soup spoon. 湯匙。"
+        ]
+    },
+    {
+        "q": "plate",
+        "t": "盤子",
+        "exps": [
+            "Empty plate. 空盤子。"
+        ]
+    },
+    {
+        "q": "bowl",
+        "t": "碗",
+        "exps": [
+            "A bowl of soup. 一碗湯。"
+        ]
+    },
+    {
+        "q": "napkin",
+        "t": "餐巾紙",
+        "exps": [
+            "Pass the napkin. 把餐巾傳過來。"
+        ]
+    },
+    {
+        "q": "pizza",
+        "t": "披薩",
+        "exps": [
+            "Cheese pizza. 起司披薩。"
+        ]
+    },
+    {
+        "q": "burger",
+        "t": "漢堡",
+        "exps": [
+            "A big burger. 一個大漢堡。"
+        ]
+    },
+    {
+        "q": "sandwich",
+        "t": "三明治",
+        "exps": [
+            "Egg sandwich. 蛋三明治。"
+        ]
+    },
+    {
+        "q": "pasta",
+        "t": "義大利麵",
+        "exps": [
+            "I love pasta. 我愛義大利麵。"
+        ]
+    },
+    {
+        "q": "salad",
+        "t": "沙拉",
+        "exps": [
+            "Fresh salad. 新鮮沙拉。"
+        ]
+    },
+    {
+        "q": "soup",
+        "t": "湯",
+        "exps": [
+            "Tomato soup. 番茄湯。"
+        ]
+    },
+    {
+        "q": "steak",
+        "t": "牛排",
+        "exps": [
+            "Medium steak. 五分熟牛排。"
+        ]
+    },
+    {
+        "q": "rice",
+        "t": "飯",
+        "exps": [
+            " Fried rice. 炒飯。"
+        ]
+    },
+    {
+        "q": "noodles",
+        "t": "麵",
+        "exps": [
+            "Beef noodles. 牛肉麵。"
+        ]
+    },
+    {
+        "q": "bread",
+        "t": "麵包",
+        "exps": [
+            "Warm bread. 溫熱的麵包。"
+        ]
+    },
+    {
+        "q": "toast",
+        "t": "吐司",
+        "exps": [
+            "Butter toast. 奶油吐司。"
+        ]
+    },
+    {
+        "q": "egg",
+        "t": "蛋",
+        "exps": [
+            "Boiled egg. 煮蛋。"
+        ]
+    },
+    {
+        "q": "milk",
+        "t": "牛奶",
+        "exps": [
+            "Fresh milk. 鮮奶。"
+        ]
+    },
+    {
+        "q": "juice",
+        "t": "果汁",
+        "exps": [
+            "Orange juice. 柳橙汁。"
+        ]
+    },
+    {
+        "q": "coffee",
+        "t": "咖啡",
+        "exps": [
+            "Black coffee. 黑咖啡。"
+        ]
+    },
+    {
+        "q": "tea",
+        "t": "茶",
+        "exps": [
+            "Ice tea. 冰茶。"
+        ]
+    },
+    {
+        "q": "water",
+        "t": "水",
+        "exps": [
+            "Ice water. 冰水。"
+        ]
+    },
+    {
+        "q": "soda",
+        "t": "汽水",
+        "exps": [
+            "Cold soda. 冰汽水。"
+        ]
+    },
+    {
+        "q": "cake",
+        "t": "蛋糕",
+        "exps": [
+            "Birthday cake. 生慶蛋糕。"
+        ]
+    },
+    {
+        "q": "cookie",
+        "t": "餅乾",
+        "exps": [
+            "Chocolate cookie. 巧克力餅乾。"
+        ]
+    },
+    {
+        "q": "ice cream",
+        "t": "冰淇淋",
+        "exps": [
+            "I like ice cream. 我喜歡冰淇淋。"
+        ]
+    },
+    {
+        "q": "apple",
+        "t": "蘋果",
+        "exps": [
+            "Sweet apple. 甜蘋果。"
+        ]
+    },
+    {
+        "q": "banana",
+        "t": "香蕉",
+        "exps": [
+            "Yellow banana. 黃香蕉。"
+        ]
+    },
+    {
+        "q": "orange",
+        "t": "橘子",
+        "exps": [
+            "Juicy orange. 多汁的橘子。"
+        ]
+    },
+    {
+        "q": "grape",
+        "t": "葡萄",
+        "exps": [
+            "Purple grape. 紫葡萄。"
+        ]
+    },
+    {
+        "q": "strawberry",
+        "t": "草莓",
+        "exps": [
+            "Red strawberry. 紅草莓。"
+        ]
+    },
+    {
+        "q": "watermelon",
+        "t": "西瓜",
+        "exps": [
+            "Cool watermelon. 涼快的西瓜。"
+        ]
+    },
+    {
+        "q": "mango",
+        "t": "芒果",
+        "exps": [
+            "Sweet mango. 甜芒果。"
+        ]
+    },
+    {
+        "q": "peach",
+        "t": "桃子",
+        "exps": [
+            "Soft peach. 軟桃。"
+        ]
+    },
+    {
+        "q": "lemon",
+        "t": "檸檬",
+        "exps": [
+            "Sour lemon. 酸檸檬。"
+        ]
+    },
+    {
+        "q": "carrot",
+        "t": "紅蘿蔔",
+        "exps": [
+            "Eat your carrots. 吃你的蘿蔔。"
+        ]
+    },
+    {
+        "q": "potato",
+        "t": "馬鈴薯",
+        "exps": [
+            "Fried potato. 炸馬鈴薯。"
+        ]
+    },
+    {
+        "q": "tomato",
+        "t": "番茄",
+        "exps": [
+            "Red tomato. 紅番茄。"
+        ]
+    },
+    {
+        "q": "onion",
+        "t": "洋蔥",
+        "exps": [
+            "Cut the onion. 切洋蔥。"
+        ]
+    },
+    {
+        "q": "garlic",
+        "t": "大蒜",
+        "exps": [
+            "Garlic bread. 大蒜麵包。"
+        ]
+    },
+    {
+        "q": "corn",
+        "t": "玉米",
+        "exps": [
+            "Sweet corn. 甜玉米。"
+        ]
+    },
+    {
+        "q": "broccoli",
+        "t": "花椰菜",
+        "exps": [
+            "Green broccoli. 綠花椰菜。"
+        ]
+    },
+    {
+        "q": "chicken",
+        "t": "雞肉",
+        "exps": [
+            "Fried chicken. 炸雞。"
+        ]
+    },
+    {
+        "q": "beef",
+        "t": "牛肉",
+        "exps": [
+            "Roast beef. 烤牛肉。"
+        ]
+    },
+    {
+        "q": "pork",
+        "t": "豬肉",
+        "exps": [
+            "Pork chop. 豬排。"
+        ]
+    },
+    {
+        "q": "fish",
+        "t": "魚",
+        "exps": [
+            "Grilled fish. 烤魚。"
+        ]
+    },
+    {
+        "q": "seafood",
+        "t": "海鮮",
+        "exps": [
+            "I love seafood. 我愛海鮮。"
+        ]
+    },
+    {
+        "q": "cheese",
+        "t": "起司",
+        "exps": [
+            "Extra cheese. 額外的起司。"
+        ]
+    },
+    {
+        "q": "salt",
+        "t": "鹽",
+        "exps": [
+            "Pass the salt. 把鹽傳過來。"
+        ]
+    },
+    {
+        "q": "pepper",
+        "t": "胡椒",
+        "exps": [
+            "Black pepper. 黑胡椒。"
+        ]
+    },
+    {
+        "q": "sugar",
+        "t": "糖",
+        "exps": [
+            "Sweet sugar. 甜甜的糖。"
+        ]
+    },
+    {
+        "q": "butter",
+        "t": "奶油",
+        "exps": [
+            "Bread and butter. 麵包奶油。"
+        ]
+    },
+    {
+        "q": "honey",
+        "t": "蜂蜜",
+        "exps": [
+            "Sweet honey. 甜蜂蜜。"
+        ]
+    },
+    {
+        "q": "jam",
+        "t": "果醬",
+        "exps": [
+            "Fruit jam. 果醬。"
+        ]
+    },
+    {
+        "q": "ketchup",
+        "t": "番茄醬",
+        "exps": [
+            "Do you want ketchup? 要番茄醬嗎？"
+        ]
+    },
+    {
+        "q": "mustard",
+        "t": "芥末",
+        "exps": [
+            "Yellow mustard. 黃芥末。"
+        ]
+    },
+    {
+        "q": "mayo",
+        "t": "美乃滋",
+        "exps": [
+            "Spread the mayo. 塗美乃滋。"
+        ]
+    },
+    {
+        "q": "oil",
+        "t": "油",
+        "exps": [
+            "Cooking oil. 食用油。"
+        ]
+    },
+    {
+        "q": "vinegar",
+        "t": "醋",
+        "exps": [
+            "Sour vinegar. 酸醋。"
+        ]
+    },
+    {
+        "q": "delicious",
+        "t": "好吃",
+        "exps": [
+            "Very delicious. 非常美味。"
+        ]
+    },
+    {
+        "q": "yummy",
+        "t": "好吃的",
+        "exps": [
+            "Yummy food. 好吃的食物。"
+        ]
+    },
+    {
+        "q": "tasty",
+        "t": "美味",
+        "exps": [
+            "Tasty steak. 美味牛排。"
+        ]
+    },
+    {
+        "q": "sweet",
+        "t": "甜的",
+        "exps": [
+            "Too sweet. 太甜了。"
+        ]
+    },
+    {
+        "q": "sour",
+        "t": "酸的",
+        "exps": [
+            "It is sour. 它是酸的。"
+        ]
+    },
+    {
+        "q": "salty",
+        "t": "鹹的",
+        "exps": [
+            "Very salty. 很鹹。"
+        ]
+    },
+    {
+        "q": "spicy",
+        "t": "辣的",
+        "exps": [
+            "Hot and spicy. 又燙又辣。"
+        ]
+    },
+    {
+        "q": "bitter",
+        "t": "苦的",
+        "exps": [
+            "Bitter coffee. 苦咖啡。"
+        ]
+    },
+    {
+        "q": "cook",
+        "t": "煮",
+        "exps": [
+            "Cook dinner. 煮晚餐。"
+        ]
+    },
+    {
+        "q": "bake",
+        "t": "烘烤",
+        "exps": [
+            "Bake a cake. 烤蛋糕。"
+        ]
+    },
+    {
+        "q": "grill",
+        "t": "燒烤",
+        "exps": [
+            "Grill the fish. 烤魚。"
+        ]
+    },
+    {
+        "q": "kitchen",
+        "t": "廚房",
+        "exps": [
+            "In the kitchen. 在廚房。"
+        ]
+    },
+    {
+        "q": "chef",
+        "t": "主廚",
+        "exps": [
+            "Professional chef. 專業主廚。"
+        ]
+    },
+    {
+        "q": "waiter",
+        "t": "服務生",
+        "exps": [
+            "Call the waiter. 叫服務生。"
+        ]
+    },
+    {
+        "q": "waitress",
+        "t": "女服務生",
+        "exps": [
+            "She is a waitress. 她是服務生。"
+        ]
+    },
+    {
+        "q": "appetizer",
+        "t": "前菜",
+        "exps": [
+            "Order an appetizer. 點份前菜。"
+        ]
+    },
+    {
+        "q": "dessert",
+        "t": "甜點",
+        "exps": [
+            "Time for dessert. 甜點時間。"
+        ]
+    },
+    {
+        "q": "sausage",
+        "t": "香腸",
+        "exps": [
+            "Hot sausage. 熱香腸。"
+        ]
+    },
+    {
+        "q": "bacon",
+        "t": "培根",
+        "exps": [
+            "Crispy bacon. 脆培根。"
+        ]
+    },
+    {
+        "q": "sushi",
+        "t": "壽司",
+        "exps": [
+            "Raw fish sushi. 生魚壽司。"
+        ]
+    },
+    {
+        "q": "taco",
+        "t": "墨西哥夾餅",
+        "exps": [
+            "Beef taco. 牛肉夾餅。"
+        ]
+    },
+    {
+        "q": "hotdog",
+        "t": "熱狗",
+        "exps": [
+            "Hotdog with mustard. 熱狗加芥末。"
+        ]
+    }
+]

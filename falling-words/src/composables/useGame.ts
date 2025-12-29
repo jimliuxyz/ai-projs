@@ -1,6 +1,7 @@
 import { ref, onUnmounted, reactive } from 'vue';
 import { type Word } from '../data/words';
 import { useAudio } from './useAudio';
+import { useAudioContent } from './useAudioContent';
 import { vocabularyStore } from '../store/vocabulary';
 
 export interface FallingItem {
@@ -22,6 +23,7 @@ export function useGame(callbacks?: {
     onHitWrong?: (x: number, y: number) => void
 }) {
     const { speak, playCorrect, playExplosion, playThrust } = useAudio();
+    const { getQuestion } = useAudioContent();
 
     const gameState = ref<'menu' | 'playing'>('menu'); // No more gameover state logic for now
     const score = ref(0);
@@ -69,11 +71,8 @@ export function useGame(callbacks?: {
 
     const announceTarget = () => {
         if (!currentTarget.value) return;
-        const target = currentTarget.value;
-        // Announce
-        const textToSpeak = target.q;
-        const example = (target.exps && target.exps.length > 0) ? `. ${target.exps[0]}` : '';
-        speak(`${textToSpeak}${example}`);
+        const text = getQuestion(currentTarget.value);
+        if (text) speak(text);
     };
 
     const pickNewTarget = () => {

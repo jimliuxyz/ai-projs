@@ -4,6 +4,9 @@ import { onUnmounted, watch } from 'vue';
 import { vocabularyStore } from '../store/vocabulary';
 import { settings } from '../store/settings';
 import { createCarMesh, createTextTexture, createRoundedExtrude } from '../utils/carMesh';
+import { useAudioContent } from './useAudioContent';
+import { findTargetSpot } from '../utils/gameLogic';
+import type { Word } from '../data/words';
 
 // --- Configuration ---
 const CAR_MASS = 2000;
@@ -13,7 +16,7 @@ const MAX_VELOCITY = 100;
 const BOOST_IMPULSE = 15000;
 const VIEW_SIZE = 36;
 const COLLISION_KNOCKBACK = 50000;
-const DEBUG_WALLS = false; // Set to true to see invisible walls
+const DEBUG_WALLS = true; // Set to true to see invisible walls
 
 // Collision Groups
 const GROUP_GROUND = 1;
@@ -31,6 +34,7 @@ export function useParkingPhysics(container: HTMLElement, options: {
     onParkSuccess: () => void,
     onParkFail: () => void
 }) {
+    const { getQuestion, getAnswerHint, getChar } = useAudioContent();
     let scene: THREE.Scene, camera: THREE.OrthographicCamera, renderer: THREE.WebGLRenderer, world: CANNON.World;
     let groundMesh: THREE.Mesh, groundBody: CANNON.Body;
 
@@ -51,7 +55,9 @@ export function useParkingPhysics(container: HTMLElement, options: {
         isGameOver: false,
         gameOverTime: 0,
         isClearing: false,
-        currentWordIndex: 0
+        currentWordIndex: 0,
+        isClozeMode: false,
+        currentWord: null as Word | null
     };
 
     const matCar = new CANNON.Material('car');
@@ -79,10 +85,10 @@ export function useParkingPhysics(container: HTMLElement, options: {
         stuckTimer = 0;
         reverseTimer = 0; // New reversing timer
 
-        constructor(id: number, x: number, z: number, color: number, char: string, team: 'P1' | 'P2') {
+        constructor(id: number, x: number, z: number, colors: { body: number, tires: number }, char: string, team: 'P1' | 'P2') {
             this.id = id; this.char = char; this.team = team;
-            this.mesh = createCarMesh(color, char);
-            this.updateColor(color); // Apply initial color
+            this.mesh = createCarMesh(colors, char);
+            this.updateColors(colors); // Apply initial colors
 
             // Re-bind lightBeams reference from the standardized mesh
             const beams = this.mesh.getObjectByName('light_beams');
@@ -187,23 +193,48 @@ export function useParkingPhysics(container: HTMLElement, options: {
             const isP1 = this.team === 'P1';
             const direction = isP1 ? -1 : 1;
 
-            // Lock orientation/physics during entry to prevent spinning or reversing from collisions
+            // Lock orientation/physics during entry to prevent spinning
             this.body.quaternion.setFromEuler(0, isP1 ? Math.PI : 0, 0);
             this.body.angularVelocity.set(0, 0, 0);
 
-            // If we've reached or passed the target Z in the correct direction
-            if ((direction === -1 && dz > -0.5) || (direction === 1 && dz < 0.5)) {
+            const dist = Math.abs(dz);
+
+            const reached = (isP1) ? (dz >= -2.0) : (dz <= 2.0);
+
+            if (reached) {
                 this.isEntering = false;
                 this.body.velocity.set(0, 0, 0);
-                this.body.force.set(0, 0, 0); // Explicitly kill engine force
+                this.body.force.set(0, 0, 0);
+                this.stuckTimer = 0;
                 return;
             }
 
-            const speed = 1.5;
-            // Use world-space direction instead of local forward to ensure it always moves towards parking
-            const forceVec = new CANNON.Vec3(0, 0, direction * DRIVE_FORCE * 1.2 * this.entrySpeedMult * speed);
+            // Stuck logic: if not moving much but engine is on
+            if (this.body.velocity.length() < 2.0) {
+                this.stuckTimer++;
+                if (this.stuckTimer > 60) { // 1 second of being stuck
+                    this.isEntering = false;
+                    this.body.velocity.set(0, 0, 0);
+                    this.body.force.set(0, 0, 0);
+                    this.stuckTimer = 0;
+                    return;
+                }
+            } else {
+                this.stuckTimer = 0;
+            }
+
+            // Entry physics: Strong start, braking at the end
+            let forceMult = 1.0;
+            if (dist < 15) {
+                forceMult = dist / 15; // Smoothly throttle down
+                this.body.velocity.scale(0.92, this.body.velocity); // Damp velocity
+            }
+
+            const speed = 1.2; // Slightly slower base entry speed
+            const force = DRIVE_FORCE * 1.1 * this.entrySpeedMult * speed * forceMult;
+            const forceVec = new CANNON.Vec3(0, 0, direction * force);
             this.body.applyForce(forceVec, new CANNON.Vec3(0, 0, 0));
-            this.body.velocity.x *= 0.95;
+            this.body.velocity.x *= 0.95; // Keep horizontal drift in check
         }
 
         driveToExit() {
@@ -293,7 +324,10 @@ export function useParkingPhysics(container: HTMLElement, options: {
 
         finishParking(tar: CANNON.Vec3) {
             if (this.targetSpot!.occupied) { this.isParking = false; this.targetSpot = null; return; }
-            this.targetSpot!.occupied = true; this.isParkedFinal = true; this.isParking = false;
+            this.targetSpot!.occupied = true;
+            this.targetSpot!.winnerTeam = this.team;
+            this.isParkedFinal = true;
+            this.isParking = false;
             this.body.position.copy(tar); this.body.velocity.set(0, 0, 0); this.body.angularVelocity.set(0, 0, 0);
             this.body.type = CANNON.Body.STATIC; this.body.mass = 0; this.body.updateMassProperties();
             if (this.team === 'P1') {
@@ -306,16 +340,23 @@ export function useParkingPhysics(container: HTMLElement, options: {
             options.onParkSuccess();
         }
 
-        updateColor(color: number) {
+        updateColors(colors: { body: number, tires: number }) {
             this.mesh.traverse(child => {
-                if (child instanceof THREE.Mesh && child.name === 'car_body') {
-                    if (child.material instanceof THREE.MeshStandardMaterial) {
-                        child.material.color.set(color);
+                if (child instanceof THREE.Mesh) {
+                    if (child.name === 'car_body' && child.material instanceof THREE.MeshStandardMaterial) {
+                        child.material.color.set(colors.body);
+                    } else if (child.name === 'car_tire' && child.material instanceof THREE.MeshStandardMaterial) {
+                        child.material.color.set(colors.tires);
                     }
                 }
             });
         }
-        park(spot: typeof spots[0]) { this.targetSpot = spot; this.isParking = true; this.body.wakeUp(); }
+        park(spot: typeof spots[0]) {
+            this.targetSpot = spot;
+            this.isParking = true;
+            this.isEntering = false; // Ensure entry motor is off
+            this.body.wakeUp();
+        }
         exit() {
             this.isExiting = true; this.isParkedFinal = false; this.isParking = false;
             this.body.type = CANNON.Body.DYNAMIC; this.body.mass = CAR_MASS; this.body.updateMassProperties();
@@ -388,6 +429,9 @@ export function useParkingPhysics(container: HTMLElement, options: {
             this.tail.position.set(0, 1.5, -1.5); // At the back
             this.mesh.add(this.tail);
 
+            this.mesh.traverse(child => {
+                if (child instanceof THREE.Mesh) child.raycast = () => { };
+            });
             scene.add(this.mesh);
             this.body = new CANNON.Body({ mass: 10, material: matObstacle });
             this.body.addShape(new CANNON.Box(new CANNON.Vec3(0.9, 0.6, 1.5)));
@@ -557,27 +601,27 @@ export function useParkingPhysics(container: HTMLElement, options: {
         initRound();
 
         // Reactive color updates
-        watch(() => settings.p1Color, (newCol) => {
-            if (newCol === undefined) return;
-            cars.filter(c => c.team === 'P1').forEach(c => c.updateColor(newCol));
-        });
-        watch(() => settings.p2Color, (newCol) => {
-            if (newCol === undefined) return;
-            cars.filter(c => c.team === 'P2').forEach(c => c.updateColor(newCol));
-        });
+        watch(() => settings.p1Car, (newCar) => {
+            if (!newCar) return;
+            cars.filter(c => c.team === 'P1').forEach(c => c.updateColors(newCar));
+        }, { deep: true });
+        watch(() => settings.p2Car, (newCar) => {
+            if (!newCar) return;
+            cars.filter(c => c.team === 'P2').forEach(c => c.updateColors(newCar));
+        }, { deep: true });
 
         animate();
     }
 
     function spawnTestCar() {
         const t = Math.random() > 0.5 ? 'P1' : 'P2';
-        const car = new GameCar(cars.length, 0, 0, 0xffffff, 'T', t);
+        const colors = t === 'P1' ? settings.p1Car : settings.p2Car;
+        const car = new GameCar(cars.length, 0, 0, colors, 'T', t);
         car.isEntering = false;
         // Launch it at high speed in a random direction
         const ang = Math.random() * Math.PI * 2;
         car.body.velocity.set(Math.cos(ang) * 150, 0, Math.sin(ang) * 150);
         cars.push(car);
-        console.log("Test Car Spawned!");
     }
 
     function updateCamera() {
@@ -670,9 +714,9 @@ export function useParkingPhysics(container: HTMLElement, options: {
         if (len1 > 0) {
             const g1 = new THREE.PlaneGeometry(thickness, len1);
             const l1_1 = new THREE.Mesh(g1, mat); l1_1.rotation.x = -Math.PI / 2; l1_1.position.set(-separation / 2, 0.06, zStart + len1 / 2);
-            l1_1.name = 'road_marking'; scene.add(l1_1);
+            l1_1.name = 'road_marking'; l1_1.raycast = () => { }; scene.add(l1_1);
             const l1_2 = new THREE.Mesh(g1, mat); l1_2.rotation.x = -Math.PI / 2; l1_2.position.set(separation / 2, 0.06, zStart + len1 / 2);
-            l1_2.name = 'road_marking'; scene.add(l1_2);
+            l1_2.name = 'road_marking'; l1_2.raycast = () => { }; scene.add(l1_2);
         }
 
         // Second Segment (from gapZMax to zEnd)
@@ -680,10 +724,112 @@ export function useParkingPhysics(container: HTMLElement, options: {
         if (len2 > 0) {
             const g2 = new THREE.PlaneGeometry(thickness, len2);
             const l2_1 = new THREE.Mesh(g2, mat); l2_1.rotation.x = -Math.PI / 2; l2_1.position.set(-separation / 2, 0.06, gapZMax + len2 / 2);
-            l2_1.name = 'road_marking'; scene.add(l2_1);
+            l2_1.name = 'road_marking'; l2_1.raycast = () => { }; scene.add(l2_1);
             const l2_2 = new THREE.Mesh(g2, mat); l2_2.rotation.x = -Math.PI / 2; l2_2.position.set(separation / 2, 0.06, gapZMax + len2 / 2);
-            l2_2.name = 'road_marking'; scene.add(l2_2);
+            l2_2.name = 'road_marking'; l2_2.raycast = () => { }; scene.add(l2_2);
         }
+    }
+
+    let currentScrollX = 0;
+    function updateSpotPositions() {
+        if (!spots.length) return;
+        const spacing = 18;
+        const numSpots = spots.length;
+
+        // Calculate actual visible width in world units
+        const w = container.clientWidth;
+        const h = container.clientHeight;
+        const aspect = w / h;
+        const adaptiveSize = h > w ? VIEW_SIZE / (aspect * 1.5) : VIEW_SIZE;
+        const viewportWidth = adaptiveSize * aspect * 2;
+        const safeWidth = viewportWidth * 0.9;
+
+        // How many slots can we show without overflow?
+        const slotsThatFit = Math.floor(safeWidth / spacing) + 1;
+
+        // --- NEW CLAMPED LOGIC ---
+        // If the whole word fits, the target index is just the center of the word.
+        // If it's longer, we focus on nextSlotIndex but clamp it so we don't scroll past the boundaries.
+        const halfWindow = (slotsThatFit - 1) / 2;
+        let targetFocusIndex = 0;
+
+        if (numSpots <= slotsThatFit) {
+            // Case A: Everything fits. Fixed center.
+            targetFocusIndex = (numSpots - 1) / 2;
+        } else {
+            // Case B: Scrolling needed.
+            // Focus on parkedFrontier, but don't let the focus go before the first window or after the last window.
+            let parkedFrontier = 0;
+            while (parkedFrontier < numSpots && spots[parkedFrontier].occupied) {
+                parkedFrontier++;
+            }
+
+            // Allow maximizing future visibility:
+            // Shift camera target to the right so that 'parkedFrontier' sits near the left edge (e.g. 2 slots in).
+            const offset = Math.max(0, halfWindow - 2);
+            const desiredFocus = parkedFrontier + offset;
+
+            targetFocusIndex = Math.max(halfWindow, Math.min(desiredFocus, numSpots - 1 - halfWindow));
+        }
+
+        const targetXOffset = -targetFocusIndex * spacing;
+
+        // Smooth Lerp for the conveyor effect
+        currentScrollX += (targetXOffset - currentScrollX) * 0.05;
+
+        const visibleThreshold = viewportWidth / 2 + 15;
+
+        // Apply visual and logical positions
+        spots.forEach((s, i) => {
+            const finalX = (i * spacing) + currentScrollX;
+            s.x = finalX;
+
+            // Move Meshes
+            const nameSuffixes = ['_t', '_b', '_l', '_r'];
+            nameSuffixes.forEach(sf => {
+                const mesh = scene.getObjectByName(`spot_frame_${i}${sf}`);
+                if (mesh) {
+                    // Update X, keep existing Z/Y offsets? 
+                    // Actually we know the relative structure.
+                    // Top/Bottom/Left/Right logic from initRound:
+                    // top: z - spotL/2
+                    // bottom: z + spotL/2
+                    // left: x - spotW/2
+                    // right: x + spotW/2
+                    // We just need to update the group X position. 
+                    // But they are separate meshes.
+                    if (sf === '_t' || sf === '_b') mesh.position.x = finalX;
+                    if (sf === '_l') mesh.position.x = finalX - 3.5; // spotW/2 (7/2)
+                    if (sf === '_r') mesh.position.x = finalX + 3.5;
+
+                    // Hide if offscreen
+                    mesh.visible = Math.abs(finalX) < visibleThreshold;
+                }
+            });
+
+            const lbl = scene.getObjectByName(`spot_label_${i}`);
+            if (lbl) {
+                lbl.position.x = finalX;
+                lbl.visible = Math.abs(finalX) < visibleThreshold;
+            }
+
+            // Move PARKED cars locked to this spot
+            // Relaxed check: Just need to be occupied
+            if (s.occupied) {
+                // Find visible car
+                // Actually if a car is driving to it, it updates its target from s.x automatically in driveToTarget()
+                // If it is PARKED (STATIC), we must move it manually.
+                const car = cars.find(c => c.isParkedFinal && c.targetSpot === s);
+                if (car) {
+                    car.body.position.x = finalX;
+                    car.mesh.position.x = finalX;
+                    // Also update physics body position (it's static but we can teleport it)
+                    // car.body.position.set(finalX, ...); 
+                    // Physics engine might not like moving static bodies every frame without .position.set
+                    // But for static, we usually just set position.
+                }
+            }
+        });
     }
 
     function initRound() {
@@ -691,18 +837,32 @@ export function useParkingPhysics(container: HTMLElement, options: {
         const list = vocabularyStore.currentList.value;
         if (list.length === 0) return;
         const word = list[Math.floor(Math.random() * list.length)];
-        gameState.word = (word.a || word.q).split('');
-        gameState.currentQ = word.q;
-        gameState.currentExp = (word.exps && word.exps.length > 0) ? `，${word.exps[0]}` : '';
+
+        // Mode Detection: No phonetic 'a', has 'exps', and 'q' is inside 'exps'
+        // Add a random 50% chance so it's not always in Cloze mode for eligible words
+        const isCloze = !!(!word.a && word.exps && word.exps.length > 0 &&
+            word.exps[0].toLowerCase().includes(word.q.toLowerCase()) &&
+            Math.random() < 0.5);
+
+        gameState.isClozeMode = isCloze;
+        gameState.currentWord = word;
+
+        if (isCloze) {
+            // WHOLE word is the target for a single spot
+            gameState.word = [word.q];
+            gameState.currentQ = "？"; // Show a placeholder on UI
+            gameState.currentExp = (word.exps && word.exps.length > 0) ? word.exps[0] : word.q;
+        } else {
+            gameState.word = (word.a || word.q).split('');
+            gameState.currentQ = word.q;
+            gameState.currentExp = (word.exps && word.exps.length > 0) ? `，${word.exps[0]}` : '';
+        }
+
         gameState.nextSlotIndex = 0;
         gameState.isGameOver = false;
         gameState.isClearing = false;
 
         spots.length = 0;
-        const w = container.clientWidth;
-        const h = container.clientHeight;
-        const aspect = w / h;
-        const adaptiveSize = h > w ? VIEW_SIZE / (aspect * 1.5) : VIEW_SIZE;
 
         const toRemove: THREE.Object3D[] = [];
         scene.traverse(child => {
@@ -712,50 +872,52 @@ export function useParkingPhysics(container: HTMLElement, options: {
         });
         toRemove.forEach(obj => scene.remove(obj));
 
-        const numSpots = gameState.word.length;
-        const fieldWidth = (adaptiveSize * aspect * 2) * 0.9;
-
-        const sptSpacingX = 12;
-        const sptSpacingZ = 16;
-        const maxPerRow = Math.max(1, Math.floor(fieldWidth / sptSpacingX));
-        const numRows = Math.ceil(numSpots / maxPerRow);
+        // Initialize Spots - Values will be refined by updateSpotPositions immediately
         const spotW = 7; const spotL = 11;
+        const numSpots = gameState.word.length;
 
-        let minZ = 0, maxZ = 0;
+        // Initial sync of scroll: Show as many as fit starting from Index 0
+        const w_init = container.clientWidth;
+        const h_init = container.clientHeight;
+        const aspect_init = w_init / h_init;
+        const adaptiveSize_init = h_init > w_init ? VIEW_SIZE / (aspect_init * 1.5) : VIEW_SIZE;
+        const viewportWidth_init = adaptiveSize_init * aspect_init * 2;
+        const safeWidth_init = viewportWidth_init * 0.85;
+        const slotsThatFit_init = Math.floor(safeWidth_init / 18) + 1;
+        const initialSlotsToShow = Math.min(numSpots, slotsThatFit_init);
+        const initialCenter = (initialSlotsToShow - 1) / 2;
+        currentScrollX = -initialCenter * 18;
 
         for (let i = 0; i < numSpots; i++) {
-            const row = Math.floor(i / maxPerRow);
-            const col = i % maxPerRow;
-            const spotsInThisRow = (row === numRows - 1) ? (numSpots % maxPerRow || maxPerRow) : maxPerRow;
-            const x = (col - (spotsInThisRow - 1) / 2) * sptSpacingX;
-            const z = (row - (numRows - 1) / 2) * sptSpacingZ;
+            const spotX = (i * 18) + currentScrollX;
+            const spotZ = 0;
 
-            if (i === 0) { minZ = z; maxZ = z; }
-            else { minZ = Math.min(minZ, z); maxZ = Math.max(maxZ, z); }
-
-            spots.push({ char: gameState.word[i], occupied: false, x, z, winnerTeam: null });
+            spots.push({ char: gameState.word[i], occupied: false, x: spotX, z: spotZ, winnerTeam: null });
 
             const lineMat = new THREE.MeshStandardMaterial({ color: 0xffffff, transparent: true, opacity: 0.6, emissive: 0xffffff, emissiveIntensity: 0.2 });
             const top = new THREE.Mesh(new THREE.PlaneGeometry(spotW, 0.3), lineMat);
-            top.rotation.x = -Math.PI / 2; top.position.set(x, 0.07, z - spotL / 2); top.name = `spot_frame_${i}_t`; scene.add(top);
+            top.rotation.x = -Math.PI / 2; top.position.set(spotX, 0.07, spotZ - spotL / 2); top.name = `spot_frame_${i}_t`; scene.add(top);
             const bottom = new THREE.Mesh(new THREE.PlaneGeometry(spotW, 0.3), lineMat);
-            bottom.rotation.x = -Math.PI / 2; bottom.position.set(x, 0.07, z + spotL / 2); bottom.name = `spot_frame_${i}_b`; scene.add(bottom);
+            bottom.rotation.x = -Math.PI / 2; bottom.position.set(spotX, 0.07, spotZ + spotL / 2); bottom.name = `spot_frame_${i}_b`; scene.add(bottom);
             const left = new THREE.Mesh(new THREE.PlaneGeometry(0.3, spotL), lineMat);
-            left.rotation.x = -Math.PI / 2; left.position.set(x - spotW / 2, 0.07, z); left.name = `spot_frame_${i}_l`; scene.add(left);
+            left.rotation.x = -Math.PI / 2; left.position.set(spotX - spotW / 2, 0.07, spotZ); left.name = `spot_frame_${i}_l`; scene.add(left);
             const right = new THREE.Mesh(new THREE.PlaneGeometry(0.3, spotL), lineMat);
-            right.rotation.x = -Math.PI / 2; right.position.set(x + spotW / 2, 0.07, z); right.name = `spot_frame_${i}_r`; scene.add(right);
+            right.rotation.x = -Math.PI / 2; right.position.set(spotX + spotW / 2, 0.07, spotZ); right.name = `spot_frame_${i}_r`; scene.add(right);
 
             const lblSize = 5.0; // Larger labels
+            const lblText = gameState.isClozeMode ? "？" : gameState.word[i];
             const lbl = new THREE.Mesh(new THREE.PlaneGeometry(lblSize, lblSize), new THREE.MeshStandardMaterial({
-                map: createTextTexture(gameState.word[i], '#00000000', 'rgba(255,255,255,0.4)'),
+                map: createTextTexture(lblText, '#00000000', 'rgba(255,255,255,0.4)'),
                 transparent: true, emissive: 0xffffff, emissiveIntensity: 0.1
             }));
-            lbl.name = `spot_label_${i}`; lbl.rotation.x = -Math.PI / 2; lbl.position.set(x, 0.08, z); lbl.raycast = () => { }; scene.add(lbl);
+            lbl.name = `spot_label_${i}`; lbl.rotation.x = -Math.PI / 2; lbl.position.set(spotX, 0.08, spotZ); scene.add(lbl);
         }
 
         // Add dynamic road markings
         const gapPadding = 10;
-        addYellowLines(-200, 200, minZ - gapPadding, maxZ + gapPadding);
+        // Since spotZ is 0, the road is essentially Z=0 +/- some width.
+        // Let's draw lines far away to cover scrolling area.
+        addYellowLines(-500, 500, -gapPadding, gapPadding);
 
         // Guide Dogs for each player
         dogs.push(new StrayDog(-20, 0, 0xd2b48c, 'P1')); // Tan dog for P1
@@ -763,11 +925,11 @@ export function useParkingPhysics(container: HTMLElement, options: {
 
         for (let i = 0; i < 15; i++) {
             const s = 2 + Math.random() * 3;
-            const pos = new CANNON.Vec3((Math.random() - 0.5) * 110, s / 2, (Math.random() - 0.5) * (maxZ - minZ + 20));
+            const pos = new CANNON.Vec3((Math.random() - 0.5) * 110, s / 2, (Math.random() - 0.5) * 40);
             const mesh = new THREE.Mesh(new THREE.BoxGeometry(s, s, s), new THREE.MeshStandardMaterial({
                 color: getRandomDarkWarmColor(), metalness: 0.6, roughness: 0.4
             }));
-            mesh.castShadow = true; mesh.receiveShadow = true; scene.add(mesh);
+            mesh.castShadow = true; mesh.receiveShadow = true; mesh.raycast = () => { }; scene.add(mesh);
             const bb = new CANNON.Body({ mass: OBSTACLE_MASS, material: matObstacle, position: pos });
             bb.addShape(new CANNON.Box(new CANNON.Vec3(s / 2, s / 2, s / 2))); world.addBody(bb);
             obstacles.push({ mesh, body: bb });
@@ -781,7 +943,7 @@ export function useParkingPhysics(container: HTMLElement, options: {
             opacity: 0.3,
             visible: DEBUG_WALLS
         });
-        const bZPos = [maxZ + gapPadding, minZ - gapPadding]; // Align precisely with yellow line gaps
+        const bZPos = [13, -13]; // Fixed barrier positions for single row
         bZPos.forEach(bz => {
             const body = new CANNON.Body({ mass: 0 });
             body.addShape(new CANNON.Box(new CANNON.Vec3(150, barrierHeight / 2, bThickness / 2)));
@@ -790,58 +952,18 @@ export function useParkingPhysics(container: HTMLElement, options: {
             world.addBody(body);
             const mesh = new THREE.Mesh(new THREE.BoxGeometry(300, barrierHeight, bThickness), bMatMesh);
             mesh.position.set(0, barrierHeight / 2, bz);
-            mesh.raycast = () => { }; // Fix: Barriers should not block clicks
+            mesh.raycast = () => { }; // Barriers should not block clicks
             scene.add(mesh);
             entryBarriers.push({ mesh, body });
         });
 
-        spawnTeam('P1', maxZ + 22, settings.p1Color || 0x0164e8);
-        spawnTeam('P2', minZ - 22, settings.p2Color || 0xe81123);
+        spawnTeam('P1', settings.p1Car);
+        spawnTeam('P2', settings.p2Car);
 
-        options.onSpeak(gameState.currentQ + gameState.currentExp);
-    }
-
-    function spawnTeam(t: 'P1' | 'P2', zBase: number, col: number) {
-        // Each team gets at least 4 cars, or 1.5x the word length (ceil)
-        const count = Math.max(4, Math.ceil(gameState.word.length * 1.5));
-
-        const isZhuyin = gameState.word.some(c => /[\u3105-\u3129\u312A-\u312F\u02CA\u02C7\u02CB\u02D9]/.test(c));
-        const alphabet = isZhuyin
-            ? 'ㄅㄆㄇㄈㄉㄊㄋㄌㄍㄎㄏㄐㄑㄒㄓㄔㄕㄖㄗㄘㄙㄧㄨㄩㄚㄛㄜㄝㄞㄟㄠㄡㄢㄣㄤㄥㄦˊˇˋ'.split('')
-            : 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
-
-        const chars: string[] = [];
-        // 1. Ensure each char of the target word is present at least once
-        for (let i = 0; i < gameState.word.length; i++) {
-            chars.push(gameState.word[i]);
+        const speakText = getQuestion(word, isCloze);
+        if (speakText) {
+            options.onSpeak(speakText);
         }
-        // 2. Fill the rest with random distraction characters from the alphabet
-        while (chars.length < count) {
-            const randChar = alphabet[Math.floor(Math.random() * alphabet.length)];
-            // Avoid adding the exact same character if it's already in the word (optional, but makes it cleaner)
-            if (!gameState.word.includes(randChar)) {
-                chars.push(randChar);
-            }
-        }
-        chars.sort(() => Math.random() - 0.5);
-
-        const aspect = container.clientWidth / container.clientHeight;
-        const adaptiveSize = container.clientHeight > container.clientWidth ? VIEW_SIZE / (aspect * 1.5) : VIEW_SIZE;
-        const spawnLimitX = (adaptiveSize * aspect) * 0.8;
-
-        chars.forEach((char, i) => {
-            const spawnZ = t === 'P1' ? 140 : -140;
-            const spacing = (spawnLimitX * 2) / (chars.length + 1);
-            const spawnX = -spawnLimitX + (i + 1) * spacing + (Math.random() - 0.5) * 5;
-
-            const car = new GameCar(cars.length, spawnX, spawnZ, col, char, t);
-            const randomAng = (Math.random() - 0.5) * 0.4;
-            car.body.quaternion.setFromEuler(0, (t === 'P1' ? Math.PI : 0) + randomAng, 0);
-            car.body.quaternion.setFromEuler(0, (t === 'P1' ? Math.PI : 0) + randomAng, 0);
-            car.targetEntryZ = zBase + (Math.random() - 0.5) * 10;
-            car.entrySpeedMult = 1.0 + Math.random() * 0.8;
-            cars.push(car);
-        });
     }
 
     let animationId: number;
@@ -850,6 +972,7 @@ export function useParkingPhysics(container: HTMLElement, options: {
         world.step(1 / 60);
 
         updateWalls();
+        updateSpotPositions();
 
         if (!gameState.isGameOver) {
             // Sequential pointer for UI/Guide
@@ -859,7 +982,8 @@ export function useParkingPhysics(container: HTMLElement, options: {
             // Check absolute completion: All spots must be occupied
             if (spots.every(s => s.occupied)) {
                 gameState.isGameOver = true; gameState.gameOverTime = Date.now();
-                options.onSpeak(gameState.currentQ);
+                const speakText = getAnswerHint(gameState.currentWord!);
+                options.onSpeak(speakText);
             }
         } else if (!gameState.isClearing) {
             if (Date.now() - gameState.gameOverTime > 800) {
@@ -913,6 +1037,116 @@ export function useParkingPhysics(container: HTMLElement, options: {
         renderer.render(scene, camera);
     }
 
+    function spawnTeam(t: 'P1' | 'P2', colors: { body: number, tires: number }) {
+        // Limit total cars to 10 max, unless the word itself is longer than 10.
+        // We still try to give 1.5x options for difficulty, effectively filling up to 10 slots.
+        const wantedCount = Math.ceil(gameState.word.length * 1.5);
+        const count = gameState.isClozeMode ? 4 : Math.max(gameState.word.length, Math.min(10, wantedCount));
+        const isZhuyin = gameState.word.some(c => /[\u3105-\u3129\u312A-\u312F\u02CA\u02C7\u02CB\u02D9]/.test(c));
+        const alphabet = isZhuyin
+            ? 'ㄅㄆㄇㄈㄉㄊㄋㄌㄍㄎㄏㄐㄑㄒㄓㄔㄕㄖㄗㄘㄙㄧㄨㄩㄚㄛㄜㄝㄞㄟㄠㄡㄢㄣㄤㄥㄦˊˇˋ'.split('')
+            : 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+
+        const chars: string[] = [];
+        if (gameState.isClozeMode) {
+            chars.push(gameState.word[0]);
+            const list = vocabularyStore.currentList.value;
+            while (chars.length < count) {
+                const randWord = list[Math.floor(Math.random() * list.length)].q;
+                if (!chars.includes(randWord)) chars.push(randWord);
+            }
+        } else {
+            for (let i = 0; i < gameState.word.length; i++) {
+                chars.push(gameState.word[i]);
+            }
+            while (chars.length < count) {
+                const randChar = alphabet[Math.floor(Math.random() * alphabet.length)];
+                if (!gameState.word.includes(randChar)) {
+                    chars.push(randChar);
+                }
+            }
+        }
+        chars.sort(() => Math.random() - 0.5);
+
+        const aspect = container.clientWidth / container.clientHeight;
+        const adaptiveSize = container.clientHeight > container.clientWidth ? VIEW_SIZE / (aspect * 1.5) : VIEW_SIZE;
+        const spawnLimitX = (adaptiveSize * aspect) * 0.8;
+
+        const rowSize = Math.ceil(chars.length / 2);
+        chars.forEach((char, i) => {
+            const rowIdx = Math.floor(i / rowSize);
+            const posInRow = i % rowSize;
+            const countInThisRow = (rowIdx === 0) ? rowSize : (chars.length - rowSize);
+
+            const realSpawnLimitX = spawnLimitX * 0.95;
+            let spawnX = 0;
+            const randFactor = gameState.isClozeMode ? 1.0 : 2.5;
+
+            if (gameState.isClozeMode) {
+                // Quadrant Logic for Cloze Mode:
+                // Split each row into Left and Right halves
+                const isLeft = (i % 2 === 0);
+                const sideLimitX = realSpawnLimitX * 0.9;
+                const innerGap = realSpawnLimitX * 0.35; // Gap in the middle
+
+                if (isLeft) {
+                    // Spread within left half
+                    spawnX = -innerGap - (posInRow / rowSize) * (sideLimitX - innerGap);
+                } else {
+                    // Spread within right half
+                    spawnX = innerGap + (posInRow / rowSize) * (sideLimitX - innerGap);
+                }
+                spawnX += (Math.random() - 0.5) * 5;
+            } else {
+                const spacing = (spawnLimitX * 2.0) / (countInThisRow + 1);
+                const rowXOffset = (rowIdx % 2 === 1) ? (spacing * 0.45) : 0;
+                spawnX = -spawnLimitX + (posInRow + 1) * spacing - (rowXOffset / 2) + (Math.random() - 0.5) * 4 * randFactor;
+            }
+
+            // --- Dynamic Z Positioning (Foolproof) ---
+            // Calculate available vertical space between the barrier (13) and the screen edge (adaptiveSize).
+            const barrierEdge = 15; // Wall at 13 + 2 buffer
+            const screenEdge = adaptiveSize - 3; // Keep slightly inside screen
+            const availableDepth = Math.max(10, screenEdge - barrierEdge);
+
+            // Determine how many rows we actually have max for this team
+            const totalRows = Math.ceil(chars.length / rowSize);
+
+            // Calculate Z-spacing. ideally 14. If space is tight, compress.
+            const idealStep = 14;
+            const neededDepth = (totalRows - 1) * idealStep;
+
+            let actualStep = idealStep;
+            if (totalRows > 1 && neededDepth > availableDepth) {
+                actualStep = availableDepth / (totalRows - 1);
+            }
+
+            // randomness scaled by available space (tight space = less random)
+            const depthStress = Math.min(1, neededDepth / availableDepth);
+            const randRange = (1 - depthStress) * 4 + 2; // 2 to 6
+
+            const rowZ = barrierEdge + (rowIdx * actualStep) + 3; // +3 initial offset
+            const safeTargetZ = Math.min(rowZ, screenEdge); // Hard clamp
+
+            const direction = t === 'P1' ? 1 : -1;
+            const finalTargetEntryZ = direction * (safeTargetZ + (Math.random() - 0.5) * randRange);
+
+            // Spawn just outside the targetZ so they drive in quickly
+            const spawnDist = 35; // Short drive distance
+            const spawnZ = finalTargetEntryZ + (direction * spawnDist);
+
+            const car = new GameCar(cars.length, spawnX, spawnZ, colors, char, t);
+            car.targetEntryZ = finalTargetEntryZ;
+
+            // console.log(`Spawn [${char}]: Row=${rowIdx} Team=${t} SpawnX=${spawnX.toFixed(1)} SpawnZ=${spawnZ.toFixed(1)} TargetZ=${car.targetEntryZ.toFixed(1)}`);
+
+            const randomAng = (Math.random() - 0.5) * 0.4;
+            car.body.quaternion.setFromEuler(0, (t === 'P1' ? Math.PI : 0) + randomAng, 0);
+            car.entrySpeedMult = 0.8 + Math.random() * 0.6;
+            cars.push(car);
+        });
+    }
+
     // Drag State
     const dragState = {
         car: null as GameCar | null,
@@ -959,40 +1193,49 @@ export function useParkingPhysics(container: HTMLElement, options: {
         const ray = new THREE.Raycaster(); ray.setFromCamera(m, camera);
         const hits = ray.intersectObjects(scene.children, true);
 
-        // More detailed Logging
-        console.log(`Click detected. Hits: ${hits.length}`);
-        hits.forEach((h, i) => console.log(` Hit ${i}: ${h.object.name || 'unnamed'} (Parent: ${h.object.parent?.name || 'none'})`));
-
         let carFound = false;
+        let spotFound = false;
+
         for (const h of hits) {
+            // Check for parking spots first
+            if (h.object.name && (h.object.name.startsWith('spot_label_') || h.object.name.startsWith('spot_frame_'))) {
+                if (gameState.currentWord) {
+                    const speakText = getAnswerHint(gameState.currentWord);
+                    if (speakText) options.onSpeak(speakText);
+                }
+                spotFound = true;
+                break;
+            }
+
             let o: THREE.Object3D | null = h.object;
-            // Climb hierarchy to find carId on any hit object
-            while (o && o.userData.carId === undefined && o.parent) o = o.parent;
+            // Climb hierarchy to find carId
+            while (o && o.userData.carId === undefined && o.parent && o.parent.type !== 'Scene') o = o.parent;
 
             if (o && o.userData.carId !== undefined) {
                 const id = o.userData.carId;
                 const c = cars.find(car => car.id === id);
                 if (c) {
-                    console.log(`Found Car ID: ${id}, Team: ${c.team}, isEntering: ${c.isEntering}, isParkedFinal: ${c.isParkedFinal}, Z: ${c.body.position.z.toFixed(1)}`);
+                    // SECURE CHECK: Ensure hit point is actually within a reasonable range of the car center
+                    // This prevents clicking on invisible oversized children (if any remain)
+                    const hitDist = new THREE.Vector2(h.point.x, h.point.z).distanceTo(new THREE.Vector2(c.body.position.x, c.body.position.z));
+                    if (hitDist > 12) {
+                        continue;
+                    }
 
-                    // Allow interaction if not fully parked AND it has at least started to enter the main area
-                    // (abs Z < 135 means it's no longer way out in the spawn zone)
                     if (!c.isParkedFinal && Math.abs(c.body.position.z) < 135) {
+                        c.isEntering = false;
                         dragState.car = c;
                         dragState.isDragging = false;
-                        dragState.startRot.copy(c.body.quaternion); // Lock initial rotation
+                        dragState.startRot.copy(c.body.quaternion);
                         ray.ray.intersectPlane(dragState.plane, dragState.targetPos);
                         carFound = true;
-                        console.log("-> SUCCESS: Car selected for drag/click.");
                         break;
-                    } else {
-                        console.log(`-> REJECTED: Car state or position not valid for interaction.`);
                     }
                 }
             }
         }
-        if (!carFound) {
-            console.warn("No car found at click position.");
+        if (!carFound && !spotFound) {
+            console.warn("No clickable object found at click position.");
         }
     }
 
@@ -1025,17 +1268,19 @@ export function useParkingPhysics(container: HTMLElement, options: {
                 // It was a click! Execute original click logic
                 const c = dragState.car;
                 if (!c.isParking && !c.isParkedFinal) {
-                    options.onSpeak(c.char);
-                    let targetFound = false;
-                    for (let i = gameState.nextSlotIndex; i < gameState.word.length; i++) {
-                        if (spots[i].char === c.char && !spots[i].occupied) {
-                            const alreadyTargetedByTeam = cars.some(other => other.team === c.team && other.isParking && other.targetSpot === spots[i]);
-                            if (alreadyTargetedByTeam) continue;
-                            const isPrevTargeted = i === gameState.nextSlotIndex || cars.some(other => other.isParking && other.targetSpot === spots[i - 1]);
-                            if (isPrevTargeted) { c.park(spots[i]); targetFound = true; break; }
+                    options.onSpeak(getChar(c.char));
+
+                    const result = findTargetSpot(c.char, c.team, spots, cars, gameState.nextSlotIndex);
+
+                    if (result) {
+                        c.park(result.spot as typeof spots[0]);
+                        if (result.isUnlock) {
+                            gameState.nextSlotIndex++;
                         }
+                    } else {
+                        options.onParkFail();
+                        c.shake();
                     }
-                    if (!targetFound) { options.onParkFail(); c.shake(); }
                 } else {
                     c.shake();
                     if (c.isParking) c.boost();

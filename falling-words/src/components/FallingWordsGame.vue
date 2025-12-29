@@ -2,8 +2,10 @@
 import { onMounted, onUnmounted, ref, watch } from 'vue';
 import { useGame } from '../composables/useGame';
 
-const emit = defineEmits(['exit']);
+import CommonSettingsDialog from './CommonSettingsDialog.vue';
 
+const emit = defineEmits(['exit']);
+const showSettings = ref(false);
 const explosions = ref<{id: number, x: number, y: number}[]>([]);
 let explId = 0;
 
@@ -116,6 +118,7 @@ onUnmounted(() => {
     <div class="ui-header">
       <div class="header-left">
           <button class="back-btn" @click.stop="$emit('exit')">⬅ BACK</button>
+          <button class="icon-btn" @click.stop="showSettings = true">⚙️</button>
       </div>
 
       <div class="header-center">
@@ -188,6 +191,8 @@ onUnmounted(() => {
       </div>
     </div>
 
+    <!-- Settings Dialog -->
+    <CommonSettingsDialog v-model="showSettings" title="Game Settings" />
   </div>
 </template>
 
@@ -282,6 +287,24 @@ onUnmounted(() => {
 }
 .back-btn:hover {
     background: rgba(255, 255, 255, 0.4);
+}
+
+.icon-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    font-size: 1.5rem;
+    padding: 5px 10px;
+    margin-left: 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+.icon-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.1);
 }
 
 .score-board {

@@ -1,0 +1,102 @@
+[
+    {
+        "q": "sway",
+        "t": "搖擺",
+        "tags": [
+            "verb"
+        ],
+        "exps": [
+            "Sway tail"
+        ]
+    },
+    {
+        "q": "pain",
+        "t": "疼痛",
+        "tags": [
+            "feeling"
+        ],
+        "exps": [
+            "Feel pain"
+        ]
+    },
+    {
+        "q": "meat",
+        "t": "肉",
+        "tags": [
+            "food"
+        ],
+        "exps": [
+            "Fresh meat"
+        ]
+    },
+    {
+        "q": "tea",
+        "t": "茶",
+        "tags": [
+            "drink"
+        ],
+        "exps": [
+            "Hot tea"
+        ]
+    },
+    {
+        "q": "feet",
+        "t": "腳",
+        "tags": [
+            "body"
+        ],
+        "exps": [
+            "Bare feet"
+        ]
+    },
+    {
+        "q": "dash",
+        "t": "衝刺",
+        "tags": [
+            "verb"
+        ],
+        "exps": [
+            "Dash forward"
+        ]
+    },
+    {
+        "q": "peach",
+        "t": "桃子",
+        "tags": [
+            "fruit"
+        ],
+        "exps": [
+            "Juicy peach"
+        ]
+    },
+    {
+        "q": "shell",
+        "t": "貝殼",
+        "tags": [
+            "nature"
+        ],
+        "exps": [
+            "Sea shell"
+        ]
+    },
+    {
+        "q": "wish",
+        "t": "願望",
+        "tags": [
+            "verb"
+        ],
+        "exps": [
+            "Make a wish"
+        ]
+    },
+    {
+        "q": "ball",
+        "t": "球",
+        "tags": [
+            "object"
+        ],
+        "exps": [
+            "Kick the ball"
+        ]
+    }
+]

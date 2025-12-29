@@ -2,10 +2,14 @@
 import { onMounted, ref } from 'vue';
 import { useParkingPhysics } from '../composables/useParkingPhysics';
 import { useAudio } from '../composables/useAudio';
-import CarCustomizeDialog from './CarCustomizeDialog.vue';
+import CommonSettingsDialog from './CommonSettingsDialog.vue';
+import CarSettingsTabContent from './CarSettingsTabContent.vue';
 
 const showP1Settings = ref(false);
 const showP2Settings = ref(false);
+
+const p1ExtraTabs = [{ id: 'car', label: 'Car', icon: '🚗' }];
+const p2ExtraTabs = [{ id: 'car', label: 'Car', icon: '🚗' }];
 
 const emit = defineEmits(['exit']);
 const { speak, playTone, playWrong } = useAudio();
@@ -74,8 +78,25 @@ onMounted(() => {
             </div>
         </div>
 
-        <CarCustomizeDialog v-model="showP1Settings" team="P1" />
-        <CarCustomizeDialog v-model="showP2Settings" team="P2" />
+        <CommonSettingsDialog 
+            v-model="showP1Settings" 
+            title="P1 Settings"
+            :extra-tabs="p1ExtraTabs"
+        >
+            <template #car>
+                <CarSettingsTabContent team="P1" />
+            </template>
+        </CommonSettingsDialog>
+
+        <CommonSettingsDialog 
+            v-model="showP2Settings" 
+            title="P2 Settings"
+            :extra-tabs="p2ExtraTabs"
+        >
+            <template #car>
+                <CarSettingsTabContent team="P2" />
+            </template>
+        </CommonSettingsDialog>
     </div>
 </template>
 

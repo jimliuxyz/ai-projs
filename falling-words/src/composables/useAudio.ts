@@ -85,8 +85,9 @@ export function useAudio() {
         noise.stop(now + duration);
     };
 
-    const speak = (text: string, interrupt = true) => {
+    const speak = (text: string, interrupt = true, voiceURI?: string) => {
         if (!synth) return;
+        console.log(`speak : ${text}`);
         const utterance = new SpeechSynthesisUtterance(text);
 
         // Auto-detect language
@@ -96,8 +97,10 @@ export function useAudio() {
         utterance.rate = settings.speechRate;
 
         const voices = synth.getVoices();
-        if (settings.voiceURI) {
-            const selected = voices.find(v => v.voiceURI === settings.voiceURI);
+        const targetURI = voiceURI || settings.voiceURI;
+
+        if (targetURI) {
+            const selected = voices.find(v => v.voiceURI === targetURI);
             if (selected) {
                 utterance.voice = selected;
                 // If user picked a specific voice, trust its lang over our auto-detect

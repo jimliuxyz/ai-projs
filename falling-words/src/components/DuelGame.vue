@@ -11,7 +11,7 @@ const {
   options, 
   nextRound, 
   handleChoice,
-  speak
+  announceTarget
 } = useDuel();
 
 const explosions = ref<{id: number, x: number, y: number}[]>([]);
@@ -57,7 +57,7 @@ onMounted(() => {
        <div class="strip-center">
            <div 
              class="target-mini rot-180" 
-             @click="currentTarget && speak(currentTarget.q)"
+             @click="announceTarget()"
              :style="{ '--char-count': currentTarget?.t?.length || 1 }"
            >
                <span class="text-content">{{ currentTarget?.t }}</span>
@@ -67,7 +67,7 @@ onMounted(() => {
            
            <div 
              class="target-mini" 
-             @click="currentTarget && speak(currentTarget.q)"
+             @click="announceTarget()"
              :style="{ '--char-count': currentTarget?.t?.length || 1 }"
            >
                <span class="text-content">{{ currentTarget?.t }}</span>

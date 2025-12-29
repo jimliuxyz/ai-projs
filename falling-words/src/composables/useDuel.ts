@@ -2,6 +2,7 @@ import { ref } from 'vue';
 import { type Word } from '../data/words';
 import { vocabularyStore } from '../store/vocabulary';
 import { useAudio } from './useAudio';
+import { useAudioContent } from './useAudioContent';
 
 export interface DuelOption {
     text: string;
@@ -10,6 +11,7 @@ export interface DuelOption {
 
 export function useDuel() {
     const { speak, playCorrect, playSuccess, playExplosion } = useAudio();
+    const { getQuestion } = useAudioContent();
 
     const p1Score = ref(0);
     const p2Score = ref(0);
@@ -92,6 +94,12 @@ export function useDuel() {
         return chars.join('');
     };
 
+    const announceTarget = () => {
+        if (!currentTarget.value) return;
+        const text = getQuestion(currentTarget.value);
+        if (text) speak(text);
+    };
+
     // Generate a round
     const nextRound = () => {
         isLocked.value = false;
@@ -138,9 +146,7 @@ export function useDuel() {
             }));
 
         // Announce
-        const textToSpeak = target.q;
-        const example = (target.exps && target.exps.length > 0) ? `. ${target.exps[0]}` : '';
-        speak(`${textToSpeak}${example}`);
+        announceTarget();
     };
 
     const handleChoice = (player: 1 | 2, choice: DuelOption): boolean => {
@@ -187,6 +193,7 @@ export function useDuel() {
         options,
         nextRound,
         handleChoice,
-        speak
+        speak,
+        announceTarget
     };
 }

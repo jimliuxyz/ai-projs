@@ -1,18 +1,32 @@
 import * as THREE from 'three';
 
-export const createTextTexture = (text: string, bgColor: string, color: string = 'white', size: number = 256) => {
+export const computeTextAspect = (text: string, size: number = 256) => {
     const canvas = document.createElement('canvas');
-    canvas.width = size; canvas.height = size;
     const ctx = canvas.getContext('2d')!;
-    ctx.fillStyle = bgColor; ctx.fillRect(0, 0, size, size);
-    ctx.fillStyle = color;
     ctx.font = `bold ${size * 0.7}px Arial`;
-    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-    ctx.fillText(text, size / 2, size * 0.45);
+    const metrics = ctx.measureText(text);
+    // Add a little padding and ensure at least square
+    return Math.max(1.0, (metrics.width + size * 0.3) / size);
+};
 
-    // Directional Underline - even fainter for less distraction
+export const createTextTexture = (text: string, bgColor: string, color: string = 'white', size: number = 256, aspect: number = 1.0) => {
+    const canvas = document.createElement('canvas');
+    canvas.width = size * aspect;
+    canvas.height = size;
+    const ctx = canvas.getContext('2d')!;
+    ctx.fillStyle = bgColor; ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = color;
+
+    // Fixed font size as requested by user
+    const fontSize = size * 0.7;
+    ctx.font = `bold ${fontSize}px Arial`;
+
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText(text, canvas.width / 2, canvas.height * 0.45);
+
+    // Directional Underline - dynamic width
     ctx.fillStyle = 'rgba(255, 255, 255, 0.15)';
-    ctx.fillRect(size * 0.2, size * 0.82, size * 0.6, size * 0.08);
+    ctx.fillRect(canvas.width * 0.2, canvas.height * 0.82, canvas.width * 0.6, canvas.height * 0.08);
     return new THREE.CanvasTexture(canvas);
 };
 
@@ -88,7 +102,7 @@ const createPrism = (w1: number, l1: number, w2: number, l2: number, h: number, 
 };
 
 
-export const createCarMesh = (color: number, char: string = 'A') => {
+export const createCarMesh = (colors: { body: number, tires: number }, char: string = 'A') => {
     const group = new THREE.Group();
 
     // Dimensions
@@ -115,8 +129,8 @@ export const createCarMesh = (color: number, char: string = 'A') => {
     const cabinTopL = cl * 0.30;
     const cabinBottomY = chassisBottomY + ch;
 
-    const bodyMat = new THREE.MeshStandardMaterial({ color, metalness: 0.2, roughness: 0.6, flatShading: true });
-    const blackMat = new THREE.MeshStandardMaterial({ color: 0x333333, metalness: 0.2, roughness: 0.8 });
+    const bodyMat = new THREE.MeshStandardMaterial({ color: colors.body, metalness: 0.2, roughness: 0.6, flatShading: true });
+    const tireMat = new THREE.MeshStandardMaterial({ color: colors.tires, metalness: 0.2, roughness: 0.8 });
     const whiteMat = new THREE.MeshStandardMaterial({ color: 0xffffff, emissive: 0xffffff, emissiveIntensity: 2.0 });
     const redMat = new THREE.MeshStandardMaterial({ color: 0xff0000, emissive: 0xff0000, emissiveIntensity: 2.0 });
 
@@ -132,7 +146,8 @@ export const createCarMesh = (color: number, char: string = 'A') => {
         [-wOffX, wheelRadius, wOffZ], [wOffX, wheelRadius, wOffZ]    // Front
     ];
     wheelPositions.forEach(pos => {
-        const w = new THREE.Mesh(wheelGeo, blackMat);
+        const w = new THREE.Mesh(wheelGeo, tireMat);
+        w.name = 'car_tire';
         w.position.set(pos[0], pos[1], pos[2]);
         w.castShadow = true;
         group.add(w);
@@ -212,14 +227,18 @@ export const createCarMesh = (color: number, char: string = 'A') => {
     tlR.position.z -= lgD / 2;
     group.add(tlR);
 
-    // 6. Label
+    // 6. Label - Dynamic width based on text length to keep font size consistent
+    const aspect = computeTextAspect(char);
+    const lbHeight = 5.0;
+    const lbWidth = lbHeight * aspect;
+
     const lbMat = new THREE.MeshBasicMaterial({
-        map: createTextTexture(char, '#00000000', 'white'),
+        map: createTextTexture(char, '#00000000', 'white', 256, aspect),
         transparent: true,
         side: THREE.DoubleSide
     });
-    // Increased size for better visibility
-    const lb = new THREE.Mesh(new THREE.PlaneGeometry(5.0, 5.0), lbMat);
+
+    const lb = new THREE.Mesh(new THREE.PlaneGeometry(lbWidth, lbHeight), lbMat);
     lb.rotation.x = -Math.PI / 2;
     lb.rotation.z = Math.PI;
     // Moved further back to center on roof (offsetZ of cabin is -0.8)
@@ -262,14 +281,89 @@ export const createCarMesh = (color: number, char: string = 'A') => {
     const beamY = lightY - 0.5;
     const bL = new THREE.Mesh(bGeo, bMatL);
     bL.position.set(-lightX, beamY, z_at_y);
+    bL.raycast = () => { }; // Ignore light beams for clicking
     beams.add(bL);
 
     const bR = new THREE.Mesh(bGeo, bMatL);
     bR.position.set(lightX, beamY, z_at_y);
+    bR.raycast = () => { }; // Ignore light beams for clicking
     beams.add(bR);
 
     beams.visible = false;
     group.add(beams);
 
+    // 8. Tesla Logo on Hood
+    const logoMat = new THREE.MeshBasicMaterial({
+        map: createTeslaLogoTexture(),
+        transparent: true
+    });
+    const logoGeo = new THREE.PlaneGeometry(0.5, 0.5);
+    const logo = new THREE.Mesh(logoGeo, logoMat);
+    // Position on hood:
+    // Y: chassisBottomY + ch + epsilon
+    // Z: ~3.0 (Front is ~4.25)
+    logo.rotation.x = -Math.PI / 2;
+    // logo.rotation.z = Math.PI; // Removed to face front
+    logo.position.set(0, chassisBottomY + ch + 0.01, 4.0);
+    group.add(logo);
+
     return group;
+};
+
+export const createTeslaLogoTexture = () => {
+    const canvas = document.createElement('canvas');
+    canvas.width = 128;
+    canvas.height = 128;
+    const ctx = canvas.getContext('2d')!;
+
+    // Clear
+    ctx.clearRect(0, 0, 128, 128);
+
+    ctx.fillStyle = "#eeeeee"; // Silver-ish
+
+    // 1. Top Visor (Disjoint Arc)
+    ctx.beginPath();
+    // Outer Top Curve (Arched Up)
+    ctx.moveTo(10, 30); // Left End
+    ctx.quadraticCurveTo(64, 5, 118, 30); // To Right End
+    // Inner Bottom Curve (Parallel Arch)
+    ctx.lineTo(112, 38);
+    ctx.quadraticCurveTo(64, 18, 16, 38);
+    ctx.closePath();
+    ctx.fill();
+
+    // 2. Main Body (The T) - Slimmer Version
+    ctx.beginPath();
+
+    // Left Tip
+    ctx.moveTo(18, 50);
+
+    // Left Arm Top Edge
+    ctx.quadraticCurveTo(38, 36, 58, 36); // Left Shoulder
+
+    // V-Notch
+    ctx.lineTo(64, 50); // V Bottom
+
+    // Right Shoulder
+    ctx.lineTo(70, 36); // Right Shoulder
+
+    // Right Arm Top Edge
+    ctx.quadraticCurveTo(90, 36, 110, 50); // Right Tip
+
+    // Right Arm Under Side: Curving In to Armpit (Slimmed & Moved Up)
+    ctx.quadraticCurveTo(95, 55, 74, 60); // Right Armpit
+
+    // Right Spike Edge: High-tension curve to make it thin
+    ctx.quadraticCurveTo(68, 100, 64, 125); // Spike Tip
+
+    // Left Spike Edge
+    ctx.quadraticCurveTo(60, 100, 54, 60); // Left Armpit
+
+    // Left Arm Under Side
+    ctx.quadraticCurveTo(33, 55, 18, 50); // Back to Left Tip
+
+    ctx.closePath();
+    ctx.fill();
+
+    return new THREE.CanvasTexture(canvas);
 };

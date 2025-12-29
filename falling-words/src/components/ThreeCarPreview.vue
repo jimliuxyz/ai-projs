@@ -6,7 +6,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { createCarMesh } from '../utils/carMesh';
 
 const props = defineProps<{
-  color: number;
+  color: { body: number, tires: number };
 }>();
 
 const container = ref<HTMLDivElement | null>(null);
@@ -18,11 +18,25 @@ let carGroup: THREE.Group;
 let animationId: number;
 
 onMounted(() => {
+    // Delay initialization to ensure the container has dimensions (crucial inside v-dialog/tabs)
+    const tryInit = () => {
+        if (!container.value) return;
+        if (container.value.clientWidth === 0) {
+            setTimeout(tryInit, 50);
+            return;
+        }
+        initThree();
+    };
+    setTimeout(tryInit, 100);
+});
+
+function initThree() {
     if (!container.value) return;
 
     // 1. Setup Scene
     scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x333333); // Dark background for preview
+    scene.background = new THREE.Color(0x333333); 
+    // ... rest of init logic is mostly same, just refactored into function ...
 
     // 2. Setup Camera
     camera = new THREE.PerspectiveCamera(45, container.value.clientWidth / container.value.clientHeight, 0.1, 100);
@@ -43,7 +57,7 @@ onMounted(() => {
     dirLight.castShadow = true;
     scene.add(dirLight);
 
-    // 5. Setup Ground (Shadow catcher)
+    // 5. Setup Ground
     const ground = new THREE.Mesh(
         new THREE.PlaneGeometry(50, 50),
         new THREE.MeshStandardMaterial({ color: 0x333333, roughness: 1, metalness: 0 })
@@ -62,15 +76,16 @@ onMounted(() => {
     controls.enableZoom = true;
     controls.minDistance = 5;
     controls.maxDistance = 30;
-    // Limit polar angle to prevent looking from bottom (Math.PI / 2 is horizon)
     controls.maxPolarAngle = Math.PI / 2 - 0.1; 
     controls.target.set(0, 1, 0);
+    controls.autoRotate = true;       
+    controls.autoRotateSpeed = 4.0;    
+    controls.enableDamping = true;    
     controls.update();
 
     animate();
-
     window.addEventListener('resize', handleResize);
-});
+}
 
 onUnmounted(() => {
     cancelAnimationFrame(animationId);
@@ -79,12 +94,12 @@ onUnmounted(() => {
 });
 
 watch(() => props.color, (newColor) => {
-    if (carGroup) {
+    if (carGroup && scene) {
         scene.remove(carGroup);
         carGroup = createCarMesh(newColor, 'A');
         scene.add(carGroup);
     }
-});
+}, { deep: true });
 
 function handleResize() {
     if (!container.value || !camera || !renderer) return;
