@@ -1,0 +1,86 @@
+[
+    {
+        "start": "0:00",
+        "end": "0:05",
+        "text": "The Million Dollar Burger.",
+        "translation": "價值百萬的漢堡。"
+    },
+    {
+        "start": "0:05",
+        "end": "0:10",
+        "text": "Cashier: Welcome! Are you ready to order?",
+        "translation": "店員：歡迎光臨！準備好要點餐了嗎？"
+    },
+    {
+        "start": "0:10",
+        "end": "0:15",
+        "text": "Billy: Yes! I want a burger with fifty layers of cheese.",
+        "translation": "比利：是的！我要一個有五十層起司的漢堡。"
+    },
+    {
+        "start": "0:15",
+        "end": "0:20",
+        "text": "Cashier: Fifty layers? Your burger will be a skyscraper!",
+        "translation": "店員：五十層？你的漢堡會變成摩天大樓喔！"
+    },
+    {
+        "start": "0:20",
+        "end": "0:25",
+        "text": "Billy: Good! I want to climb it to the moon.",
+        "translation": "比利：太好了！我想要爬著它去月亮。"
+    },
+    {
+        "start": "0:25",
+        "end": "0:30",
+        "text": "Cashier: Do you want some super-size fries?",
+        "translation": "店員：那你想要加大份量的薯條嗎？"
+    },
+    {
+        "start": "0:30",
+        "end": "0:35",
+        "text": "Billy: How big are they?",
+        "translation": "比利：它們有多大？"
+    },
+    {
+        "start": "0:35",
+        "end": "0:40",
+        "text": "Cashier: Each fry is as long as a baseball bat!",
+        "translation": "店員：每一根薯條都跟棒球棒一樣長！"
+    },
+    {
+        "start": "0:40",
+        "end": "0:45",
+        "text": "Billy: Wow! I can use them to play a game.",
+        "translation": "比利：哇！我可以用它們來打球了。"
+    },
+    {
+        "start": "0:45",
+        "end": "0:50",
+        "text": "Cashier: And for your drink? A bucket of soda?",
+        "translation": "店員：那飲料呢？要來一桶汽水嗎？"
+    },
+    {
+        "start": "0:50",
+        "end": "0:55",
+        "text": "Billy: No thanks. Just a tiny cup of water.",
+        "translation": "比利：不用了，謝謝。給我一小杯水就好。"
+    },
+    {
+        "start": "0:55",
+        "end": "1:00",
+        "text": "Cashier: Okay. That will be one million dollars!",
+        "translation": "店員：好的，那總共是一百萬美金！"
+    },
+    {
+        "start": "1:00",
+        "end": "1:05",
+        "text": "Billy: One million? Can I pay with my cat's hair?",
+        "translation": "比利：一百萬？我可以用我貓咪的毛付錢嗎？"
+    },
+    {
+        "start": "1:05",
+        "end": "1:10",
+        "text": "Cashier: Only if the cat is orange and wearing a hat.",
+        "translation": "店員：除非那隻貓是橘色的，而且還有戴帽子。"
+    }
+]

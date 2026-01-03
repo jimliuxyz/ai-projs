@@ -85,10 +85,17 @@ export function useAudio() {
         noise.stop(now + duration);
     };
 
-    const speak = (text: string, interrupt = true, voiceURI?: string) => {
+    const speak = (text: string, interrupt = true, onEnd?: () => void, voiceURI?: string) => {
         if (!synth) return;
         console.log(`speak : ${text}`);
         const utterance = new SpeechSynthesisUtterance(text);
+
+        if (onEnd) {
+            utterance.onend = () => {
+                console.log('Speech ended');
+                onEnd();
+            };
+        }
 
         // Auto-detect language
         const isChinese = /[\u4e00-\u9fa5\u3105-\u3129\u02CA\u02C7\u02CB\u02D9]/.test(text);

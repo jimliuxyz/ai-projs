@@ -16,7 +16,7 @@ const MAX_VELOCITY = 100;
 const BOOST_IMPULSE = 15000;
 const VIEW_SIZE = 36;
 const COLLISION_KNOCKBACK = 50000;
-const DEBUG_WALLS = true; // Set to true to see invisible walls
+const DEBUG_WALLS = false; // Set to true to see invisible walls
 
 // Collision Groups
 const GROUP_GROUND = 1;

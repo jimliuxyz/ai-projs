@@ -1,0 +1,74 @@
+[
+    {
+        "start": "0:00",
+        "end": "0:05",
+        "text": "The Race Between the Tortoise and the Hare.",
+        "translation": "龜兔賽跑。"
+    },
+    {
+        "start": "0:05",
+        "end": "0:10",
+        "text": "The Hare was very fast and proud.",
+        "translation": "兔子跑得非常快，而且很自傲。"
+    },
+    {
+        "start": "0:10",
+        "end": "0:15",
+        "text": "The Tortoise was very slow and steady.",
+        "translation": "烏龜跑得很慢，但很穩健。"
+    },
+    {
+        "start": "0:15",
+        "end": "0:20",
+        "text": "Hare: I will win this race easily!",
+        "translation": "兔子：我會輕而易舉地贏得這場比賽！"
+    },
+    {
+        "start": "0:20",
+        "end": "0:25",
+        "text": "Tortoise: We will see about that.",
+        "translation": "烏龜：那可不一定喔。"
+    },
+    {
+        "start": "0:25",
+        "end": "0:30",
+        "text": "The Hare ran far ahead.",
+        "translation": "兔子跑到了前面很遠的地方。"
+    },
+    {
+        "start": "0:30",
+        "end": "0:35",
+        "text": "Hare: I am so tired. I will take a nap.",
+        "translation": "兔子：我好累喔，我要睡個小覺。"
+    },
+    {
+        "start": "0:35",
+        "end": "0:40",
+        "text": "The Hare fell fast asleep under a tree.",
+        "translation": "兔子在樹下沉沉地睡著了。"
+    },
+    {
+        "start": "0:40",
+        "end": "0:45",
+        "text": "Step by step, the Tortoise kept walking.",
+        "translation": "烏龜一步接著一步，不停地走著。"
+    },
+    {
+        "start": "0:45",
+        "end": "0:50",
+        "text": "He passed the sleeping Hare.",
+        "translation": "他經過了正在睡覺的兔子。"
+    },
+    {
+        "start": "0:50",
+        "end": "0:55",
+        "text": "The Tortoise reached the finish line first!",
+        "translation": "烏龜竟然先到達了終點線！"
+    },
+    {
+        "start": "0:55",
+        "end": "1:00",
+        "text": "Hare: Oh no! Slow and steady wins the race!",
+        "translation": "兔子：喔不！穩紮穩打才是贏家！"
+    }
+]

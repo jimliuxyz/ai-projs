@@ -297,7 +297,7 @@ export const createCarMesh = (colors: { body: number, tires: number }, char: str
         map: createTeslaLogoTexture(),
         transparent: true
     });
-    const logoGeo = new THREE.PlaneGeometry(0.5, 0.5);
+    const logoGeo = new THREE.PlaneGeometry(0.65, 0.65);
     const logo = new THREE.Mesh(logoGeo, logoMat);
     // Position on hood:
     // Y: chassisBottomY + ch + epsilon
@@ -319,51 +319,24 @@ export const createTeslaLogoTexture = () => {
     // Clear
     ctx.clearRect(0, 0, 128, 128);
 
-    ctx.fillStyle = "#eeeeee"; // Silver-ish
+    ctx.fillStyle = "white";
 
-    // 1. Top Visor (Disjoint Arc)
-    ctx.beginPath();
-    // Outer Top Curve (Arched Up)
-    ctx.moveTo(10, 30); // Left End
-    ctx.quadraticCurveTo(64, 5, 118, 30); // To Right End
-    // Inner Bottom Curve (Parallel Arch)
-    ctx.lineTo(112, 38);
-    ctx.quadraticCurveTo(64, 18, 16, 38);
-    ctx.closePath();
-    ctx.fill();
+    // SVG paths from tesla.svg
+    const path1 = new Path2D("M126.806 252.502l35.476-199.519c33.815 0 44.481 3.708 46.021 18.843 0 0 22.684-8.458 34.125-25.636-44.646-20.688-89.505-21.621-89.505-21.621l-26.176 31.882.059-.004-26.176-31.883s-44.86.934-89.5 21.622c11.431 17.178 34.124 25.636 34.124 25.636 1.549-15.136 12.202-18.844 45.79-18.868l35.762 199.548");
+    const path2 = new Path2D("M126.792 15.36c36.09-.276 77.399 5.583 119.687 24.014 5.652-10.173 7.105-14.669 7.105-14.669C207.357 6.416 164.066.157 126.787 0 89.51.157 46.221 6.417 0 24.705c0 0 2.062 5.538 7.1 14.669 42.28-18.431 83.596-24.29 119.687-24.014h.005");
 
-    // 2. Main Body (The T) - Slimmer Version
-    ctx.beginPath();
+    // Center and scale
+    // ViewBox: -38.03 -63.12 329.65 378.75
+    // Width: 329.65, Height: 378.75
+    ctx.save();
+    ctx.translate(64, 64);
+    const scale = 125 / 378.75; // Increased scale to fill canvas
+    ctx.scale(scale, scale);
+    ctx.translate(-126.79, -126.25); // Midpoint of original viewBox approx
 
-    // Left Tip
-    ctx.moveTo(18, 50);
-
-    // Left Arm Top Edge
-    ctx.quadraticCurveTo(38, 36, 58, 36); // Left Shoulder
-
-    // V-Notch
-    ctx.lineTo(64, 50); // V Bottom
-
-    // Right Shoulder
-    ctx.lineTo(70, 36); // Right Shoulder
-
-    // Right Arm Top Edge
-    ctx.quadraticCurveTo(90, 36, 110, 50); // Right Tip
-
-    // Right Arm Under Side: Curving In to Armpit (Slimmed & Moved Up)
-    ctx.quadraticCurveTo(95, 55, 74, 60); // Right Armpit
-
-    // Right Spike Edge: High-tension curve to make it thin
-    ctx.quadraticCurveTo(68, 100, 64, 125); // Spike Tip
-
-    // Left Spike Edge
-    ctx.quadraticCurveTo(60, 100, 54, 60); // Left Armpit
-
-    // Left Arm Under Side
-    ctx.quadraticCurveTo(33, 55, 18, 50); // Back to Left Tip
-
-    ctx.closePath();
-    ctx.fill();
+    ctx.fill(path1);
+    ctx.fill(path2);
+    ctx.restore();
 
     return new THREE.CanvasTexture(canvas);
 };

@@ -2,10 +2,11 @@
 import { ref, onMounted } from 'vue';
 import { settings } from '../store/settings';
 import { vocabularyStore } from '../store/vocabulary';
+import { lyricsStore } from '../store/lyrics';
 import { useAudio } from '../composables/useAudio';
 import { useAudioContent } from '../composables/useAudioContent';
 
-const props = defineProps<{
+defineProps<{
     modelValue: boolean;
     title?: string;
     extraTabs?: { id: string, label: string, icon: string }[];
@@ -17,6 +18,7 @@ const { getQuestion } = useAudioContent();
 
 const activeTab = ref('basic');
 const showVocabPicker = ref(false);
+const showLyricsPicker = ref(false);
 const availableVoices = ref<SpeechSynthesisVoice[]>([]);
 
 const updateVoices = () => {
@@ -28,7 +30,7 @@ const previewVoice = (voiceURI: string) => {
     const list = vocabularyStore.currentList.value;
     const sampleWord = (list && list.length > 0) ? list[0] : { q: 'Apple', a: 'apple', t: '蘋果', exps: ['A fruit'] };
     const text = getQuestion(sampleWord);
-    speak(text, true, voiceURI);
+    speak(text, true, undefined, voiceURI);
 };
 
 onMounted(() => {
@@ -41,6 +43,11 @@ onMounted(() => {
 const pickVocab = (name: string) => {
     vocabularyStore.selectList(name);
     showVocabPicker.value = false;
+};
+
+const pickLyrics = (name: string) => {
+    lyricsStore.selectLyrics(name);
+    showLyricsPicker.value = false;
 };
 
 const close = () => {
@@ -100,6 +107,20 @@ const close = () => {
                                     {{ vocabularyStore.state.currentListName }}
                                 </div>
                                 <v-btn color="primary" variant="elevated" size="small" @click="showVocabPicker = true">
+                                    Change
+                                </v-btn>
+                            </v-card-text>
+                        </v-card-item>
+                    </v-card>
+
+                    <!-- Lyrics Card -->
+                    <v-card variant="tonal" class="mb-4 w-100" color="secondary">
+                        <v-card-item title="Story / Lyrics">
+                            <v-card-text class="d-flex align-center justify-space-between mt-2">
+                                <div class="text-h6 text-capitalize">
+                                    {{ lyricsStore.state.currentLyricsName }}
+                                </div>
+                                <v-btn color="primary" variant="elevated" size="small" @click="showLyricsPicker = true">
                                     Change
                                 </v-btn>
                             </v-card-text>
@@ -241,6 +262,44 @@ const close = () => {
                         <v-list-item-subtitle>{{ list.data.length }} words</v-list-item-subtitle>
                         
                         <template v-slot:append v-if="list.name === vocabularyStore.state.currentListName">
+                            <v-icon color="success" icon="mdi-check-circle"></v-icon>
+                        </template>
+                    </v-list-item>
+                </v-list>
+            </v-card-text>
+        </v-card>
+    </v-dialog>
+
+    <!-- Lyrics Picker Dialog -->
+    <v-dialog v-model="showLyricsPicker" max-width="500" scrollable>
+        <v-card theme="dark" rounded="xl">
+            <v-card-title class="d-flex align-center pa-4 bg-secondary">
+                <v-icon icon="mdi-book-open-variant" class="mr-2"></v-icon>
+                Select Story
+                <v-spacer></v-spacer>
+                <v-btn icon="mdi-close" variant="text" density="comfortable" @click="showLyricsPicker = false"></v-btn>
+            </v-card-title>
+            <v-divider></v-divider>
+            <v-card-text style="height: 400px;" class="pa-0">
+                <v-list lines="two" bg-color="background">
+                    <v-list-item
+                        v-for="list in lyricsStore.lists" 
+                        :key="list.name"
+                        :active="list.name === lyricsStore.state.currentLyricsName"
+                        active-color="primary"
+                        @click="pickLyrics(list.name)"
+                        rounded="lg"
+                        class="ma-2"
+                    >
+                        <template v-slot:prepend>
+                            <v-avatar color="primary" variant="tonal">
+                                <v-icon icon="mdi-book-play"></v-icon>
+                            </v-avatar>
+                        </template>
+                        <v-list-item-title class="font-weight-bold text-capitalize">{{ list.name }}</v-list-item-title>
+                        <v-list-item-subtitle>{{ list.data.length }} lines</v-list-item-subtitle>
+                        
+                        <template v-slot:append v-if="list.name === lyricsStore.state.currentLyricsName">
                             <v-icon color="success" icon="mdi-check-circle"></v-icon>
                         </template>
                     </v-list-item>

@@ -5,6 +5,7 @@ import SpellingGame from './components/SpellingGame.vue';
 import DuelGame from './components/DuelGame.vue';
 import CodeKnight from './components/CodeKnight.vue';
 import ParkingGame from './components/ParkingGame.vue';
+import StoryEchoGame from './components/StoryEchoGame.vue';
 import CommonSettingsDialog from './components/CommonSettingsDialog.vue';
 
 const currentGame = ref<string | null>(window.location.hash.replace('#/', '') || null);
@@ -16,6 +17,7 @@ const games = [
     { id: 'spelling-mode', name: 'Spell Master', desc: 'Spell words letter by letter!', icon: '🛸' },
     { id: 'duel-mode', name: 'Duel', desc: '2-Player Battle!', icon: '⚔️' },
     { id: 'code-knight', name: 'Code Knight', desc: 'Control by your voice!', icon: '🛡️' },
+    { id: 'story-echo', name: 'Story Echo', desc: 'Listen and repeat!', icon: '📖' },
     { id: 'coming-soon', name: 'More Games', desc: 'Coming Soon...', icon: '🔐' }
 ];
 
@@ -38,58 +40,65 @@ const exitGame = () => {
 </script>
 
 <template>
-  <div v-if="!currentGame" class="portal-container">
-    <div class="header-section">
-        <h1 class="portal-title">Kid's Learning Ark</h1>
-        <button class="main-settings-btn" @click="showSettings = true">
-            ⚙️ Settings
-        </button>
+  <v-app>
+    <div v-if="!currentGame" class="portal-container">
+      <div class="header-section">
+          <h1 class="portal-title">Kid's Learning Ark</h1>
+          <button class="main-settings-btn" @click="showSettings = true">
+              ⚙️ Settings
+          </button>
+      </div>
+      
+      <div class="games-grid">
+          <div 
+            v-for="game in games" 
+            :key="game.id" 
+            class="game-card"
+            :class="{ disabled: game.id === 'coming-soon' }"
+            @click="selectGame(game.id)"
+          >
+              <div class="game-icon">{{ game.icon }}</div>
+              <div class="game-info">
+                  <h3>{{ game.name }}</h3>
+                  <p>{{ game.desc }}</p>
+              </div>
+          </div>
+      </div>
+  
+      <!-- Global Settings Dialog -->
+      <CommonSettingsDialog v-model="showSettings" title="Game Settings" />
     </div>
-    
-    <div class="games-grid">
-        <div 
-          v-for="game in games" 
-          :key="game.id" 
-          class="game-card"
-          :class="{ disabled: game.id === 'coming-soon' }"
-          @click="selectGame(game.id)"
-        >
-            <div class="game-icon">{{ game.icon }}</div>
-            <div class="game-info">
-                <h3>{{ game.name }}</h3>
-                <p>{{ game.desc }}</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- Global Settings Dialog -->
-    <CommonSettingsDialog v-model="showSettings" title="Game Settings" />
-  </div>
-
-  <FallingWordsGame 
-    v-else-if="currentGame === 'falling-words'" 
-    @exit="exitGame"
-  />
-
-  <SpellingGame 
-    v-else-if="currentGame === 'spelling-mode'" 
-    @exit="exitGame"
-  />
-
-  <DuelGame 
-    v-else-if="currentGame === 'duel-mode'" 
-    @exit="exitGame"
-  />
-
-  <CodeKnight 
-    v-else-if="currentGame === 'code-knight'" 
-    @exit="exitGame"
-  />
-
-  <ParkingGame
-    v-else-if="currentGame === 'parking-jam'"
-    @exit="exitGame"
-  />
+  
+    <FallingWordsGame 
+      v-else-if="currentGame === 'falling-words'" 
+      @exit="exitGame"
+    />
+  
+    <SpellingGame 
+      v-else-if="currentGame === 'spelling-mode'" 
+      @exit="exitGame"
+    />
+  
+    <DuelGame 
+      v-else-if="currentGame === 'duel-mode'" 
+      @exit="exitGame"
+    />
+  
+    <CodeKnight 
+      v-else-if="currentGame === 'code-knight'" 
+      @exit="exitGame"
+    />
+  
+    <ParkingGame
+      v-else-if="currentGame === 'parking-jam'"
+      @exit="exitGame"
+    />
+  
+    <StoryEchoGame
+      v-else-if="currentGame === 'story-echo'"
+      @exit="exitGame"
+    />
+  </v-app>
 </template>
 
 <style scoped>

@@ -1,0 +1,62 @@
+[
+    {
+        "start": "0:00",
+        "end": "0:05",
+        "text": "A Strange Picnic.",
+        "translation": "一場奇怪的野餐。"
+    },
+    {
+        "start": "0:05",
+        "end": "0:10",
+        "text": "Robot: Hello, Mr. Dragon!",
+        "translation": "機器人：你好，恐龍先生！"
+    },
+    {
+        "start": "0:10",
+        "end": "0:15",
+        "text": "Dragon: Hello, Little Robot!",
+        "translation": "恐龍：你好，小機器人！"
+    },
+    {
+        "start": "0:15",
+        "end": "0:20",
+        "text": "Robot: Do you want some hot tea?",
+        "translation": "機器人：你要喝點熱茶嗎？"
+    },
+    {
+        "start": "0:20",
+        "end": "0:25",
+        "text": "Dragon: No thanks. I want some meat.",
+        "translation": "恐龍：不謝了，我想吃肉。"
+    },
+    {
+        "start": "0:25",
+        "end": "0:30",
+        "text": "Robot: Look! I found a giant peach.",
+        "translation": "機器人：看！我發現了一顆巨大的桃子。"
+    },
+    {
+        "start": "0:30",
+        "end": "0:35",
+        "text": "Dragon: Yum! But it has a hard shell.",
+        "translation": "恐龍：好耶！但它有個硬殼。"
+    },
+    {
+        "start": "0:35",
+        "end": "0:40",
+        "text": "Robot: I wish we had a hammer.",
+        "translation": "機器人：真希望我們有個槌子。"
+    },
+    {
+        "start": "0:40",
+        "end": "0:45",
+        "text": "Dragon: I can just use my big feet!",
+        "translation": "恐龍：我可以直接用我的大腳！"
+    },
+    {
+        "start": "0:45",
+        "end": "0:50",
+        "text": "Robot: Be careful! Don't feel any pain.",
+        "translation": "機器人：小心點！別受傷了。"
+    }
+]

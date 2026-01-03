@@ -1,0 +1,62 @@
+[
+    {
+        "start": "0:00",
+        "end": "0:05",
+        "text": "The Three Little Pigs.",
+        "translation": "三隻小豬。"
+    },
+    {
+        "start": "0:05",
+        "end": "0:10",
+        "text": "The first pig built a house of straw.",
+        "translation": "第一隻小豬用稻草蓋了房子。"
+    },
+    {
+        "start": "0:10",
+        "end": "0:15",
+        "text": "Wolf: Little pig, let me come in!",
+        "translation": "大野狼：小豬，讓我進去！"
+    },
+    {
+        "start": "0:15",
+        "end": "0:20",
+        "text": "The Wolf blew the house down.",
+        "translation": "大野狼把房子吹垮了。"
+    },
+    {
+        "start": "0:20",
+        "end": "0:25",
+        "text": "The second pig built a house of sticks.",
+        "translation": "第二隻小豬用木棍蓋了房子。"
+    },
+    {
+        "start": "0:25",
+        "end": "0:30",
+        "text": "The Wolf blew that house down too.",
+        "translation": "大野狼也把那座房子吹垮了。"
+    },
+    {
+        "start": "0:30",
+        "end": "0:35",
+        "text": "The third pig built a house of bricks.",
+        "translation": "第三隻小豬用磚頭蓋了房子。"
+    },
+    {
+        "start": "0:35",
+        "end": "0:40",
+        "text": "The Wolf huffed and puffed.",
+        "translation": "大野狼吹了又吹，呼了又呼。"
+    },
+    {
+        "start": "0:40",
+        "end": "0:45",
+        "text": "But the brick house did not fall!",
+        "translation": "但磚塊房子一點都沒動搖！"
+    },
+    {
+        "start": "0:45",
+        "end": "0:50",
+        "text": "The three pigs were safe and happy.",
+        "translation": "三隻小豬從此安全又快樂地生活。"
+    }
+]

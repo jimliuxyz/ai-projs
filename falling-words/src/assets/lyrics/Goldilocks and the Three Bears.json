@@ -1,0 +1,68 @@
+[
+    {
+        "start": "0:00",
+        "end": "0:05",
+        "text": "Goldilocks and the Three Bears.",
+        "translation": "金髮姑娘與三隻熊。"
+    },
+    {
+        "start": "0:05",
+        "end": "0:10",
+        "text": "Goldilocks saw a little house in the woods.",
+        "translation": "金髮姑娘在森林裡看到一座小房子。"
+    },
+    {
+        "start": "0:10",
+        "end": "0:15",
+        "text": "She went inside and saw three bowls.",
+        "translation": "她走進去，看到了三個碗。"
+    },
+    {
+        "start": "0:15",
+        "end": "0:20",
+        "text": "The first soup was too hot.",
+        "translation": "第一碗湯太燙了。"
+    },
+    {
+        "start": "0:20",
+        "end": "0:25",
+        "text": "The second soup was too cold.",
+        "translation": "第二碗湯太冷了。"
+    },
+    {
+        "start": "0:25",
+        "end": "0:30",
+        "text": "The third soup was just right!",
+        "translation": "第三碗湯剛剛好！"
+    },
+    {
+        "start": "0:30",
+        "end": "0:35",
+        "text": "She ate it all and felt sleepy.",
+        "translation": "她把湯喝光，覺得好睏。"
+    },
+    {
+        "start": "0:35",
+        "end": "0:40",
+        "text": "She lay down on the smallest bed.",
+        "translation": "她躺在最小的那張床上。"
+    },
+    {
+        "start": "0:40",
+        "end": "0:45",
+        "text": "The three bears came home.",
+        "translation": "三隻熊回到了家。"
+    },
+    {
+        "start": "0:45",
+        "end": "0:50",
+        "text": "Baby Bear: Someone is in my bed!",
+        "translation": "小熊：有人在我的床上！"
+    },
+    {
+        "start": "0:50",
+        "end": "0:55",
+        "text": "Goldilocks woke up and ran away fast.",
+        "translation": "金髮姑娘嚇醒，飛快地逃跑了。"
+    }
+]
