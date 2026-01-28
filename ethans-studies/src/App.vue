@@ -6,6 +6,7 @@ import DuelGame from '~/games/DuelGame/DuelGame.vue';
 import CodeKnight from '~/games/CodeKnight/CodeKnight.vue';
 import ParkingGame from '~/games/ParkingGame/ParkingGame.vue';
 import StoryEchoGame from '~/games/StoryEchoGame/StoryEchoGame.vue';
+import ChessGame from '~/games/ChessGame/ChessGame.vue';
 import CommonSettingsDialog from '~/components/CommonSettingsDialog.vue';
 
 const currentGame = ref<string | null>(window.location.hash.replace('#/', '') || null);
@@ -18,6 +19,7 @@ const games = [
     { id: 'duel-mode', name: 'Duel', desc: '2-Player Battle!', icon: '⚔️' },
     { id: 'code-knight', name: 'Code Knight', desc: 'Control by your voice!', icon: '🛡️' },
     { id: 'story-echo', name: 'Story Echo', desc: 'Listen and repeat!', icon: '📖' },
+    { id: 'chess-master', name: 'Chess Master', desc: 'Strategy and Skill!', icon: '♟️' },
     { id: 'coming-soon', name: 'More Games', desc: 'Coming Soon...', icon: '🔐' }
 ];
 
@@ -96,6 +98,11 @@ const exitGame = () => {
   
     <StoryEchoGame
       v-else-if="currentGame === 'story-echo'"
+      @exit="exitGame"
+    />
+  
+    <ChessGame
+      v-else-if="currentGame === 'chess-master'"
       @exit="exitGame"
     />
   </v-app>

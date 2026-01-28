@@ -17,6 +17,10 @@ export interface GameSettings {
     p2Car: CarColors;
     readAnswer: boolean;
     readTransition: boolean;
+    chessWhiteColor: string;
+    chessBlackColor: string;
+    chessWhiteOutlineColor: string;
+    chessBlackOutlineColor: string;
 }
 
 const defaultSettings: GameSettings = {
@@ -29,6 +33,10 @@ const defaultSettings: GameSettings = {
     p2Car: { body: 0xe81123, tires: 0x333333 },
     readAnswer: true,
     readTransition: true,
+    chessWhiteColor: '#ffffff',
+    chessBlackColor: '#000000',
+    chessWhiteOutlineColor: '#000000',
+    chessBlackOutlineColor: '#ffffff',
 };
 
 // Load from local storage or default
@@ -44,6 +52,18 @@ if (!rawState.p2Car) {
 }
 if (rawState.readTransition === undefined) {
     rawState.readTransition = true;
+}
+if (rawState.chessWhiteColor === undefined) {
+    rawState.chessWhiteColor = '#ffffff';
+}
+if (rawState.chessBlackColor === undefined) {
+    rawState.chessBlackColor = '#000000';
+}
+if (rawState.chessWhiteOutlineColor === undefined) {
+    rawState.chessWhiteOutlineColor = '#000000';
+}
+if (rawState.chessBlackOutlineColor === undefined) {
+    rawState.chessBlackOutlineColor = '#ffffff';
 }
 
 export const settings = reactive<GameSettings>(rawState);

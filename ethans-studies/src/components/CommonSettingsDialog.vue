@@ -151,7 +151,7 @@ const close = () => {
                                             v-for="voice in availableVoices"
                                             :key="voice.voiceURI"
                                             :active="settings.voiceURI === voice.voiceURI"
-                                            active-color="primary"
+                                            color="primary"
                                             @click="settings.voiceURI = voice.voiceURI"
                                         >
                                             <v-list-item-title class="text-body-2 font-weight-medium">
@@ -248,7 +248,7 @@ const close = () => {
                         v-for="list in vocabularyStore.lists" 
                         :key="list.name"
                         :active="list.name === vocabularyStore.state.currentListName"
-                        active-color="primary"
+                        color="primary"
                         @click="pickVocab(list.name)"
                         rounded="lg"
                         class="ma-2"
@@ -286,7 +286,7 @@ const close = () => {
                         v-for="list in lyricsStore.lists" 
                         :key="list.name"
                         :active="list.name === lyricsStore.state.currentLyricsName"
-                        active-color="primary"
+                        color="primary"
                         @click="pickLyrics(list.name)"
                         rounded="lg"
                         class="ma-2"
