@@ -7,6 +7,9 @@ import CodeKnight from '~/games/CodeKnight/CodeKnight.vue';
 import ParkingGame from '~/games/ParkingGame/ParkingGame.vue';
 import StoryEchoGame from '~/games/StoryEchoGame/StoryEchoGame.vue';
 import ChessGame from '~/games/ChessGame/ChessGame.vue';
+import GoGame from '~/games/GoGame/GoGame.vue';
+import GomokuGame from '~/games/GomokuGame/GomokuGame.vue';
+import SolitaireGame from '~/games/SolitaireGame/SolitaireGame.vue';
 import CommonSettingsDialog from '~/components/CommonSettingsDialog.vue';
 
 const currentGame = ref<string | null>(window.location.hash.replace('#/', '') || null);
@@ -20,6 +23,9 @@ const games = [
     { id: 'code-knight', name: 'Code Knight', desc: 'Control by your voice!', icon: '🛡️' },
     { id: 'story-echo', name: 'Story Echo', desc: 'Listen and repeat!', icon: '📖' },
     { id: 'chess-master', name: 'Chess Master', desc: 'Strategy and Skill!', icon: '♟️' },
+    { id: 'go-master', name: 'Go Master', desc: 'Ancient Strategy Game!', icon: '⚪' },
+    { id: 'gomoku-master', name: 'Gomoku Master', desc: 'Five in a row wins!', icon: '💠' },
+    { id: 'solitaire-master', name: 'Solitaire Master', desc: 'The classic card game!', icon: '🃏' },
     { id: 'coming-soon', name: 'More Games', desc: 'Coming Soon...', icon: '🔐' }
 ];
 
@@ -103,6 +109,21 @@ const exitGame = () => {
   
     <ChessGame
       v-else-if="currentGame === 'chess-master'"
+      @exit="exitGame"
+    />
+  
+    <GoGame
+      v-else-if="currentGame === 'go-master'"
+      @exit="exitGame"
+    />
+
+    <GomokuGame
+      v-else-if="currentGame === 'gomoku-master'"
+      @exit="exitGame"
+    />
+
+    <SolitaireGame
+      v-else-if="currentGame === 'solitaire-master'"
       @exit="exitGame"
     />
   </v-app>
