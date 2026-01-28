@@ -1,20 +1,22 @@
 <script setup lang="ts">
 import { ref, onMounted, computed, onUnmounted, watch } from 'vue';
-import { lyricsStore } from '~/store/lyrics';
+import { useStoryContent } from './useStoryContent';
 import { useAudio } from '~/composables/useAudio';
 import CommonSettingsDialog from '~/components/CommonSettingsDialog.vue';
+import StorySettingsTabContent from './StorySettingsTabContent.vue';
 
 const emit = defineEmits(['exit']);
 const { speak, playCorrect } = useAudio();
+const { mode, isLoop, currentContent } = useStoryContent();
 
-const lines = computed(() => lyricsStore.currentLines.value);
+const lines = computed(() => currentContent.value.lines);
 const currentIndex = ref(0);
 const currentLine = computed(() => lines.value[currentIndex.value] || { text: '', translation: '' });
 
 const showSettings = ref(false);
 
 // Watch for story changes to restart
-watch(() => lyricsStore.state.currentLyricsName, () => {
+watch(() => currentContent.value, () => {
     restart();
 });
 
@@ -155,7 +157,16 @@ const processResult = (transcript: string) => {
     
     let matchCount = 0;
     targetWords.forEach(word => {
-        if (transcriptWords.includes(word)) matchCount++;
+        if (transcriptWords.includes(word)) {
+            matchCount++;
+        } else if (word.length > 1) {
+            // Check for spelled out version (e.g. "s w a y" match "sway")
+            const spelledPattern = word.split('').join('\\s+');
+            const regex = new RegExp(spelledPattern);
+            if (regex.test(normalizedTranscript)) {
+                matchCount++;
+            }
+        }
     });
 
     const matchRatio = matchCount / targetWords.length;
@@ -183,38 +194,113 @@ const resume = () => {
     startListening();
 };
 
+const parseTime = (timeStr: string | undefined) => {
+    if (!timeStr) return 0;
+    const parts = timeStr.split(':');
+    if (parts.length === 2) {
+        return parseInt(parts[0]) * 60 + parseFloat(parts[1]);
+    }
+    return 0;
+};
+
+const currentAudioSrc = computed(() => currentContent.value.audio);
+const audioPlayer = ref<HTMLAudioElement | null>(null);
+const audioTimeout = ref<any>(null);
+
+watch(currentAudioSrc, (newFile) => {
+    if (newFile) {
+        try {
+            // Construct URL dynamically - Vite should handle this if assets are in known location
+            const url = new URL(`../../assets/lyrics/${newFile}`, import.meta.url).href;
+            if (!audioPlayer.value) audioPlayer.value = new Audio();
+            audioPlayer.value.src = url;
+            audioPlayer.value.load();
+        } catch (e) {
+            console.error('Audio load failed', e);
+            audioPlayer.value = null;
+        }
+    } else {
+        if (audioPlayer.value) {
+            audioPlayer.value.pause();
+            audioPlayer.value = null;
+        }
+    }
+}, { immediate: true });
+
 const playCurrent = () => {
     if (isListening.value) {
         try { recognition.stop(); } catch(e) {}
     }
     isSpeaking.value = true;
-    speak(currentLine.value.text, true, () => {
+    
+    // Clear any existing audio stop timer
+    if (audioTimeout.value) {
+        clearTimeout(audioTimeout.value);
+        audioTimeout.value = null;
+    }
+
+    const onPlayEnd = () => {
         isSpeaking.value = false;
         if (isAutoMode.value && !isFinished.value && !isPaused.value) {
             setTimeout(() => {
                 if (!isPaused.value) startListening();
             }, 400);
         }
-    });
+    };
+
+    const fallbackToTTS = () => {
+        speak(currentLine.value.text, true, onPlayEnd);
+    };
+
+    if (audioPlayer.value) {
+        const start = parseTime(currentLine.value.start);
+        const end = parseTime(currentLine.value.end);
+        const duration = (end - start) * 1000;
+        
+        // Ensure duration is positive to avoid instant cutoff
+        const playDuration = duration > 0 ? duration : 3000;
+
+        audioPlayer.value.currentTime = start;
+        audioPlayer.value.play()
+            .then(() => {
+                audioTimeout.value = setTimeout(() => {
+                    audioPlayer.value?.pause();
+                    onPlayEnd();
+                }, playDuration);
+            })
+            .catch(e => {
+                console.warn('Audio play failed, falling back to TTS:', e);
+                fallbackToTTS();
+            });
+    } else {
+        fallbackToTTS();
+    }
 };
 
 const nextStep = (offset: number = 1) => {
-    const targetIndex = Math.min(currentIndex.value + offset, lines.value.length - 1);
-    if (targetIndex !== currentIndex.value || currentIndex.value < lines.value.length - 1) {
+    const targetIndex = currentIndex.value + offset;
+    
+    if (targetIndex < lines.value.length) {
+        if (audioPlayer.value) audioPlayer.value.pause();
         currentIndex.value = targetIndex;
         recognizedText.value = '';
         resultMessage.value = '';
         setTimeout(() => playCurrent(), 600);
     } else {
-        isFinished.value = true;
+        if (isLoop.value) {
+           restart();
+        } else {
+           isFinished.value = true;
+        }
     }
 };
 
 const prevStep = (offset: number = 1) => {
     const targetIndex = Math.max(currentIndex.value - offset, 0);
     if (targetIndex !== currentIndex.value || isFinished.value) {
+         if (audioPlayer.value) audioPlayer.value.pause();
         currentIndex.value = targetIndex;
-        isFinished.value = false; // We are back in the story
+        isFinished.value = false;
         recognizedText.value = '';
         resultMessage.value = '';
         setTimeout(() => playCurrent(), 600);
@@ -222,6 +308,7 @@ const prevStep = (offset: number = 1) => {
 };
 
 const restart = () => {
+    if (audioPlayer.value) audioPlayer.value.pause();
     currentIndex.value = 0;
     isFinished.value = false;
     isPaused.value = false;
@@ -232,6 +319,7 @@ const restart = () => {
 
 onMounted(() => {
     startWatchdog();
+    // Wait slightly longer for audio to maybe load
     setTimeout(() => {
         playCurrent();
     }, 1500);
@@ -275,8 +363,8 @@ onUnmounted(() => {
             </div>
             <div class="finish-card">
                 <div class="finish-icon">🏆</div>
-                <h2>Story Complete!</h2>
-                <div class="story-name-badge">{{ lyricsStore.state.currentLyricsName }}</div>
+                <h2>{{ mode === 'lyrics' ? 'Story' : 'List' }} Complete!</h2>
+                <div class="story-name-badge">{{ currentContent.title }}</div>
                 <p>Amazing job! You read the whole story!</p>
                 <div class="finish-ops">
                     <button class="restart-btn" @click="restart">
@@ -323,7 +411,15 @@ onUnmounted(() => {
         <code>"next"</code> <code>"previous"</code> <code>"again"</code> <code>"stop"</code> <code>"exit"</code>
     </div>
     <!-- Settings Dialog -->
-    <CommonSettingsDialog v-model="showSettings" title="Story Settings" />
+    <CommonSettingsDialog 
+        v-model="showSettings" 
+        title="Story Settings" 
+        :extra-tabs="[{ id: 'content', label: 'Content', icon: 'mdi-book-open-page-variant' }]"
+    >
+        <template #content>
+            <StorySettingsTabContent />
+        </template>
+    </CommonSettingsDialog>
   </div>
 </template>
 
@@ -666,4 +762,26 @@ onUnmounted(() => {
 .star-fx:nth-child(14) { left: 60%; --d: 5s; animation-delay: 0.3s; }
 .star-fx:nth-child(15) { left: 85%; --d: 9s; animation-delay: 1.8s; }
 .star-fx:nth-child(16) { left: 95%; --d: 7s; animation-delay: 2.8s; }
+
+.mode-toggle {
+    display: flex;
+    background: #1e293b;
+    border-radius: 8px;
+    padding: 4px;
+    margin-left: 20px;
+}
+.mode-toggle button {
+    padding: 6px 16px;
+    border-radius: 6px;
+    color: #64748b;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.mode-toggle button.active {
+    background: #38bdf8;
+    color: #0f172a;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
 </style>

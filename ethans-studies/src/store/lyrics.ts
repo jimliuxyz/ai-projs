@@ -1,6 +1,6 @@
 import { reactive, computed } from 'vue';
 
-interface LyricLine {
+export interface LyricLine {
     start: string;
     end: string;
     text: string;
@@ -10,6 +10,7 @@ interface LyricLine {
 interface LyricsFile {
     name: string;
     path: string;
+    audio?: string; // Optional audio filename
     data: LyricLine[];
 }
 
@@ -20,8 +21,19 @@ const modules = import.meta.glob('~/assets/lyrics/*.json', { eager: true });
 const lists: LyricsFile[] = [];
 for (const path in modules) {
     const name = path.split('/').pop()?.replace('.json', '') || 'unknown';
-    const data = (modules[path] as any).default as LyricLine[];
-    lists.push({ name, path, data });
+    const rawData = (modules[path] as any).default;
+
+    let data: LyricLine[] = [];
+    let audio: string | undefined = undefined;
+
+    if (Array.isArray(rawData)) {
+        data = rawData as LyricLine[];
+    } else if (rawData && typeof rawData === 'object') {
+        data = rawData.lines || [];
+        audio = rawData.audio;
+    }
+
+    lists.push({ name, path, data, audio });
 }
 
 // 3. Store State
@@ -35,6 +47,11 @@ const currentLines = computed(() => {
     return found ? found.data : (lists[0]?.data || []);
 });
 
+const currentAudio = computed(() => {
+    const found = lists.find(l => l.name === state.currentLyricsName);
+    return found ? found.audio : undefined;
+});
+
 // 5. Actions
 const selectLyrics = (name: string) => {
     state.currentLyricsName = name;
@@ -45,5 +62,6 @@ export const lyricsStore = {
     state,
     lists,
     currentLines,
+    currentAudio,
     selectLyrics
 };

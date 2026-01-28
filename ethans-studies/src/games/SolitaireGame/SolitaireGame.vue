@@ -44,19 +44,18 @@ const handleCardClick = (type: 'waste' | 'tableau' | 'foundation', pileIdx?: num
     } else {
         // Carry out move
         const from = selectedItem.value;
-        let success = false;
 
         if (type === 'tableau' && pileIdx !== undefined) {
             if (from.type === 'waste') {
-                success = moveWasteToTableau(pileIdx);
+                moveWasteToTableau(pileIdx);
             } else if (from.type === 'tableau' && from.pileIdx !== undefined && from.cardIdx !== undefined) {
-                success = moveTableauToTableau(from.pileIdx, from.cardIdx, pileIdx);
+                moveTableauToTableau(from.pileIdx, from.cardIdx, pileIdx);
             }
         } else if (type === 'foundation') {
             if (from.type === 'waste') {
-                success = moveWasteToFoundation();
+                moveWasteToFoundation();
             } else if (from.type === 'tableau' && from.pileIdx !== undefined) {
-                success = moveTableauToFoundation(from.pileIdx);
+                moveTableauToFoundation(from.pileIdx);
             }
         }
 
