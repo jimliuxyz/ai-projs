@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import { useSolitaire, type Suit } from './useSolitaire';
-import { useAudio } from '~/composables/useAudio';
 
 const { 
     stock, waste, foundations, tableau, 
@@ -11,7 +10,6 @@ const {
     isGameWon 
 } = useSolitaire();
 
-const { speak } = useAudio();
 const emit = defineEmits(['exit']);
 
 const showExitConfirm = ref(false);
@@ -25,7 +23,6 @@ onMounted(() => {
 const handleStockClick = () => {
     drawCard();
     selectedItem.value = null;
-    speak('draw');
 };
 
 const handleCardClick = (type: 'waste' | 'tableau' | 'foundation', pileIdx?: number, cardIdx?: number, suit?: Suit) => {
@@ -35,12 +32,12 @@ const handleCardClick = (type: 'waste' | 'tableau' | 'foundation', pileIdx?: num
     if (selectedItem.value === null) {
         if (type === 'waste') {
             const moved = moveWasteToFoundation();
-            if (moved) { speak('move'); return; }
+            if (moved) return;
         } else if (type === 'tableau' && pileIdx !== undefined) {
             const pile = tableau.value[pileIdx];
             if (cardIdx === pile.length - 1) {
                 const moved = moveTableauToFoundation(pileIdx);
-                if (moved) { speak('move'); return; }
+                if (moved) return;
             }
         }
         selectedItem.value = { type, pileIdx, cardIdx, suit };
@@ -63,9 +60,6 @@ const handleCardClick = (type: 'waste' | 'tableau' | 'foundation', pileIdx?: num
             }
         }
 
-        if (success) {
-            speak('move');
-        }
         selectedItem.value = null;
     }
 };

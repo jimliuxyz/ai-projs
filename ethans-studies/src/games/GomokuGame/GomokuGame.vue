@@ -1,11 +1,9 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import { useGomoku } from './useGomoku';
-import { useAudio } from '~/composables/useAudio';
 
 const BOARD_SIZE = 15;
 const { board, turn, winner, lastMove, initBoard, placeStone } = useGomoku(BOARD_SIZE);
-const { speak } = useAudio();
 const emit = defineEmits(['exit']);
 
 const showExitConfirm = ref(false);
@@ -17,11 +15,7 @@ onMounted(() => {
 
 const handleIntersectionClick = (index: number) => {
     if (winner.value) return;
-    const colorBefore = turn.value;
-    const success = placeStone(index);
-    if (success) {
-        speak(colorBefore);
-    }
+    placeStone(index);
 };
 
 const isLastMove = (index: number) => lastMove.value === index;

@@ -49,25 +49,82 @@ export function useSolitaire() {
     };
 
     const initGame = () => {
-        const deck = createDeck();
-        shuffle(deck);
+        let validDeal = false;
+        let attempts = 0;
 
-        // Reset state
-        stock.value = [];
-        waste.value = [];
-        foundations.value = { hearts: [], diamonds: [], clubs: [], spades: [] };
-        tableau.value = Array.from({ length: 7 }, () => []);
+        while (!validDeal && attempts < 100) {
+            attempts++;
+            const deck = createDeck();
+            shuffle(deck);
 
-        // Deal tableau
-        for (let i = 0; i < 7; i++) {
-            for (let j = i; j < 7; j++) {
-                const card = deck.pop()!;
-                if (i === j) card.isFaceUp = true;
-                tableau.value[j].push(card);
+            // Create a deep copy for simulation
+            const tempDeck = [...deck];
+            const tempTableau: Card[][] = Array.from({ length: 7 }, () => []);
+            for (let i = 0; i < 7; i++) {
+                for (let j = i; j < 7; j++) {
+                    const card = { ...tempDeck.pop()! };
+                    if (i === j) card.isFaceUp = true;
+                    tempTableau[j].push(card);
+                }
+            }
+
+            // Simple check: Can ANY move be made in the first few steps?
+            // 1. Check tableau to tableau
+            let canMove = false;
+            for (let i = 0; i < 7; i++) {
+                if (tempTableau[i].length === 0) continue;
+                const card = tempTableau[i][tempTableau[i].length - 1];
+                for (let j = 0; j < 7; j++) {
+                    if (i === j) continue;
+                    if (canMoveToTableau(card, tempTableau[j])) {
+                        canMove = true;
+                        break;
+                    }
+                }
+                if (canMove) break;
+            }
+
+            // 2. Check tableau to foundation
+            if (!canMove) {
+                for (let i = 0; i < 7; i++) {
+                    if (tempTableau[i].length === 0) continue;
+                    const card = tempTableau[i][tempTableau[i].length - 1];
+                    if (card.rank === 'A') {
+                        canMove = true;
+                        break;
+                    }
+                }
+            }
+
+            // 3. Check stock/waste (simulate first few draws)
+            if (!canMove && tempDeck.length > 0) {
+                const sampleSize = Math.min(tempDeck.length, 5);
+                for (let i = 0; i < sampleSize; i++) {
+                    const card = tempDeck[tempDeck.length - 1 - i];
+                    if (card.rank === 'A' || card.rank === 'K') {
+                        canMove = true;
+                        break;
+                    }
+                }
+            }
+
+            if (canMove) {
+                // Actual deal
+                stock.value = [...deck];
+                waste.value = [];
+                foundations.value = { hearts: [], diamonds: [], clubs: [], spades: [] };
+                tableau.value = Array.from({ length: 7 }, () => []);
+
+                for (let i = 0; i < 7; i++) {
+                    for (let j = i; j < 7; j++) {
+                        const card = stock.value.pop()!;
+                        if (i === j) card.isFaceUp = true;
+                        tableau.value[j].push(card);
+                    }
+                }
+                validDeal = true;
             }
         }
-
-        stock.value = deck;
     };
 
     const drawCard = () => {

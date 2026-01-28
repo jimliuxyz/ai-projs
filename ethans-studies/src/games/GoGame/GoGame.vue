@@ -1,11 +1,9 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import { useGo } from './useGo';
-import { useAudio } from '~/composables/useAudio';
 
 const BOARD_SIZE = 13;
 const { board, turn, captures, lastMove, initBoard, placeStone, passTurn } = useGo(BOARD_SIZE);
-const { speak } = useAudio();
 const emit = defineEmits(['exit']);
 
 const showExitConfirm = ref(false);
@@ -16,10 +14,7 @@ onMounted(() => {
 });
 
 const handleIntersectionClick = (index: number) => {
-    const success = placeStone(index);
-    if (success) {
-        speak(turn.value === 'white' ? 'black' : 'white');
-    }
+    placeStone(index);
 };
 
 const isLastMove = (index: number) => lastMove.value === index;
