@@ -1,0 +1,107 @@
+[
+    {
+        "q": "kick",
+        "t": "踢",
+        "tags": [
+            "verb",
+            "action"
+        ],
+        "exps": [
+            "Kick the ball."
+        ]
+    },
+    {
+        "q": "catch",
+        "t": "接住/捕捉",
+        "tags": [
+            "verb",
+            "action"
+        ],
+        "exps": [
+            "Catch the ball!"
+        ]
+    },
+    {
+        "q": "all",
+        "t": "全部",
+        "tags": [
+            "adjective"
+        ],
+        "exps": [
+            "Is that all?"
+        ]
+    },
+    {
+        "q": "get",
+        "t": "拿/得到",
+        "tags": [
+            "verb"
+        ],
+        "exps": [
+            "Go get it."
+        ]
+    },
+    {
+        "q": "this",
+        "t": "這個",
+        "tags": [
+            "pronoun"
+        ],
+        "exps": [
+            "I like this."
+        ]
+    },
+    {
+        "q": "yes",
+        "t": "是/對",
+        "tags": [
+            "adverb"
+        ],
+        "exps": [
+            "Yes, please."
+        ]
+    },
+    {
+        "q": "no",
+        "t": "不/不對",
+        "tags": [
+            "adverb"
+        ],
+        "exps": [
+            "No, thanks."
+        ]
+    },
+    {
+        "q": "grab",
+        "t": "抓住/奪取",
+        "tags": [
+            "verb",
+            "action"
+        ],
+        "exps": [
+            "Grab your bag."
+        ]
+    },
+    {
+        "q": "wheel",
+        "t": "輪子",
+        "tags": [
+            "noun",
+            "object"
+        ],
+        "exps": [
+            "A car wheel."
+        ]
+    },
+    {
+        "q": "thumb",
+        "t": "大拇指",
+        "tags": [
+            "noun",
+            "body"
+        ],
+        "exps": [
+            "My thumb hurts."
+        ]
+    }
+]

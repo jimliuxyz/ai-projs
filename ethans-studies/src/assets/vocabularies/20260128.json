@@ -1,0 +1,107 @@
+[
+    {
+        "q": "lake",
+        "t": "湖泊/湖",
+        "tags": [
+            "noun",
+            "nature"
+        ],
+        "exps": [
+            "A big lake."
+        ]
+    },
+    {
+        "q": "cake",
+        "t": "蛋糕",
+        "tags": [
+            "noun",
+            "food"
+        ],
+        "exps": [
+            "Bake a cake."
+        ]
+    },
+    {
+        "q": "horse",
+        "t": "馬",
+        "tags": [
+            "noun",
+            "animal"
+        ],
+        "exps": [
+            "Ride a horse."
+        ]
+    },
+    {
+        "q": "dumpling",
+        "t": "水餃/餃子",
+        "tags": [
+            "noun",
+            "food"
+        ],
+        "exps": [
+            "Yummy dumplings."
+        ]
+    },
+    {
+        "q": "great",
+        "t": "很棒的/偉大的",
+        "tags": [
+            "adjective"
+        ],
+        "exps": [
+            "That's great!"
+        ]
+    },
+    {
+        "q": "feel",
+        "t": "感覺/覺得",
+        "tags": [
+            "verb"
+        ],
+        "exps": [
+            "Feel the sun."
+        ]
+    },
+    {
+        "q": "when",
+        "t": "何時/當...時",
+        "tags": [
+            "adverb",
+            "conjunction"
+        ],
+        "exps": [
+            "When to start?"
+        ]
+    },
+    {
+        "q": "five",
+        "t": "五",
+        "tags": [
+            "number"
+        ],
+        "exps": [
+            "Five apples."
+        ]
+    },
+    {
+        "q": "ten",
+        "t": "十",
+        "tags": [
+            "number"
+        ],
+        "exps": [
+            "Top ten."
+        ]
+    },
+    {
+        "q": "sleepy",
+        "t": "想睡的/睏的",
+        "tags": [
+            "adjective"
+        ],
+        "exps": [
+            "Feel sleepy."
+        ]
+    }
+]

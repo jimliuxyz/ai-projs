@@ -1,0 +1,102 @@
+[
+    {
+        "q": "match",
+        "t": "比賽/火柴",
+        "tags": [
+            "object"
+        ],
+        "exps": [
+            "Watch the match"
+        ]
+    },
+    {
+        "q": "gush",
+        "t": "湧出",
+        "tags": [
+            "verb"
+        ],
+        "exps": [
+            "Water gush out"
+        ]
+    },
+    {
+        "q": "toss",
+        "t": "拋擲",
+        "tags": [
+            "verb"
+        ],
+        "exps": [
+            "Toss the ball"
+        ]
+    },
+    {
+        "q": "hops",
+        "t": "跳躍",
+        "tags": [
+            "verb"
+        ],
+        "exps": [
+            "The bunny hops"
+        ]
+    },
+    {
+        "q": "sit",
+        "t": "坐",
+        "tags": [
+            "verb"
+        ],
+        "exps": [
+            "Sit on the chair"
+        ]
+    },
+    {
+        "q": "plan",
+        "t": "計畫",
+        "tags": [
+            "verb"
+        ],
+        "exps": [
+            "Make a plan"
+        ]
+    },
+    {
+        "q": "game",
+        "t": "遊戲",
+        "tags": [
+            "object"
+        ],
+        "exps": [
+            "Play a game"
+        ]
+    },
+    {
+        "q": "hot",
+        "t": "熱的",
+        "tags": [
+            "adjective"
+        ],
+        "exps": [
+            "Hot coffee"
+        ]
+    },
+    {
+        "q": "lot",
+        "t": "很多",
+        "tags": [
+            "adjective"
+        ],
+        "exps": [
+            "A lot of fun"
+        ]
+    },
+    {
+        "q": "quick",
+        "t": "快的",
+        "tags": [
+            "adjective"
+        ],
+        "exps": [
+            "Be quick"
+        ]
+    }
+]

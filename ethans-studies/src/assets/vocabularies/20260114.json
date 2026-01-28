@@ -1,0 +1,107 @@
+[
+    {
+        "q": "math",
+        "t": "數學",
+        "tags": [
+            "noun",
+            "school"
+        ],
+        "exps": [
+            "I have a math test tomorrow."
+        ]
+    },
+    {
+        "q": "chess",
+        "t": "西洋棋",
+        "tags": [
+            "noun",
+            "game"
+        ],
+        "exps": [
+            "Do you want to play chess with me?"
+        ]
+    },
+    {
+        "q": "shop",
+        "t": "商店/購物",
+        "tags": [
+            "noun",
+            "verb"
+        ],
+        "exps": [
+            "Let's shop for some snacks."
+        ]
+    },
+    {
+        "q": "dish",
+        "t": "菜餚/盤子",
+        "tags": [
+            "noun"
+        ],
+        "exps": [
+            "Please put the dish in the sink."
+        ]
+    },
+    {
+        "q": "rash",
+        "t": "疹子/魯莽的",
+        "tags": [
+            "noun",
+            "adjective"
+        ],
+        "exps": [
+            "I got a rash on my arm."
+        ]
+    },
+    {
+        "q": "Jill",
+        "t": "吉兒",
+        "tags": [
+            "name"
+        ],
+        "exps": [
+            "Jill is my best friend."
+        ]
+    },
+    {
+        "q": "Pam",
+        "t": "帕姆",
+        "tags": [
+            "name"
+        ],
+        "exps": [
+            "Pam loves to read books."
+        ]
+    },
+    {
+        "q": "friends",
+        "t": "朋友們",
+        "tags": [
+            "noun",
+            "daily"
+        ],
+        "exps": [
+            "I'm going out with my friends."
+        ]
+    },
+    {
+        "q": "there",
+        "t": "那裡",
+        "tags": [
+            "adverb"
+        ],
+        "exps": [
+            "Put the bag over there."
+        ]
+    },
+    {
+        "q": "at",
+        "t": "在",
+        "tags": [
+            "preposition"
+        ],
+        "exps": [
+            "I'll meet you at the park."
+        ]
+    }
+]
