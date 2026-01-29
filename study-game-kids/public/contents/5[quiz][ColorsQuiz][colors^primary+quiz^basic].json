@@ -1,0 +1,79 @@
+{
+    "title": "Colors Quiz",
+    "ageGroup": "5",
+    "format": "quiz",
+    "tags": [
+        "colors/primary",
+        "quiz/basic"
+    ],
+    "createdAt": "2026-01-29T06:00:00.000Z",
+    "updatedAt": "2026-01-29T06:00:00.000Z",
+    "items": [
+        {
+            "question": "What color is the sky?",
+            "options": [
+                {
+                    "text": "Blue",
+                    "isCorrect": true
+                },
+                {
+                    "text": "Red",
+                    "isCorrect": false
+                },
+                {
+                    "text": "Green",
+                    "isCorrect": false
+                },
+                {
+                    "text": "Yellow",
+                    "isCorrect": false
+                }
+            ],
+            "explanation": "The sky is usually blue during the day."
+        },
+        {
+            "question": "What color is grass?",
+            "options": [
+                {
+                    "text": "Blue",
+                    "isCorrect": false
+                },
+                {
+                    "text": "Green",
+                    "isCorrect": true
+                },
+                {
+                    "text": "Brown",
+                    "isCorrect": false
+                },
+                {
+                    "text": "Purple",
+                    "isCorrect": false
+                }
+            ],
+            "explanation": "Grass is green."
+        },
+        {
+            "question": "What color is a banana?",
+            "options": [
+                {
+                    "text": "Yellow",
+                    "isCorrect": true
+                },
+                {
+                    "text": "Red",
+                    "isCorrect": false
+                },
+                {
+                    "text": "Blue",
+                    "isCorrect": false
+                },
+                {
+                    "text": "Green",
+                    "isCorrect": false
+                }
+            ],
+            "explanation": "A ripe banana is yellow."
+        }
+    ]
+}

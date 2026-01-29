@@ -1,0 +1,37 @@
+{
+    "title": "Mammals - Common Animals",
+    "ageGroup": "5",
+    "format": "vocabulary",
+    "tags": [
+        "animals/mammals",
+        "animals/pets"
+    ],
+    "createdAt": "2026-01-29T06:00:00.000Z",
+    "updatedAt": "2026-01-29T06:00:00.000Z",
+    "items": [
+        {
+            "word": "lion",
+            "translation": "獅子",
+            "pronunciation": "/ˈlaɪ.ən/",
+            "examples": [
+                "The lion is the king of the jungle."
+            ]
+        },
+        {
+            "word": "elephant",
+            "translation": "大象",
+            "pronunciation": "/ˈel.ɪ.fənt/",
+            "examples": [
+                "Elephants are the largest land animals."
+            ]
+        },
+        {
+            "word": "giraffe",
+            "translation": "長頸鹿",
+            "pronunciation": "/dʒɪˈrɑːf/",
+            "examples": [
+                "Giraffes have very long necks."
+            ]
+        }
+    ]
+}

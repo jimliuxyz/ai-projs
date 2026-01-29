@@ -1,0 +1,58 @@
+{
+    "title": "Basic Animals",
+    "ageGroup": "5",
+    "format": "vocabulary",
+    "tags": [
+        "animals/basic",
+        "beginners"
+    ],
+    "createdAt": "2026-01-29T06:00:00.000Z",
+    "updatedAt": "2026-01-29T06:00:00.000Z",
+    "items": [
+        {
+            "word": "cat",
+            "translation": "貓",
+            "pronunciation": "/kæt/",
+            "examples": [
+                "I have a cat.",
+                "The cat is sleeping."
+            ]
+        },
+        {
+            "word": "dog",
+            "translation": "狗",
+            "pronunciation": "/dɔɡ/",
+            "examples": [
+                "The dog is barking.",
+                "I walk my dog every day."
+            ]
+        },
+        {
+            "word": "bird",
+            "translation": "鳥",
+            "pronunciation": "/bɜrd/",
+            "examples": [
+                "The bird is flying.",
+                "I see a bird in the tree."
+            ]
+        },
+        {
+            "word": "fish",
+            "translation": "魚",
+            "pronunciation": "/fɪʃ/",
+            "examples": [
+                "The fish is swimming.",
+                "I like to eat fish."
+            ]
+        },
+        {
+            "word": "rabbit",
+            "translation": "兔子",
+            "pronunciation": "/ˈræbɪt/",
+            "examples": [
+                "The rabbit is hopping.",
+                "Rabbits like to eat carrots."
+            ]
+        }
+    ]
+}

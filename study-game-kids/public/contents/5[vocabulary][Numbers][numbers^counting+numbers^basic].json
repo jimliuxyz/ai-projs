@@ -1,0 +1,53 @@
+{
+    "title": "Numbers 1-10",
+    "ageGroup": "5",
+    "format": "vocabulary",
+    "tags": [
+        "numbers/counting",
+        "numbers/basic"
+    ],
+    "createdAt": "2026-01-29T06:00:00.000Z",
+    "updatedAt": "2026-01-29T06:00:00.000Z",
+    "items": [
+        {
+            "word": "one",
+            "translation": "一",
+            "pronunciation": "/wʌn/",
+            "examples": [
+                "I have one apple."
+            ]
+        },
+        {
+            "word": "two",
+            "translation": "二",
+            "pronunciation": "/tuː/",
+            "examples": [
+                "I see two cats."
+            ]
+        },
+        {
+            "word": "three",
+            "translation": "三",
+            "pronunciation": "/θriː/",
+            "examples": [
+                "There are three birds."
+            ]
+        },
+        {
+            "word": "four",
+            "translation": "四",
+            "pronunciation": "/fɔr/",
+            "examples": [
+                "I bought four books."
+            ]
+        },
+        {
+            "word": "five",
+            "translation": "五",
+            "pronunciation": "/faɪv/",
+            "examples": [
+                "Give me five!"
+            ]
+        }
+    ]
+}
