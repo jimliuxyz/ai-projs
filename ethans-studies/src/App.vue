@@ -179,7 +179,7 @@ const exitGame = () => {
 
 .games-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
     gap: 30px;
     width: 100%;
     max-width: 1000px;
