@@ -11,9 +11,9 @@ import type {
     QuizContent,
     ContentFormat
 } from '~/types/content.types';
-import type { GameDataItem, IContentAdapter, GameSettings } from '~/types/game.types';
+import type { GameDataItem, GameSettings } from '~/types/game.types';
 
-export abstract class BaseContentAdapter implements IContentAdapter {
+export abstract class BaseContentAdapter {
     protected supportedFormats: ContentFormat[];
 
     constructor(supportedFormats: ContentFormat[]) {
@@ -37,7 +37,7 @@ export abstract class BaseContentAdapter implements IContentAdapter {
         }
 
         // 如果設定要求隨機排序
-        if (settings?.autoPlay !== false) { // 暫時用 autoPlay 代表 shuffle
+        if ((settings as any)?.autoPlay !== false) { // 暫時用 autoPlay 代表 shuffle
             this.shuffleArray(allItems);
         }
 
@@ -73,11 +73,12 @@ export class VocabularyAdapter extends BaseContentAdapter {
         return vocabContent.items.map((item, index) => ({
             id: this.generateId('vocab', index),
             question: item.word,
-            answer: item.translation,
-            hint: item.pronunciation,
+            answer: item.spelling || item.word,
+            hint: `${item.pronunciation || ''} ${item.translation || ''}`.trim(),
             audioUrl: item.audioUrl,
             imageUrl: item.imageUrl,
             metadata: {
+                spelling: item.spelling,
                 examples: item.examples,
                 originalContent: content
             }
@@ -102,7 +103,8 @@ export class LyricsAdapter extends BaseContentAdapter {
         return lyricsContent.lines.map((line, index) => ({
             id: this.generateId('lyrics', index),
             question: line.text,
-            answer: line.translation || line.text,
+            answer: line.text,
+            hint: line.translation,
             audioUrl: lyricsContent.audioUrl,
             metadata: {
                 startTime: line.startTime,
@@ -131,7 +133,8 @@ export class StoryAdapter extends BaseContentAdapter {
         return storyContent.paragraphs.map((paragraph, index) => ({
             id: this.generateId('story', index),
             question: paragraph.text,
-            answer: paragraph.translation || paragraph.text,
+            answer: paragraph.text,
+            hint: paragraph.translation,
             audioUrl: paragraph.audioUrl,
             metadata: {
                 author: storyContent.author,
@@ -208,7 +211,7 @@ export class UniversalAdapter extends BaseContentAdapter {
             allItems.push(...items);
         }
 
-        if (settings?.autoPlay !== false) {
+        if ((settings as any)?.autoPlay !== false) {
             this.shuffleArray(allItems);
         }
 

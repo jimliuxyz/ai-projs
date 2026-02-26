@@ -410,18 +410,19 @@ const tagSummary = computed(() => {
 .content-tab {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 24px;
   height: 100%;
 }
 
 /* Fixed Filter Bar */
 .filter-bar {
   display: flex;
-  gap: 10px;
+  gap: 16px;
   align-items: center;
-  padding: 12px;
-  background: #f8f9fa;
-  border-radius: 12px;
+  padding: 16px;
+  background: var(--glass-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-md);
   flex-wrap: nowrap;
   overflow-x: auto;
   flex-shrink: 0;
@@ -432,23 +433,29 @@ const tagSummary = computed(() => {
 }
 
 .search-item {
-  min-width: 250px;
+  min-width: 300px;
   flex-shrink: 1;
 }
 
 .search-field {
-  background: white;
-  border-radius: 8px;
+  background: var(--input-bg);
+  border-radius: 12px;
+  color: var(--text-primary);
 }
 
 .filter-btn {
   text-transform: none;
-  font-weight: 500;
+  font-weight: 700;
   white-space: nowrap;
+  font-size: var(--font-size-sm);
+  height: 44px !important;
+  border-radius: 12px !important;
 }
 
 .clear-btn {
   text-transform: none;
+  font-weight: 600;
+  font-size: var(--font-size-sm);
 }
 
 /* Content List Section */
@@ -463,48 +470,58 @@ const tagSummary = computed(() => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 12px;
-  padding: 0 4px;
+  margin-bottom: 20px;
+  padding: 0 8px;
 }
 
 .selection-summary {
-  font-weight: 500;
-  color: #667eea;
+  font-weight: 700;
+  font-size: var(--font-size-base);
+  color: var(--accent-primary);
 }
 
 .selection-actions {
   display: flex;
-  gap: 8px;
+  gap: 12px;
 }
 
 .content-list {
   flex: 1;
-  background: #f8f9fa;
-  border-radius: 12px;
-  padding: 10px;
+  background: var(--glass-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-lg);
+  padding: 16px;
 }
 
 .content-item {
   display: flex;
   align-items: center;
-  gap: 15px;
-  padding: 15px;
-  margin-bottom: 8px;
-  background: white;
-  border-radius: 10px;
+  gap: 20px;
+  padding: 24px;
+  margin-bottom: 12px;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-md);
   cursor: pointer;
-  transition: all 0.2s;
-  border: 2px solid transparent;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .content-item:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  transform: translateX(8px);
+  background: rgba(255, 255, 255, 0.05);
+  border-color: var(--accent-primary);
 }
 
 .content-item.selected {
-  border-color: #667eea;
-  background: linear-gradient(135deg, #f0f2ff 0%, #e8eaff 100%);
+  border-color: var(--accent-primary);
+  background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
+  box-shadow: 0 8px 24px rgba(99, 102, 241, 0.3);
+}
+
+.content-item.selected .content-title,
+.content-item.selected .stat-label,
+.content-item.selected .body-text {
+  color: white !important;
 }
 
 .content-info {
@@ -512,25 +529,42 @@ const tagSummary = computed(() => {
 }
 
 .content-title {
-  font-size: 1rem;
-  margin-bottom: 8px;
-  color: #333;
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+  margin-bottom: 12px;
+  color: var(--text-primary);
 }
 
 .content-meta {
   display: flex;
-  gap: 6px;
+  gap: 10px;
   flex-wrap: wrap;
 }
 
 .empty-state {
   text-align: center;
-  padding: 40px;
-  color: #999;
+  padding: 60px;
+  color: var(--text-secondary);
+  font-size: var(--font-size-lg);
 }
 
 /* Tag Tree Styles */
 .child-item {
   padding-left: 32px !important;
+}
+
+/* Vuetify Overrides for Theme Sync */
+:deep(.v-field) {
+  background: var(--input-bg) !important;
+  color: var(--text-primary) !important;
+}
+
+:deep(.v-list) {
+  background: var(--card-bg) !important;
+  color: var(--text-primary) !important;
+}
+
+:deep(.v-chip) {
+  font-weight: 700 !important;
 }
 </style>

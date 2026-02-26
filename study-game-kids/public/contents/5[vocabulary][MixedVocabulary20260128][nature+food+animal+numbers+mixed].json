@@ -1,0 +1,86 @@
+{
+    "title": "Mixed Vocabulary 20260128",
+    "ageGroup": "5",
+    "format": "vocabulary",
+    "tags": [
+        "nature",
+        "food",
+        "animal",
+        "numbers",
+        "mixed"
+    ],
+    "createdAt": "2026-01-29T12:03:00.000Z",
+    "updatedAt": "2026-01-29T12:03:00.000Z",
+    "items": [
+        {
+            "word": "lake",
+            "translation": "湖泊/湖",
+            "examples": [
+                "A big lake."
+            ]
+        },
+        {
+            "word": "cake",
+            "translation": "蛋糕",
+            "examples": [
+                "Bake a cake."
+            ]
+        },
+        {
+            "word": "horse",
+            "translation": "馬",
+            "examples": [
+                "Ride a horse."
+            ]
+        },
+        {
+            "word": "dumpling",
+            "translation": "水餃/餃子",
+            "examples": [
+                "Yummy dumplings."
+            ]
+        },
+        {
+            "word": "great",
+            "translation": "很棒的/偉大的",
+            "examples": [
+                "That's great!"
+            ]
+        },
+        {
+            "word": "feel",
+            "translation": "感覺/覺得",
+            "examples": [
+                "Feel the sun."
+            ]
+        },
+        {
+            "word": "when",
+            "translation": "何時/當...時",
+            "examples": [
+                "When to start?"
+            ]
+        },
+        {
+            "word": "five",
+            "translation": "五",
+            "examples": [
+                "Five apples."
+            ]
+        },
+        {
+            "word": "ten",
+            "translation": "十",
+            "examples": [
+                "Top ten."
+            ]
+        },
+        {
+            "word": "sleepy",
+            "translation": "想睡的/睏的",
+            "examples": [
+                "Feel sleepy."
+            ]
+        }
+    ]
+}

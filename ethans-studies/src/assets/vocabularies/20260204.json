@@ -1,0 +1,102 @@
+[
+    {
+        "q": "envelope",
+        "t": "信封",
+        "tags": [
+            "noun"
+        ],
+        "exps": [
+            "I put the letter in an envelope."
+        ]
+    },
+    {
+        "q": "truck",
+        "t": "卡車",
+        "tags": [
+            "noun"
+        ],
+        "exps": [
+            "A big truck."
+        ]
+    },
+    {
+        "q": "siren",
+        "t": "警報器",
+        "tags": [
+            "noun"
+        ],
+        "exps": [
+            "the siren of ambulance."
+        ]
+    },
+    {
+        "q": "snake",
+        "t": "蛇",
+        "tags": [
+            "noun"
+        ],
+        "exps": [
+            "A long snake."
+        ]
+    },
+    {
+        "q": "year",
+        "t": "年",
+        "tags": [
+            "noun"
+        ],
+        "exps": [
+            "Happy New Year!"
+        ]
+    },
+    {
+        "q": "fire",
+        "t": "火",
+        "tags": [
+            "noun"
+        ],
+        "exps": [
+            "Keep away from the fire."
+        ]
+    },
+    {
+        "q": "take",
+        "t": "拿；取",
+        "tags": [
+            "verb"
+        ],
+        "exps": [
+            "Take me home."
+        ]
+    },
+    {
+        "q": "bell",
+        "t": "鈴",
+        "tags": [
+            "noun"
+        ],
+        "exps": [
+            "The school bell is ringing."
+        ]
+    },
+    {
+        "q": "wake",
+        "t": "醒來",
+        "tags": [
+            "verb"
+        ],
+        "exps": [
+            "I wake up at seven o'clock."
+        ]
+    },
+    {
+        "q": "new",
+        "t": "新的",
+        "tags": [
+            "adjective"
+        ],
+        "exps": [
+            "I have a new school bag."
+        ]
+    }
+]

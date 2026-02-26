@@ -11,6 +11,11 @@ export default {
             name: 'Question List',
             desc: 'Practice with questions'
         },
+        parkingGame: {
+            name: 'Parking Fun',
+            desc: 'Drive and park cars to learn words!',
+            carTitle: 'Car Customization'
+        },
         exit: 'Exit',
         submit: 'Submit',
         skip: 'Skip',

@@ -98,32 +98,8 @@ export function useAudio() {
      */
     const playCorrect = (): void => {
         if (!settingsStore.gameSettings.soundEnabled) return;
-
-        // 簡單的音調組合
-        const AudioContext = window.AudioContext || (window as any).webkitAudioContext;
-        const audioCtx = new AudioContext();
-
-        const playTone = (freq: number, duration: number, delay: number) => {
-            setTimeout(() => {
-                const osc = audioCtx.createOscillator();
-                const gain = audioCtx.createGain();
-
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-
-                gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
-
-                osc.connect(gain);
-                gain.connect(audioCtx.destination);
-
-                osc.start();
-                osc.stop(audioCtx.currentTime + duration);
-            }, delay);
-        };
-
-        playTone(1046.50, 0.15, 0);      // C6
-        playTone(1318.51, 0.25, 80);     // E6
+        playTone(1046.50, 'sine', 0.15);
+        setTimeout(() => playTone(1318.51, 'sine', 0.25), 80);
     };
 
     /**
@@ -152,11 +128,37 @@ export function useAudio() {
         osc.stop(audioCtx.currentTime + 0.3);
     };
 
+    /**
+     * 播放特定頻率的音調
+     */
+    const playTone = (freq: number, type: OscillatorType = 'sine', duration = 0.2, volume = 0.1): void => {
+        if (!settingsStore.gameSettings.soundEnabled) return;
+
+        const AudioContext = window.AudioContext || (window as any).webkitAudioContext;
+        const audioCtx = new AudioContext();
+
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+
+        gain.gain.setValueAtTime(volume, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        osc.start();
+        osc.stop(audioCtx.currentTime + duration);
+    };
+
     return {
         speak,
         stopSpeaking,
         playAudio,
         playCorrect,
-        playWrong
+        playWrong,
+        playTone
     };
 }

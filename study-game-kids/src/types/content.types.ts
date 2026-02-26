@@ -53,6 +53,7 @@ export interface VocabularyItem {
     examples?: string[];     // 例句
     imageUrl?: string;       // 圖片 URL
     audioUrl?: string;       // 音檔 URL
+    spelling?: string;       // 拼寫目標 (例如注音或拆解，若無則依 word)
 }
 
 export interface VocabularyContent extends BaseContent {

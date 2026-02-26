@@ -3,7 +3,7 @@
  * 定義遊戲引擎和遊戲介面的標準
  */
 
-import type { Content } from './content.types';
+import type { Content, ContentFormat } from './content.types';
 
 // ==================== 遊戲狀態 ====================
 export enum GameState {
@@ -60,75 +60,21 @@ export interface GameResultDetail {
 
 // ==================== 遊戲設定 ====================
 export interface GameSettings {
-    difficulty: GameDifficulty;
     timeLimit?: number;      // 時間限制 (秒)，undefined 表示無限制
     lives?: number;          // 生命數，undefined 表示無限
     soundEnabled: boolean;   // 是否啟用音效
     musicEnabled: boolean;   // 是否啟用背景音樂
-    autoPlay: boolean;       // 是否自動播放音檔
-    showHints: boolean;      // 是否顯示提示
+    vibrationEnabled: boolean; // 是否啟用震動
+    fullscreen: boolean;     // 是否全螢幕
 }
 
-// ==================== 遊戲介面定義 ====================
 /**
- * 所有遊戲必須實作這個介面
+ * 遊戲元數據接口
  */
-export interface IGame {
-    // 遊戲基本資訊
+export interface BaseGameInfo {
     readonly id: string;
     readonly name: string;
     readonly description: string;
     readonly icon: string;
-    readonly supportedFormats: string[]; // 支援的教材格式
-
-    // 遊戲狀態
-    state: GameState;
-    settings: GameSettings;
-
-    // 遊戲方法
-    init(data: GameDataItem[]): Promise<void>;
-    start(): void;
-    pause(): void;
-    resume(): void;
-    stop(): void;
-    reset(): void;
-    getResult(): GameResult | null;
-
-    // 事件回調
-    onStateChange?: (state: GameState) => void;
-    onProgress?: (progress: number) => void;
-    onComplete?: (result: GameResult) => void;
-    onError?: (error: Error) => void;
-}
-
-// ==================== 遊戲適配器介面 ====================
-/**
- * 將教材轉換為遊戲資料的適配器
- */
-export interface IContentAdapter {
-    /**
-     * 檢查是否支援此教材格式
-     */
-    canAdapt(content: Content): boolean;
-
-    /**
-     * 將教材轉換為遊戲資料
-     */
-    adapt(content: Content, settings?: Partial<GameSettings>): GameDataItem[];
-
-    /**
-     * 合併多個教材
-     */
-    merge(contents: Content[], settings?: Partial<GameSettings>): GameDataItem[];
-}
-
-// ==================== 遊戲註冊資訊 ====================
-export interface GameRegistration {
-    game: IGame;
-    adapter: IContentAdapter;
-    metadata?: {
-        version?: string;
-        author?: string;
-        tags?: string[];
-    };
+    readonly supportedFormats: ContentFormat[];
 }

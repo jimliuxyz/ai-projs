@@ -11,6 +11,11 @@ export default {
             name: '題目清單',
             desc: '練習題目'
         },
+        parkingGame: {
+            name: '停車趣',
+            desc: '邊開車邊學單字！',
+            carTitle: '車輛自訂'
+        },
         exit: '離開',
         submit: '提交',
         skip: '跳過',

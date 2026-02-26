@@ -4,6 +4,7 @@
 
 import type { AgeGroup, ContentFormat, ContentTag } from './content.types';
 import { GameDifficulty } from './game.types';
+import type { GameSettings } from './game.types';
 
 // ==================== 語音設定 ====================
 export interface VoiceSettings {
@@ -28,22 +29,14 @@ export interface ContentSettings {
     shuffleContent: boolean;    // 是否隨機排序教材
 }
 
-// ==================== 遊戲通用設定 ====================
-export interface CommonGameSettings {
-    difficulty: GameDifficulty;
-    soundEnabled: boolean;
-    musicEnabled: boolean;
-    vibrationEnabled: boolean;  // 是否啟用震動 (行動裝置)
-    fullscreen: boolean;        // 是否全螢幕
-    showTimer: boolean;         // 是否顯示計時器
-    showScore: boolean;         // 是否顯示分數
-}
+// Game settings are now imported from game.types.ts
 
 // ==================== 應用設定 ====================
 export interface AppSettings {
     voice: VoiceSettings;
     content: ContentSettings;
-    game: CommonGameSettings;
+    game: GameSettings;
+    games: Record<string, any>; // 各遊戲特定設定
     theme: 'light' | 'dark' | 'auto'; // 主題
     locale: string;             // 介面語言
 }
@@ -69,20 +62,28 @@ export const DEFAULT_CONTENT_SETTINGS: ContentSettings = {
     shuffleContent: false
 };
 
-export const DEFAULT_GAME_SETTINGS: CommonGameSettings = {
-    difficulty: GameDifficulty.MEDIUM,
+export const DEFAULT_GAME_SETTINGS: GameSettings = {
     soundEnabled: true,
     musicEnabled: true,
     vibrationEnabled: false,
-    fullscreen: false,
-    showTimer: true,
-    showScore: true
+    fullscreen: false
 };
 
 export const DEFAULT_APP_SETTINGS: AppSettings = {
     voice: DEFAULT_VOICE_SETTINGS,
     content: DEFAULT_CONTENT_SETTINGS,
     game: DEFAULT_GAME_SETTINGS,
-    theme: 'auto',
+    games: {
+        'parking-game': {
+            p1Car: { body: 0x3b82f6, tires: 0x333333 },
+            p2Car: { body: 0xef4444, tires: 0x333333 }
+        },
+        'question-list': {
+            difficulty: GameDifficulty.MEDIUM,
+            autoPlay: true,
+            showHints: true
+        }
+    },
+    theme: 'dark',
     locale: 'en-US'
 };

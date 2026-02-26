@@ -1,198 +1,56 @@
 <script setup lang="ts">
-import { ref, onMounted, computed, onUnmounted } from 'vue';
+import { ref, watch, onMounted, onUnmounted } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
-import { useContentStore } from '~/stores/content.store';
+import { useQuestionListStore } from './QuestionListStore';
 import { useSettingsStore } from '~/stores/settings.store';
-import { QuestionListGame } from '~/games/QuestionListGame';
-import { UniversalAdapter } from '~/adapters/content-adapters';
-import { useAudio } from '~/composables/useAudio';
-import type { GameResult } from '~/types/game.types';
+import SettingsDialog from '~/components/SettingsDialog.vue';
 
 const { t } = useI18n();
 const router = useRouter();
-const contentStore = useContentStore();
+const gameStore = useQuestionListStore();
 const settingsStore = useSettingsStore();
 
-const { speak, stopSpeaking, playAudio, playCorrect, playWrong } = useAudio();
+const showSettings = ref(false);
 
-const game = ref<QuestionListGame | null>(null);
-const adapter = new UniversalAdapter();
+const updateSpecificSetting = (key: string, value: any) => {
+  settingsStore.updateGameSpecificSettings('question-list', { [key]: value });
+};
 
-const userAnswer = ref('');
-const showResult = ref(false);
-const gameResult = ref<GameResult | null>(null);
-const currentQuestionIndex = ref(0);
-const totalQuestions = ref(0);
-
-const currentQuestion = computed(() => game.value?.getCurrentQuestion() || '');
-const currentOptions = computed(() => game.value?.getCurrentOptions() || null);
-const currentProgress = computed(() => {
-  if (!game.value) return 0;
-  return (currentQuestionIndex.value / totalQuestions.value) * 100;
+// 切換設定時暫停/恢復遊戲
+watch(showSettings, (val) => {
+  if (val) {
+    gameStore.pause();
+  } else {
+    gameStore.resume();
+  }
 });
 
 onMounted(async () => {
-  await initializeGame();
+  await gameStore.prepareAndStart();
+  // 如果發生初始化錯誤，導回首頁
+  if (gameStore.error) {
+    alert(t('alerts.failedToStart') + ': ' + gameStore.error);
+    router.push('/');
+  }
 });
 
 onUnmounted(() => {
-  stopSpeaking();
+  gameStore.exit();
 });
 
-async function initializeGame() {
-  try {
-    // 載入選中教材的完整內容（包含 items）
-    const fullContents = await contentStore.loadSelectedContents();
-    
-    if (fullContents.length === 0) {
-      alert(t('alerts.noData'));
-      router.push('/');
-      return;
-    }
-
-    // 轉換教材為遊戲資料
-    const gameData = adapter.merge(
-      fullContents,
-      settingsStore.gameSettings
-    );
-
-    if (gameData.length === 0) {
-      alert(t('alerts.noData'));
-      router.push('/');
-      return;
-    }
-
-    // 建立遊戲實例
-    game.value = new QuestionListGame();
-    
-    // 設定遊戲設定
-    game.value.settings = {
-      ...settingsStore.gameSettings,
-      autoPlay: true,
-      showHints: true
-    };
-
-    // 設定事件監聽
-    game.value.onProgress = (progress) => {
-      currentQuestionIndex.value = game.value?.currentItemIndex || 0;
-    };
-
-    game.value.onComplete = (result) => {
-      gameResult.value = result;
-      showResult.value = true;
-    };
-
-    // 初始化並開始遊戲
-    await game.value.init(gameData);
-    totalQuestions.value = game.value.totalItems;
-    game.value.start();
-    
-    // 朗讀第一題
-    speakQuestion();
-  } catch (error) {
-    console.error('Failed to initialize game:', error);
-    alert(t('alerts.failedToStart'));
-    router.push('/');
-  }
+function handleExit() {
+  gameStore.exit();
+  router.push('/');
 }
 
-function speakQuestion() {
-  if (currentQuestion.value) {
-    speak(currentQuestion.value);
-  }
-}
-
-function submitAnswer() {
-  if (!game.value || !userAnswer.value.trim()) {
-    return;
-  }
-
-  const isCorrect = game.value.submitAnswer(userAnswer.value.trim());
-  
-  // 播放音效
-  if (isCorrect) {
-    playCorrect();
-  } else {
-    playWrong();
-  }
-  
-  userAnswer.value = '';
-  
-  // 延遲後朗讀下一題
-  setTimeout(() => {
-    if (!showResult.value) {
-      speakQuestion();
-    }
-  }, 800);
-}
-
-function submitOption(option: string) {
-  if (!game.value) return;
-  
-  const isCorrect = game.value.submitAnswer(option);
-  
-  // 播放音效
-  if (isCorrect) {
-    playCorrect();
-  } else {
-    playWrong();
-  }
-  
-  // 延遲後朗讀下一題
-  setTimeout(() => {
-    if (!showResult.value) {
-      speakQuestion();
-    }
-  }, 800);
-}
-
-function skipQuestion() {
-  if (!game.value) return;
-  game.value.skip();
-  userAnswer.value = '';
-  
-  // 延遲後朗讀下一題
-  setTimeout(() => {
-    speakQuestion();
-  }, 300);
-}
-
-function playCurrentAudio() {
-  const audioUrl = game.value?.getCurrentAudioUrl();
-  if (audioUrl) {
-    playAudio(audioUrl);
-  } else {
-    // 如果沒有音檔，使用 TTS
-    speakQuestion();
-  }
-}
-
-function showHint() {
-  const hint = game.value?.showHint();
+function handleHint() {
+  const hint = gameStore.showHint();
   if (hint) {
-    speak(hint);
     alert(`${t('game.hint')}: ${hint}`);
   } else {
     alert(t('alerts.noHint'));
   }
-}
-
-function exitGame() {
-  stopSpeaking();
-  if (game.value) {
-    game.value.stop();
-  }
-  router.push('/');
-}
-
-function restartGame() {
-  stopSpeaking();
-  showResult.value = false;
-  gameResult.value = null;
-  userAnswer.value = '';
-  currentQuestionIndex.value = 0;
-  initializeGame();
 }
 </script>
 
@@ -200,45 +58,49 @@ function restartGame() {
   <div class="game-view">
     <!-- Game Header -->
     <div class="game-header">
-      <button class="exit-btn" @click="exitGame">
+      <button class="exit-btn" @click="handleExit">
         ← {{ $t('game.exit') }}
       </button>
       <div class="progress-info">
-        <span class="question-counter">{{ currentQuestionIndex + 1 }} / {{ totalQuestions }}</span>
+        <span class="question-counter">{{ gameStore.currentIndex + 1 }} / {{ gameStore.totalItems }}</span>
       </div>
-      <div class="spacer"></div>
+      <div class="spacer">
+        <button class="settings-mini-btn" @click="showSettings = true">
+          ⚙️
+        </button>
+      </div>
     </div>
 
     <!-- Progress Bar -->
     <div class="progress-bar">
-      <div class="progress-fill" :style="{ width: currentProgress + '%' }"></div>
+      <div class="progress-fill" :style="{ width: gameStore.progress + '%' }"></div>
     </div>
 
     <!-- Game Content -->
-    <div v-if="!showResult" class="game-content">
+    <div v-if="!gameStore.isFinished" class="game-content">
       <div class="question-card">
-        <h2 class="question-text">{{ currentQuestion }}</h2>
+        <h2 class="question-text">{{ gameStore.question }}</h2>
 
         <!-- Image Display -->
-        <div v-if="game?.getCurrentImageUrl()" class="question-image">
-          <img :src="game.getCurrentImageUrl() ?? ''" alt="Question" />
+        <div v-if="gameStore.imageUrl" class="question-image">
+          <img :src="gameStore.imageUrl" alt="Question" />
         </div>
 
         <!-- Audio Button -->
         <button 
           class="audio-btn"
-          @click="playCurrentAudio"
+          @click="gameStore.playAudio()"
         >
           🔊 {{ $t('game.playAudio') }}
         </button>
 
         <!-- Options (for quiz) -->
-        <div v-if="currentOptions" class="options-grid">
+        <div v-if="gameStore.options" class="options-grid">
           <button
-            v-for="(option, index) in currentOptions"
+            v-for="(option, index) in gameStore.options"
             :key="index"
             class="option-btn"
-            @click="submitOption(option)"
+            @click="gameStore.submitAnswer(option)"
           >
             {{ option }}
           </button>
@@ -247,29 +109,33 @@ function restartGame() {
         <!-- Text Input (for vocabulary, etc.) -->
         <div v-else class="answer-input-section">
           <input
-            v-model="userAnswer"
+            v-model="gameStore.currentAnswer"
             type="text"
             class="answer-input"
             :placeholder="$t('game.typeAnswer')"
-            @keyup.enter="submitAnswer"
+            @keyup.enter="gameStore.submitAnswer(gameStore.currentAnswer)"
             autofocus
           />
         </div>
 
         <!-- Action Buttons -->
         <div class="action-buttons">
-          <button class="hint-btn" @click="showHint">
+          <button 
+            v-if="gameStore.specificSettings.showHints"
+            class="hint-btn" 
+            @click="handleHint"
+          >
             💡 {{ $t('game.hint') }}
           </button>
           <button 
-            v-if="!currentOptions"
+            v-if="!gameStore.options"
             class="submit-btn" 
-            @click="submitAnswer"
-            :disabled="!userAnswer.trim()"
+            @click="gameStore.submitAnswer(gameStore.currentAnswer)"
+            :disabled="!gameStore.currentAnswer?.trim()"
           >
             ✓ {{ $t('game.submit') }}
           </button>
-          <button class="skip-btn" @click="skipQuestion">
+          <button class="skip-btn" @click="gameStore.skip()">
             ⏭️ {{ $t('game.skip') }}
           </button>
         </div>
@@ -284,39 +150,95 @@ function restartGame() {
         <div class="result-stats">
           <div class="stat-item">
             <div class="stat-icon">🏆</div>
-            <div class="stat-value">{{ gameResult?.score }}</div>
+            <div class="stat-value">{{ gameStore.getResult()?.score }}</div>
             <div class="stat-label">{{ $t('result.score') }}</div>
           </div>
 
           <div class="stat-item">
             <div class="stat-icon">✅</div>
-            <div class="stat-value">{{ gameResult?.correctAnswers }}</div>
+            <div class="stat-value">{{ gameStore.getResult()?.correctAnswers }}</div>
             <div class="stat-label">{{ $t('result.correct') }}</div>
           </div>
 
           <div class="stat-item">
             <div class="stat-icon">📊</div>
-            <div class="stat-value">{{ Math.round(gameResult?.accuracy || 0) }}%</div>
+            <div class="stat-value">{{ Math.round(gameStore.getResult()?.accuracy || 0) }}%</div>
             <div class="stat-label">{{ $t('result.accuracy') }}</div>
           </div>
 
           <div class="stat-item">
             <div class="stat-icon">⏱️</div>
-            <div class="stat-value">{{ Math.round(gameResult?.timeTaken || 0) }}s</div>
+            <div class="stat-value">{{ Math.round(gameStore.getResult()?.timeTaken || 0) }}s</div>
             <div class="stat-label">{{ $t('result.time') }}</div>
           </div>
         </div>
 
         <div class="result-actions">
-          <button class="primary-btn" @click="restartGame">
+          <button class="primary-btn" @click="gameStore.prepareAndStart()">
             🔄 {{ $t('game.playAgain') }}
           </button>
-          <button class="secondary-btn" @click="exitGame">
+          <button class="secondary-btn" @click="handleExit">
             🏠 {{ $t('game.backHome') }}
           </button>
         </div>
       </div>
     </div>
+    <!-- Settings Dialog -->
+    <SettingsDialog 
+      v-model="showSettings" 
+      initial-tab="extra"
+      :extra-tab-title="$t('game.questionList.settings', 'Game Settings')"
+      extra-tab-icon="mdi-cog"
+    >
+      <template #game-settings>
+        <div class="specific-settings">
+          <h3 class="text-h6 mb-4 d-flex align-center">
+            <v-icon start color="primary">mdi-tune</v-icon>
+            {{ $t('game.questionList.specificSettings', 'Specific Settings') }}
+          </h3>
+          
+          <div class="settings-group mb-4">
+            <label class="d-block mb-2 font-weight-bold">{{ $t('game.questionList.difficulty', 'Difficulty') }}</label>
+            <v-btn-toggle
+              :model-value="gameStore.specificSettings.difficulty"
+              @update:model-value="updateSpecificSetting('difficulty', $event)"
+              color="primary"
+              variant="outlined"
+              divided
+              mandatory
+              density="comfortable"
+            >
+              <v-btn :value="'easy'">
+                😊 {{ $t('game.questionList.easy', 'Easy') }}
+              </v-btn>
+              <v-btn :value="'medium'">
+                🤔 {{ $t('game.questionList.medium', 'Medium') }}
+              </v-btn>
+              <v-btn :value="'hard'">
+                😤 {{ $t('game.questionList.hard', 'Hard') }}
+              </v-btn>
+            </v-btn-toggle>
+          </div>
+          
+          <v-switch
+            :model-value="gameStore.specificSettings.autoPlay"
+            @update:model-value="updateSpecificSetting('autoPlay', !!$event)"
+            :label="$t('game.questionList.autoPlay', 'Auto Play Audio')"
+            color="primary"
+            hide-details
+            class="mb-2"
+          ></v-switch>
+
+          <v-switch
+            :model-value="gameStore.specificSettings.showHints"
+            @update:model-value="updateSpecificSetting('showHints', !!$event)"
+            :label="$t('game.questionList.showHints', 'Show Hints Button')"
+            color="primary"
+            hide-details
+          ></v-switch>
+        </div>
+      </template>
+    </SettingsDialog>
   </div>
 </template>
 
@@ -361,6 +283,26 @@ function restartGame() {
 
 .spacer {
   width: 100px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.settings-mini-btn {
+  background: rgba(255,255,255,0.2);
+  color: white;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  transition: all 0.2s;
+}
+
+.settings-mini-btn:hover {
+  background: rgba(255,255,255,0.3);
+  transform: rotate(30deg);
 }
 
 .progress-bar {
@@ -532,7 +474,7 @@ function restartGame() {
   padding: 50px;
   max-width: 600px;
   width: 100%;
-  box-shadow: 0 20px 60px rg ba(0,0,0,0.3);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
   text-align: center;
 }
 

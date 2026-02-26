@@ -1,0 +1,62 @@
+[
+    {
+        "q": "thank you",
+        "t": "謝謝",
+        "tags": ["daily"],
+        "exps": ["Thank you!"]
+    },
+    {
+        "q": "again",
+        "t": "再次/又",
+        "tags": ["adverb"],
+        "exps": ["Try again."]
+    },
+    {
+        "q": "plane",
+        "t": "飛機",
+        "tags": ["noun", "transport"],
+        "exps": ["A big plane."]
+    },
+    {
+        "q": "there",
+        "t": "那裡",
+        "tags": ["adverb"],
+        "exps": ["Over there."]
+    },
+    {
+        "q": "game",
+        "t": "遊戲",
+        "tags": ["noun"],
+        "exps": ["Play a game."]
+    },
+    {
+        "q": "mane",
+        "t": "鬃毛",
+        "tags": ["noun", "animal"],
+        "exps": ["A lion's mane."]
+    },
+    {
+        "q": "gets",
+        "t": "得到/獲得",
+        "tags": ["verb"],
+        "exps": ["He gets it."]
+    },
+    {
+        "q": "Jen",
+        "t": "珍",
+        "tags": ["name"],
+        "exps": ["Jen is here."]
+    },
+    {
+        "q": "bed",
+        "t": "床",
+        "tags": ["noun", "furniture"],
+        "exps": ["Go to bed."]
+    },
+    {
+        "q": "job",
+        "t": "工作",
+        "tags": ["noun"],
+        "exps": ["Do a good job."]
+    }
+]

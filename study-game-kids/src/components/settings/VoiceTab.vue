@@ -164,29 +164,49 @@ function resetVoice() {
 .voice-tab {
   display: flex;
   flex-direction: column;
-  gap: 25px;
+  gap: 32px;
 }
 
 .section-title {
-  font-size: 1.3rem;
-  margin-bottom: 10px;
-  color: #333;
+  font-size: var(--font-size-xl);
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: var(--text-primary);
 }
 
 .settings-group {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
 }
 
 .settings-group label {
-  font-weight: 500;
-  color: #555;
+  font-size: var(--font-size-base);
+  font-weight: 700;
+  color: var(--text-primary);
 }
 
 .action-buttons {
   display: flex;
-  gap: 15px;
-  margin-top: 20px;
+  gap: 20px;
+  margin-top: 32px;
+}
+
+/* Vuetify Overrides */
+:deep(.v-label) {
+  font-size: var(--font-size-base) !important;
+  font-weight: 600 !important;
+  color: var(--text-primary) !important;
+  opacity: 1 !important;
+}
+
+:deep(.v-selection-control) {
+  min-height: 48px !important;
+}
+
+:deep(.v-field) {
+  background: var(--input-bg) !important;
+  border-radius: 12px !important;
+  color: var(--text-primary) !important;
 }
 </style>

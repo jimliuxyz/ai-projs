@@ -1,27 +1,69 @@
+:root {
+  /* Font System */
+  --font-family-main: 'Outfit', 'Fredoka', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-family-title: 'Fredoka', 'Outfit', sans-serif;
+
+  /* Shared Tokens */
+  --radius-sm: 12px;
+  --radius-md: 20px;
+  --radius-lg: 32px;
+  --transition-speed: 0.3s;
+
+  /* Typography Scale - Large and Bold */
+  --font-size-xs: 1rem;
+  --font-size-sm: 1.1rem;
+  --font-size-base: 1.25rem;
+  --font-size-lg: 1.5rem;
+  --font-size-xl: 2.2rem;
+  --font-size-xxl: 3.5rem;
+
+  /* Default Theme: Dark (requested) */
+  --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  --bg-color: #0f172a;
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --card-bg: rgba(30, 41, 59, 0.7);
+  --card-border: rgba(255, 255, 255, 0.1);
+  --accent-primary: #6366f1;
+  --accent-secondary: #8b5cf6;
+  --glass-bg: rgba(255, 255, 255, 0.05);
+  --glass-border: rgba(255, 255, 255, 0.15);
+  --input-bg: rgba(15, 23, 42, 0.8);
+  --shadow-lg: 0 10px 40px rgba(0, 0, 0, 0.4);
+}
+
+.theme-light {
+  --bg-gradient: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+  --bg-color: #f8fafc;
+  --text-primary: #1e293b;
+  --text-secondary: #64748b;
+  --card-bg: rgba(255, 255, 255, 0.9);
+  --card-border: rgba(0, 0, 0, 0.05);
+  --accent-primary: #4f46e5;
+  --accent-secondary: #7c3aed;
+  --glass-bg: rgba(255, 255, 255, 0.6);
+  --glass-border: rgba(0, 0, 0, 0.1);
+  --input-bg: #ffffff;
+  --shadow-lg: 0 10px 40px rgba(0, 0, 0, 0.1);
+}
+
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-:root {
-  font-family: 'Fredoka', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  line-height: 1.6;
-  font-weight: 400;
-
-  color-scheme: light dark;
-  
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
+html,
 body {
-  margin: 0;
-  display: flex;
-  min-width: 320px;
   min-height: 100vh;
+  font-family: var(--font-family-main);
+  background: var(--bg-gradient);
+  background-attachment: fixed;
+  color: var(--text-primary);
+  line-height: 1.5;
+  font-size: 16px;
+  /* Base for rem */
+  transition: background-color var(--transition-speed), color var(--transition-speed);
 }
 
 #app {
@@ -29,48 +71,81 @@ body {
   min-height: 100vh;
 }
 
-h1, h2, h3, h4, h5, h6 {
-  font-family: 'Fredoka', sans-serif;
+/* Typography styles for a "large and bold" feel */
+h1,
+.h1 {
+  font-family: var(--font-family-title);
+  font-size: var(--font-size-xxl);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-bottom: 1.5rem;
+}
+
+h2,
+.h2 {
+  font-family: var(--font-family-title);
+  font-size: var(--font-size-xl);
+  font-weight: 600;
+  margin-bottom: 1.25rem;
+}
+
+h3,
+.h3 {
+  font-size: var(--font-size-lg);
   font-weight: 600;
 }
 
+p,
+.body-text {
+  font-size: var(--font-size-base);
+  color: var(--text-secondary);
+}
+
 button {
-  font-family: 'Fredoka', sans-serif;
+  font-family: var(--font-family-main);
+  font-size: var(--font-size-base);
+  font-weight: 600;
   cursor: pointer;
   border: none;
   outline: none;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* 響應式設計輔助類別 */
+/* Common Layout Components */
 .container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 20px;
+  padding: 0 2rem;
+}
+
+.glass-card {
+  background: var(--card-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
 }
 
 @media (max-width: 768px) {
+  :root {
+    --font-size-xxl: 2.5rem;
+    --font-size-xl: 1.8rem;
+    --font-size-base: 1.15rem;
+  }
+
   .container {
-    padding: 0 15px;
+    padding: 0 1.5rem;
   }
 }
 
-/* 動畫 */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+/* Transitions */
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s ease;
 }
 
-.fade-in {
-  animation: fadeIn 0.3s ease-out;
-}
-
-/* 平滑滾動 */
-html {
-  scroll-behavior: smooth;
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
 }

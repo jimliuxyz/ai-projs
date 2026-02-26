@@ -14,35 +14,13 @@ function resetGame() {
 
 <template>
   <div class="game-tab">
-    <h3 class="section-title">🎮 Game Settings</h3>
-
-    <div class="settings-group">
-      <label>Difficulty</label>
-      <v-btn-toggle
-        :model-value="gameSettings.difficulty"
-        @update:model-value="$event && settingsStore.updateGameSettings({ difficulty: $event })"
-        color="primary"
-        variant="outlined"
-        divided
-        mandatory
-      >
-        <v-btn :value="GameDifficulty.EASY">
-          😊 Easy
-        </v-btn>
-        <v-btn :value="GameDifficulty.MEDIUM">
-          🤔 Medium
-        </v-btn>
-        <v-btn :value="GameDifficulty.HARD">
-          😤 Hard
-        </v-btn>
-      </v-btn-toggle>
-    </div>
+    <h3 class="section-title">🎮 {{ $t('settings.gameTab.title') }}</h3>
 
     <div class="settings-group">
       <v-switch
         :model-value="gameSettings.soundEnabled"
         @update:model-value="settingsStore.updateGameSettings({ soundEnabled: !!$event })"
-        label="🔊 Sound Effects"
+        :label="'🔊 ' + $t('settings.gameTab.soundEffects')"
         color="primary"
         hide-details
       ></v-switch>
@@ -52,7 +30,7 @@ function resetGame() {
       <v-switch
         :model-value="gameSettings.musicEnabled"
         @update:model-value="settingsStore.updateGameSettings({ musicEnabled: !!$event })"
-        label="🎵 Background Music"
+        :label="'🎵 ' + $t('settings.gameTab.backgroundMusic')"
         color="primary"
         hide-details
       ></v-switch>
@@ -62,27 +40,7 @@ function resetGame() {
       <v-switch
         :model-value="gameSettings.vibrationEnabled"
         @update:model-value="settingsStore.updateGameSettings({ vibrationEnabled: !!$event })"
-        label="📳 Vibration (Mobile)"
-        color="primary"
-        hide-details
-      ></v-switch>
-    </div>
-
-    <div class="settings-group">
-      <v-switch
-        :model-value="gameSettings.showTimer"
-        @update:model-value="settingsStore.updateGameSettings({ showTimer: !!$event })"
-        label="⏱️ Show Timer"
-        color="primary"
-        hide-details
-      ></v-switch>
-    </div>
-
-    <div class="settings-group">
-      <v-switch
-        :model-value="gameSettings.showScore"
-        @update:model-value="settingsStore.updateGameSettings({ showScore: !!$event })"
-        label="🏆 Show Score"
+        :label="'📳 ' + $t('settings.gameTab.vibration')"
         color="primary"
         hide-details
       ></v-switch>
@@ -92,7 +50,7 @@ function resetGame() {
       <v-switch
         :model-value="gameSettings.fullscreen"
         @update:model-value="settingsStore.updateGameSettings({ fullscreen: !!$event })"
-        label="🖥️ Fullscreen Mode"
+        :label="'🖥️ ' + $t('settings.gameTab.fullscreen')"
         color="primary"
         hide-details
       ></v-switch>
@@ -105,16 +63,16 @@ function resetGame() {
         @click="resetGame"
         block
       >
-        Reset to Default
+        {{ $t('settings.gameTab.reset') }}
       </v-btn>
     </div>
 
     <div class="info-box">
-      <h4>💡 Tips</h4>
+      <h4>💡 {{ $t('settings.gameTab.tips') }}</h4>
       <ul>
-        <li>Easy mode gives more time and hints</li>
-        <li>Hard mode increases speed and reduces hints</li>
-        <li>Score multiplier increases with difficulty</li>
+        <li>{{ $t('settings.gameTab.tip1') }}</li>
+        <li>{{ $t('settings.gameTab.tip2') }}</li>
+        <li>{{ $t('settings.gameTab.tip3') }}</li>
       </ul>
     </div>
   </div>
@@ -124,49 +82,56 @@ function resetGame() {
 .game-tab {
   display: flex;
   flex-direction: column;
-  gap: 25px;
+  gap: 32px;
 }
 
 .section-title {
-  font-size: 1.3rem;
-  margin-bottom: 10px;
-  color: #333;
+  font-size: var(--font-size-xl);
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: var(--text-primary);
 }
 
 .settings-group {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-}
-
-.settings-group label {
-  font-weight: 500;
-  color: #555;
-  margin-bottom: 5px;
+  gap: 12px;
 }
 
 .action-buttons {
-  margin-top: 20px;
+  margin-top: 32px;
 }
 
 .info-box {
-  background: #f0f7ff;
-  border-left: 4px solid #667eea;
-  padding: 20px;
-  border-radius: 8px;
+  background: var(--glass-bg);
+  border-left: 6px solid var(--accent-primary);
+  padding: 32px;
+  border-radius: var(--radius-md);
+  margin-top: 24px;
 }
 
 .info-box h4 {
-  margin-bottom: 12px;
-  color: #667eea;
+  font-size: var(--font-size-lg);
+  margin-bottom: 20px;
+  color: var(--accent-primary);
+  font-weight: 700;
 }
 
 .info-box ul {
-  margin-left: 20px;
+  margin-left: 24px;
 }
 
 .info-box li {
-  margin-bottom: 8px;
-  color: #555;
+  font-size: var(--font-size-base);
+  margin-bottom: 12px;
+  color: var(--text-secondary);
+}
+
+/* Vuetify Overrides */
+:deep(.v-label) {
+  font-size: var(--font-size-base) !important;
+  font-weight: 600 !important;
+  color: var(--text-primary) !important;
+  opacity: 1 !important;
 }
 </style>

@@ -1,0 +1,92 @@
+{
+    "title": "Mixed Vocabulary 20260204",
+    "ageGroup": "5",
+    "format": "vocabulary",
+    "tags": [
+        "mixed/basics"
+    ],
+    "createdAt": "2026-02-04T12:43:00.000Z",
+    "updatedAt": "2026-02-04T12:43:00.000Z",
+    "items": [
+        {
+            "word": "envelope",
+            "translation": "信封",
+            "pronunciation": "/ˈenvəloʊp/",
+            "examples": [
+                "I put the letter in an envelope."
+            ]
+        },
+        {
+            "word": "truck",
+            "translation": "卡車",
+            "pronunciation": "/trʌk/",
+            "examples": [
+                "A big truck."
+            ]
+        },
+        {
+            "word": "siren",
+            "translation": "警報器",
+            "pronunciation": "/ˈsaɪrən/",
+            "examples": [
+                "the siren of ambulance."
+            ]
+        },
+        {
+            "word": "snake",
+            "translation": "蛇",
+            "pronunciation": "/sneɪk/",
+            "examples": [
+                "A long snake."
+            ]
+        },
+        {
+            "word": "year",
+            "translation": "年",
+            "pronunciation": "/jɪr/",
+            "examples": [
+                "Happy New Year!"
+            ]
+        },
+        {
+            "word": "fire",
+            "translation": "火",
+            "pronunciation": "/ˈfaɪər/",
+            "examples": [
+                "Keep away from the fire."
+            ]
+        },
+        {
+            "word": "take",
+            "translation": "拿；取",
+            "pronunciation": "/teɪk/",
+            "examples": [
+                "Take me home."
+            ]
+        },
+        {
+            "word": "bell",
+            "translation": "鈴",
+            "pronunciation": "/bel/",
+            "examples": [
+                "The school bell is ringing."
+            ]
+        },
+        {
+            "word": "wake",
+            "translation": "醒來",
+            "pronunciation": "/weɪk/",
+            "examples": [
+                "I wake up at seven o'clock."
+            ]
+        },
+        {
+            "word": "new",
+            "translation": "新的",
+            "pronunciation": "/nuː/",
+            "examples": [
+                "I have a new school bag."
+            ]
+        }
+    ]
+}
