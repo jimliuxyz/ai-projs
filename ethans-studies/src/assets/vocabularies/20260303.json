@@ -1,0 +1,104 @@
+[
+    {
+        "q": "protect",
+        "t": "保護",
+        "tags": [
+            "verb"
+        ],
+        "exps": [
+            "Protect our earth."
+        ]
+    },
+    {
+        "q": "same",
+        "t": "同樣的/相同的",
+        "tags": [
+            "adjective"
+        ],
+        "exps": [
+            "The same color."
+        ]
+    },
+    {
+        "q": "use",
+        "t": "使用/用",
+        "tags": [
+            "verb"
+        ],
+        "exps": [
+            "Use a pencil."
+        ]
+    },
+    {
+        "q": "wet",
+        "t": "濕的",
+        "tags": [
+            "adjective"
+        ],
+        "exps": [
+            "Wet floor."
+        ]
+    },
+    {
+        "q": "Taiwan",
+        "t": "台灣",
+        "tags": [
+            "noun",
+            "place"
+        ],
+        "exps": [
+            "I love Taiwan."
+        ]
+    },
+    {
+        "q": "Jane",
+        "t": "簡",
+        "tags": [
+            "name"
+        ],
+        "exps": [
+            "This is Jane."
+        ]
+    },
+    {
+        "q": "angry",
+        "t": "生氣的",
+        "tags": [
+            "adjective"
+        ],
+        "exps": [
+            "Are you angry?"
+        ]
+    },
+    {
+        "q": "date",
+        "t": "日期/約會",
+        "tags": [
+            "noun"
+        ],
+        "exps": [
+            "What's the date?"
+        ]
+    },
+    {
+        "q": "work",
+        "t": "工作",
+        "tags": [
+            "noun",
+            "verb"
+        ],
+        "exps": [
+            "Hard work."
+        ]
+    },
+    {
+        "q": "write",
+        "t": "寫",
+        "tags": [
+            "verb"
+        ],
+        "exps": [
+            "Write your name."
+        ]
+    }
+]
